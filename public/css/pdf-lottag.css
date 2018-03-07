@@ -1,0 +1,10 @@
+table.css-lottag,
+table.css-lottag tr,
+table.css-lottag td {
+    border: 1px solid;
+    padding: 1rem;
+}
+
+.pdf-lottag-border {
+    border: solid;
+}
