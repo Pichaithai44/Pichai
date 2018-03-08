@@ -145,7 +145,7 @@ class QpointController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
-                DB::table('lkup_q_point')->where('id',$id)
+                $result = DB::table('lkup_q_point')->where('id',$id)
                 ->update([
                     'sheet_name' => $request->qpoint_name,
                     'lot_tag_id' => $request->lottag_id,
@@ -153,9 +153,13 @@ class QpointController extends Controller
                     'updated_by' => Auth::user()->getAttributes()['id'],
                     'updated_at' => date('Y-m-d h:i:s')
                 ]);
-                return redirect()->route('pages.qpoint.edit',[
-                    'id' => $id
-                ]);
+                
+                if($result){
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
             }
         } else {
             return redirect('home');

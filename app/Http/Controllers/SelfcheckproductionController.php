@@ -27,6 +27,7 @@ class SelfcheckproductionController extends Controller
             ->select(
                 'self_check_production.id',
                 'lkup_lot_tag.part_no',
+                'lkup_lot_tag.lot_no_fix',
                 'lkup_lot_tag.part_name',
                 'self_check_production.lot_no',
                 'self_check_production.production_status',
@@ -47,7 +48,7 @@ class SelfcheckproductionController extends Controller
                 $d->is_enable = $this->is_enable_name[$d->is_enable];
             }
         }
-        // echo '<pre>';print_r($data->items());'</pre>';exit;
+        echo '<pre>';print_r($data->items());'</pre>';exit;
         return view('pages.selfcheckproduction.index',[
             'data' => $data
         ]);
@@ -116,7 +117,8 @@ class SelfcheckproductionController extends Controller
                     'is_issue' => 'N',
                     'is_issue_more' => 'N',
                     'at_shlft' => $request->at_shlft,
-                    'quality_result' => 'N',
+                    'production_quality_result' => 'T',
+                    'pqa_quality_result' => 'T',
                     'production_status' => 'W',
                     'pqa_status' => 'W',
                     'created_by' => Auth::user()->getAttributes()['id'],
@@ -278,7 +280,6 @@ class SelfcheckproductionController extends Controller
     public function update(Request $request, $id)
     {
         //
-        // echo '<pre>';print_r($request->all());'</pre>';exit;
         if(Auth::user()->getAttributes()['id']){
             $validator = Validator::make($request->all(),$this->rules(),$this->messages());
             if($validator->fails()){
@@ -286,7 +287,7 @@ class SelfcheckproductionController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
-                DB::table('self_check_production')->where('id',$id)
+                $result = DB::table('self_check_production')->where('id',$id)
                 ->update([
                     'pre_production_check_id' => $request->pre_production_check_id,
                     'production_order' => $request->production_order,
@@ -305,9 +306,13 @@ class SelfcheckproductionController extends Controller
                     'updated_at' => date('Y-m-d h:i:s'),
                     'is_enable' => 'Y'
                 ]);
-                return redirect()->route('pages.selfcheckproduction.edit',[
-                    'id' => $id
-                ]);
+
+                if($result){
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
             }
         } else {
             return redirect('home');
@@ -333,7 +338,7 @@ class SelfcheckproductionController extends Controller
             ->leftJoin('lkup_model','lkup_lot_tag.model_id','=','lkup_model.id')
             ->leftJoin('lkup_production_line','pre_production_check.production_line_id','=','lkup_production_line.id')
             ->leftJoin('customer','pre_production_check.customer_id','=','customer.id')
-            ->leftJoin('lkup_q_point','pre_production_check.q_point_sheet_id','=','lkup_q_point.id')
+            ->leftJoin('lkup_q_point','lkup_lot_tag.id','=','lkup_q_point.lot_tag_id')
             ->select(
                 'pre_production_check.id',
                 'pre_production_check.customer_id',

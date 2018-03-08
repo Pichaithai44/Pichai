@@ -7,6 +7,14 @@
 @section('list', 'เอกสารตรวจสอบขนาดชิ้นงาน (Data Parts Confirmation By PQA)')
 @endcan
 @section('content')
+@if (session('status'))
+    <div class="alert {{ session('result') ? 'alert-success' : 'alert-danger' }}" role="alert">
+        <strong>{{ session('status') }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
 {{--  ฝั่ง-Production  --}}
 
 @can('admin')
@@ -543,6 +551,9 @@
         function submit(){
             document.getElementById('my_form').submit();
         }
+        $(document).ready(function() {
+            $( "div.alert-success" ).slideUp(600);
+        });
         $(function()
         {
             $( "#part_no" ).autocomplete({

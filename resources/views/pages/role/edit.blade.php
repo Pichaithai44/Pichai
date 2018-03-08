@@ -2,6 +2,14 @@
 @section('title', 'Page Title')
 @section('list', 'แก้ไขข้อมูลค่าเริ่มต้น ไลน์การผลิต')
 @section('content')
+@if (session('status'))
+    <div class="alert {{ session('result') ? 'alert-success' : 'alert-danger' }}" role="alert">
+        <strong>{{ session('status') }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
     <div class="container form-control">
         <form action="{{ route('pages.role.update',['id'=> $item->id]) }}" id="my_form" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
@@ -53,5 +61,8 @@
         function submit(){
             document.getElementById('my_form').submit();
         }
+        $(document).ready(function() {
+            $( "div.alert-success" ).slideUp(600);
+        });
     </script>
 @endsection

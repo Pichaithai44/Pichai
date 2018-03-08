@@ -108,7 +108,6 @@ class PreProductionCheckController extends Controller
                     'customer_id' => $request->customer,
                     'product_order' => $request->product_order,
                     'production_line_id' => $request->production_line,
-                    'q_point_sheet_id' => $request->q_point_id,
                     'is_enable' => $request->isEnable,
                     'created_by' => Auth::user()->getAttributes()['id'],
                     'created_at' => date('Y-m-d h:i:s')
@@ -219,7 +218,7 @@ class PreProductionCheckController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
-                DB::table('pre_production_check')->where('id',$id)
+                $result = DB::table('pre_production_check')->where('id',$id)
                     ->update([
                     'lot_tag_id' => $request->lottag_id,
                     'customer_id' => $request->customer,
@@ -230,9 +229,12 @@ class PreProductionCheckController extends Controller
                     'updated_at' => date('Y-m-d h:i:s')
                 ]);
         
-                return redirect()->route('pages.preproductioncheck.edit',[
-                'id' => $id
-                ]);
+                if($result){
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
             }
         } else {
             return redirect('home');

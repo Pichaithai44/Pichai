@@ -138,16 +138,19 @@ class CustomerController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
-                DB::table('customer')->where('id',$id)
+                $result = DB::table('customer')->where('id',$id)
                 ->update([
                     'customer_name' => $request->name,
                     'is_enable' => $request->isEnable,
                     'updated_at' => date('Y-m-d h:i:s'),
                     'updated_by' => Auth::user()->getAttributes()['id']
                 ]);
-                return redirect()->route('pages.customer.edit',[
-                    'id' => $id
-                ]);
+                if($result){
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
             }
         } else {
             return redirect('home');

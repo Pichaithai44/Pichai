@@ -607,16 +607,17 @@ class PdfController extends Controller
     public function selfcheckproduction($id)
     {
         //
-        $data = DB::table('delivery')
-        ->leftJoin('lkup_lot_tag','delivery.lot_tag_id','=','lkup_lot_tag.id')
+        $data = DB::table('self_check_production')
+        ->leftJoin('pre_production_check','self_check_production.pre_production_check_id','=','pre_production_check.id')
+        ->leftJoin('lkup_lot_tag','pre_production_check.lot_tag_id','=','lkup_lot_tag.id')
         ->leftJoin('lkup_model','lkup_lot_tag.model_id','=','lkup_model.id')
         ->leftJoin('lkup_type','lkup_lot_tag.type_id','=','lkup_type.id')
         ->leftJoin('file','lkup_lot_tag.intro_img_id','=','file.id')
         ->leftJoin('qbar_code','lkup_lot_tag.barcode_id','=','qbar_code.id')
         ->leftJoin('lkup_material','lkup_lot_tag.material_id','=','lkup_material.id')
-        ->leftJoin('customer','delivery.customer_id','=','customer.id')
+        ->leftJoin('customer','pre_production_check.customer_id','=','customer.id')
+        ->leftJoin('lkup_production_line','pre_production_check.production_line_id','=','lkup_production_line.id')
         ->select(
-            'delivery.quantity',
             'lkup_lot_tag.part_no',
             'lkup_lot_tag.part_name',
             'qbar_code.filebase64',
@@ -627,11 +628,16 @@ class PdfController extends Controller
             'lkup_lot_tag.material_t',
             'lkup_lot_tag.refer',
             'lkup_lot_tag.rev',
+            'lkup_production_line.line_name',
+            'pre_production_check.product_order',
+            'self_check_production.lot_no_fix',
+            'self_check_production.lot_no',
+            'self_check_production.production_date',
             'file.mimeType',
             'file.filebase64 as img'
             )
         ->whereNULL('lkup_lot_tag.deleted_at')
-        ->where('delivery.id',$id)
+        ->where('self_check_production.id',$id)
         ->first();
         // echo '<pre>';print_r($data);'</pre>';exit;
         define('FPDF_FONTPATH',storage_path('app/public/font'));
@@ -712,13 +718,13 @@ class PdfController extends Controller
         $pdf::SetFont('THSarabun','',12);
         // เนื้อหา 1
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','วันที่ผลิต xxx'),0,0,'L');
-        $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','จำนวนที่ผลิต xxx ชิ้น'),0,0,'L');
-        $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','ล็อตที่ผลิต xxxxxxxx'),0,0,'L');
+        $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','วันที่ผลิต '.$data->production_date),0,0,'L');
+        $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','จำนวนที่ผลิต '.$data->product_order.' ชิ้น'),0,0,'L');
+        $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','ล็อตที่ผลิต '.$data->lot_no_fix.$data->lot_no),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(55.667,5,iconv( 'UTF-8','TIS-620','วันที่ผลิต (Production Date): xxx'),0,0,'L');
+        $pdf::Cell(55.667,5,iconv( 'UTF-8','TIS-620','วันที่ผลิต (Production Date): '.$data->production_date),0,0,'L');
         $pdf::Cell(25,5,iconv( 'UTF-8','TIS-620','กะผลิต (AtShlft)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
         $pdf::Cell(17.8335,5,iconv( 'UTF-8','TIS-620','01'),0,0,'L');
@@ -754,7 +760,7 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','1. หมายเลขที่ผลิต'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',$data->part_no),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
@@ -762,7 +768,7 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','1. หมายเลขที่ผลิต'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',$data->part_no),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
@@ -798,7 +804,7 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','2. ชื่อชิ้นงาน'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',$data->part_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
@@ -806,7 +812,7 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','2. ชื่อชิ้นงาน'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',$data->part_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
@@ -842,11 +848,11 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','3. ชื่อรุ่นชิ้นงาน / ลูกค้า'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620','กะผลิต (AtShlft)'),'B',0,'L');
+        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620',$data->model_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620','/'),0,0,'C');
         $pdf::SetDash(1,1);
-        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620','กะผลิต (AtShlft)'),'B',0,'L');
+        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620',$data->customer_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
@@ -854,11 +860,11 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','3. ชื่อรุ่นชิ้นงาน / ลูกค้า'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620','กะผลิต (AtShlft)'),'B',0,'L');
+        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620',$data->model_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620','/'),0,0,'C');
         $pdf::SetDash(1,1);
-        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620','กะผลิต (AtShlft)'),'B',0,'L');
+        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620',$data->customer_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
@@ -898,7 +904,7 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','4. ไลน์การผลิต'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620','กะผลิต (AtShlft)'),'B',0,'L');
+        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620',$data->line_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(17.6418,5,iconv( 'UTF-8','TIS-620','กะผลิต'),0,0,'L');
@@ -912,7 +918,7 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','4. ไลน์การผลิต'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620','กะผลิต (AtShlft)'),'B',0,'L');
+        $pdf::Cell(35.2836,5,iconv( 'UTF-8','TIS-620',$data->line_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(17.6418,5,iconv( 'UTF-8','TIS-620','กะผลิต'),0,0,'L');

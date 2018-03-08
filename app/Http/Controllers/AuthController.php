@@ -254,7 +254,7 @@ class AuthController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
-                DB::table('users')->where('id',$id)
+                $result = DB::table('users')->where('id',$id)
                 ->update([
                     'first_name' => $request->first_name,
                     'last_name' => $request->last_name,
@@ -265,9 +265,12 @@ class AuthController extends Controller
                     'updated_by' => Auth::user()->getAttributes()['id'],
                     'updated_at' => date('Y-m-d h:i:s')
                 ]);
-                return redirect()->route('pages.auth.edit',[
-                    'id' => $id
-                ]);
+                if($result){
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
             }
         } else {
             return redirect('home');

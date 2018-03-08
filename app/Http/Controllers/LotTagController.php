@@ -391,10 +391,14 @@ class LottagController extends Controller
                         ]);
                     }
                 }
-                
-                return redirect()->route('pages.lottag.edit',[
-                    'id' => $id
-                ]);
+                if($lot_tag_process_file_id){
+                    $result = true;
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $result = false;
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
             }
         } else {
             return redirect('home');
