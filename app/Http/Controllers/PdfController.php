@@ -612,11 +612,11 @@ class PdfController extends Controller
         ->leftJoin('lkup_lot_tag','pre_production_check.lot_tag_id','=','lkup_lot_tag.id')
         ->leftJoin('lkup_model','lkup_lot_tag.model_id','=','lkup_model.id')
         ->leftJoin('lkup_type','lkup_lot_tag.type_id','=','lkup_type.id')
-        ->leftJoin('file','lkup_lot_tag.intro_img_id','=','file.id')
         ->leftJoin('qbar_code','lkup_lot_tag.barcode_id','=','qbar_code.id')
         ->leftJoin('lkup_material','lkup_lot_tag.material_id','=','lkup_material.id')
         ->leftJoin('customer','pre_production_check.customer_id','=','customer.id')
         ->leftJoin('lkup_production_line','pre_production_check.production_line_id','=','lkup_production_line.id')
+        ->leftJoin('lkup_q_point','lkup_lot_tag.id','=','lkup_q_point.lot_tag_id')
         ->select(
             'lkup_lot_tag.part_no',
             'lkup_lot_tag.part_name',
@@ -628,17 +628,15 @@ class PdfController extends Controller
             'lkup_lot_tag.material_t',
             'lkup_lot_tag.refer',
             'lkup_lot_tag.rev',
+            'lkup_q_point.sheet_name',
             'lkup_production_line.line_name',
             'pre_production_check.product_order',
-            'self_check_production.lot_no_fix',
-            'self_check_production.lot_no',
-            'self_check_production.production_date',
-            'file.mimeType',
-            'file.filebase64 as img'
+            'self_check_production.*'
             )
         ->whereNULL('lkup_lot_tag.deleted_at')
         ->where('self_check_production.id',$id)
         ->first();
+
         // echo '<pre>';print_r($data);'</pre>';exit;
         define('FPDF_FONTPATH',storage_path('app/public/font'));
         $pdf = new Fpdf();
@@ -650,6 +648,7 @@ class PdfController extends Controller
 		$pdf::AddFont('THSarabun','','THSarabun.php');
 		$pdf::AddFont('THSarabunPSK-Bold','','THSarabun Bold.php');
         $pdf::SetFont('THSarabunPSK-Bold','',14);
+		$pdf::AddFont('ZapfDingbats','','PierreDingbats.php');
         $pdf::Ln(0);
         // กระดาษส่วนบน แถว 1
         $pdf::Cell(2.5,2.5,iconv( 'UTF-8','TIS-620',null),'LT',0,'C');
@@ -726,9 +725,13 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(55.667,5,iconv( 'UTF-8','TIS-620','วันที่ผลิต (Production Date): '.$data->production_date),0,0,'L');
         $pdf::Cell(25,5,iconv( 'UTF-8','TIS-620','กะผลิต (AtShlft)'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+        $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->at_shlft == '01' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(17.8335,5,iconv( 'UTF-8','TIS-620','01'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+        $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->at_shlft == '02' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(17.8335,5,iconv( 'UTF-8','TIS-620','02'),0,0,'L');
         $pdf::Cell(10.667,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
@@ -908,9 +911,13 @@ class PdfController extends Controller
         $pdf::SetDash();
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(17.6418,5,iconv( 'UTF-8','TIS-620','กะผลิต'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+        $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->at_shlft == '01' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(3.8209,5,iconv( 'UTF-8','TIS-620','01'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+        $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->at_shlft == '02' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(3.8209,5,iconv( 'UTF-8','TIS-620','02'),0,0,'C');
         $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
@@ -922,9 +929,13 @@ class PdfController extends Controller
         $pdf::SetDash();
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(17.6418,5,iconv( 'UTF-8','TIS-620','กะผลิต'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->at_shlft == '01' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(3.8209,5,iconv( 'UTF-8','TIS-620','01'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->at_shlft == '02' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(3.8209,5,iconv( 'UTF-8','TIS-620','02'),0,0,'C');
         $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
@@ -966,13 +977,15 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','5. อ้างอิงหมายเลขเอกสารตรวจสอบ'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+        $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',$data->sheet_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(132,5,iconv( 'UTF-8','TIS-620','ชิ้นงานระหว่างกระบวนการ (Semi Part)'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 12
@@ -992,16 +1005,24 @@ class PdfController extends Controller
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','เริ่มต้นล๊อตการผลิต (A)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','กลางล๊อตการผลิต (M)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','ท้ายล๊อตการผลิต (Z)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','อื่นๆ'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 12
@@ -1022,7 +1043,9 @@ class PdfController extends Controller
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(132,5,iconv( 'UTF-8','TIS-620','ชิ้นงานสำเร็จรูปจากไลน์ประกอบ (F/G Assembly)'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 12
@@ -1042,16 +1065,24 @@ class PdfController extends Controller
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','เริ่มต้นล๊อตการผลิต (A)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','กลางล๊อตการผลิต (M)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','ท้ายล๊อตการผลิต (Z)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','อื่นๆ'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 12
@@ -1064,20 +1095,24 @@ class PdfController extends Controller
         $pdf::Cell(2.5,1,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 16
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(35.5,5,iconv( 'UTF-8','TIS-620','วัตถุดิบที่กําหนด (R/M Type):'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(28,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+        $pdf::Cell(28,5,iconv( 'UTF-8','TIS-620',$data->type_name),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(42.5,5,iconv( 'UTF-8','TIS-620','ความหนาวัตถุดิบ (R/M Thickness):'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(21,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+        $pdf::Cell(21,5,iconv( 'UTF-8','TIS-620',$data->material_t),'B',0,'C');
         $pdf::SetDash();
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','mm'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(132,5,iconv( 'UTF-8','TIS-620','ชิ้นงานสำเร็จรูปจากไลน์ปั๊มชิ้นส่วน (F/G Stemping)'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 12
@@ -1090,26 +1125,40 @@ class PdfController extends Controller
         $pdf::Cell(2.5,1,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 17
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->neck_broken == ('Y' || 'N') ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(63.5,5,iconv( 'UTF-8','TIS-620','การยืดตัวและฉีกขาดของชิ้นงาน (Neck & Broken)'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->neck_broken == 'Y' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(29.25,5,iconv( 'UTF-8','TIS-620','คุณภาพผ่าน'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->neck_broken == 'N' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(29.25,5,iconv( 'UTF-8','TIS-620','คุณภาพไม่ผ่าน'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','เริ่มต้นล๊อตการผลิต (A)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','กลางล๊อตการผลิต (M)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','ท้ายล๊อตการผลิต (Z)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','อื่นๆ'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 12
@@ -1122,16 +1171,24 @@ class PdfController extends Controller
         $pdf::Cell(2.5,1,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 18
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->burr == ('Y' || 'N') ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(63.5,5,iconv( 'UTF-8','TIS-620','ชิ้นงานมีครีบคมตัดเฉื่อน (Burr)'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->burr == 'Y' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(29.25,5,iconv( 'UTF-8','TIS-620','คุณภาพผ่าน'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->burr == 'N' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(29.25,5,iconv( 'UTF-8','TIS-620','คุณภาพไม่ผ่าน'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(132,5,iconv( 'UTF-8','TIS-620','ตรวจสอบตามเงื่อนไขพิเศษ (Special Case as The Customer Requirement)'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 12
@@ -1144,26 +1201,40 @@ class PdfController extends Controller
         $pdf::Cell(2.5,1,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 19
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->work_example == ('Y' || 'N') ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(63.5,5,iconv( 'UTF-8','TIS-620','ความแตกต่างระหว่างชิ้นงานจริงกับชิ้นงานตัวอย่าง'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->work_example == 'Y' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(29.25,5,iconv( 'UTF-8','TIS-620','คุณภาพผ่าน'),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->work_example == 'N' ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(29.25,5,iconv( 'UTF-8','TIS-620','คุณภาพไม่ผ่าน'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','เริ่มต้นล๊อตการผลิต (A)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','กลางล๊อตการผลิต (M)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','ท้ายล๊อตการผลิต (Z)'),0,0,'L');
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620','-'),0,0,'C');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(24.25,5,iconv( 'UTF-8','TIS-620','อื่นๆ'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
         // เนื้อหา 12
@@ -1177,10 +1248,12 @@ class PdfController extends Controller
         // เนื้อหา 19
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(10,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->issue_detail ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(30,5,iconv( 'UTF-8','TIS-620','ปัญหาอะไร ?'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(68.5,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+        $pdf::Cell(68.5,5,iconv( 'UTF-8','TIS-620',$data->issue_detail ? $data->issue_detail : null),'B',0,'L');
         $pdf::SetDash();
         $pdf::Cell(23.5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
@@ -1199,10 +1272,12 @@ class PdfController extends Controller
         // เนื้อหา 20
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
         $pdf::Cell(10,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->issue_more_detail ? 4 : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(30,5,iconv( 'UTF-8','TIS-620','เป็นปัญหาอีกหรือไม่'),0,0,'L');
         $pdf::SetDash(1,1);
-        $pdf::Cell(68.5,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+        $pdf::Cell(68.5,5,iconv( 'UTF-8','TIS-620',$data->issue_more_detail ? $data->issue_more_detail : null),'B',0,'L');
         $pdf::SetDash();
         $pdf::Cell(23.5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
@@ -1249,7 +1324,9 @@ class PdfController extends Controller
         $pdf::Cell(43.167,5,iconv( 'UTF-8','TIS-620',null),'RTL',0,'L');
         $pdf::SetDash();
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->production_status == 'C' ? ($data->production_quality_result == 'T' ? 4 : null) : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(81.333,5,iconv( 'UTF-8','TIS-620','ผ่านตามข้อกำหนดคุณภาพเบื้องต้น (Quick Qualily Check)'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'RL',0,'C');
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
@@ -1259,7 +1336,9 @@ class PdfController extends Controller
         $pdf::Cell(43.167,5,iconv( 'UTF-8','TIS-620',null),'RTL',0,'L');
         $pdf::SetDash();
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(81.333,5,iconv( 'UTF-8','TIS-620','ผ่านตามข้อกำหนด (Passed Dimension)'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'LR',1,'C');
         // เนื้อหา 24
@@ -1287,7 +1366,9 @@ class PdfController extends Controller
         $pdf::Cell(43.167,5,iconv( 'UTF-8','TIS-620',null),'RL',0,'L');
         $pdf::SetDash();
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->production_status == 'C' ? ($data->production_quality_result == 'F' ? 4 : null) : null),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(81.333,5,iconv( 'UTF-8','TIS-620','ไม่ผ่านตามข้อกำหนดคุณภาพเบื้องต้น (Quick Qualily Check)'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'RL',0,'C');
         $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
@@ -1297,7 +1378,9 @@ class PdfController extends Controller
         $pdf::Cell(43.167,5,iconv( 'UTF-8','TIS-620',null),'RL',0,'L');
         $pdf::SetDash();
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(81.333,5,iconv( 'UTF-8','TIS-620','ไม่ผ่านตามข้อกำหนด (Not Passed Dimension)'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'LR',1,'C');
         // เนื้อหา 24
@@ -1334,7 +1417,9 @@ class PdfController extends Controller
         $pdf::Cell(43.167,5,iconv( 'UTF-8','TIS-620',null),'RL',0,'L');
         $pdf::SetDash();
         $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
-        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+         $pdf::SetFont('ZapfDingbats','',14);
+        $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+        $pdf::SetFont('THSarabun','',12);
         $pdf::Cell(81.333,5,iconv( 'UTF-8','TIS-620','อื่นๆ (Others)'),0,0,'L');
         $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'LR',1,'C');
         // เนื้อหา 27

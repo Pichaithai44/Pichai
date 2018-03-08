@@ -30,7 +30,7 @@
                     <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $data->firstItem() + $key }}</a></td>
                     <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->part_no }}</a></td>
                     <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->part_name }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->lot_no }}</a></td>
+                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->lot_no_fix.$i->lot_no }}</a></td>
                     <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->production_date }}</a></td>
                     <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->production_status }}</a></td>
                     <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->pqa_status }}</a></td>

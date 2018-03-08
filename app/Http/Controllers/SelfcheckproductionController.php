@@ -14,6 +14,13 @@ class SelfcheckproductionController extends Controller
     protected $is_enable_name = array('Y'=>'เผยแพร่','N'=>'ไม่เผยแพร่');
     protected $status_name = array('W'=>'รอตรวจสอบ','C'=>'ตรวจสอบแล้ว');
     protected $quality_result_name = array('T'=>'ผ่าน','F'=>'ไม่ผ่าน');
+    protected $delivery_check = array(
+        0 => '-- กรุณาเลือก --',
+        1 => 'ชิ้นงานระหว่างกระบวนการ (Semi Part)',
+        2 => 'ชิ้นงานสำเร็จรูปจากไลน์ประกอบ (F/G Assembly)',
+        3 => 'ชิ้นงานสำเร็จรูปจากไลน์ปั๊มชิ้นส่วน (F/G Stemping)',
+        4 => 'ตรวจสอบตามเงื่อนไขพิเศษ (Special Case as The Customer Requirement)'
+    );
     /**
      * Display a listing of the resource.
      *
@@ -27,9 +34,9 @@ class SelfcheckproductionController extends Controller
             ->select(
                 'self_check_production.id',
                 'lkup_lot_tag.part_no',
-                'lkup_lot_tag.lot_no_fix',
                 'lkup_lot_tag.part_name',
                 'self_check_production.lot_no',
+                'self_check_production.lot_no_fix',
                 'self_check_production.production_status',
                 'self_check_production.pqa_status',
                 'self_check_production.production_date',
@@ -48,7 +55,7 @@ class SelfcheckproductionController extends Controller
                 $d->is_enable = $this->is_enable_name[$d->is_enable];
             }
         }
-        echo '<pre>';print_r($data->items());'</pre>';exit;
+        // echo '<pre>';print_r($data->items());'</pre>';exit;
         return view('pages.selfcheckproduction.index',[
             'data' => $data
         ]);
@@ -66,7 +73,7 @@ class SelfcheckproductionController extends Controller
         $atShlft = array();
         for($i = 1; $i <= 2; $i++){
             $item['value'] = '0'.$i;
-            if((((float)date('H.i')) > 7.0) && (((float)date('H.i')) >= 16.2)){
+            if((((float)date('H.i')) > 7.0) && (((float)date('H.i')) <= 19.0)){
                 if($i == 1){
                     $item['check'] = true;
                 } else if($i == 2){
@@ -113,9 +120,6 @@ class SelfcheckproductionController extends Controller
                     'lot_no_fix' => date('ymd'),
                     'lot_no' => $request->lot_no,
                     'production_date' => $request->production_date,
-                    'is_rm_type_thickness' => 'N',
-                    'is_issue' => 'N',
-                    'is_issue_more' => 'N',
                     'at_shlft' => $request->at_shlft,
                     'production_quality_result' => 'T',
                     'pqa_quality_result' => 'T',
@@ -163,6 +167,7 @@ class SelfcheckproductionController extends Controller
     public function edit($id)
     {
         //
+        // echo '<pre>';print_r(Auth::user()->getAttributes());'</pre>';exit;
         $dataModel = DB::table('lkup_model')
                 ->whereNULL('deleted_at')
                 ->where('is_enable','Y')
@@ -228,45 +233,39 @@ class SelfcheckproductionController extends Controller
                 ->leftJoin('pre_production_check','self_check_production.pre_production_check_id','=','pre_production_check.id')
                 ->leftJoin('customer','pre_production_check.customer_id','=','customer.id')
                 ->leftJoin('lkup_production_line','pre_production_check.production_line_id','=','lkup_production_line.id')
-                ->leftJoin('lkup_q_point','pre_production_check.q_point_sheet_id','=','lkup_q_point.id')
                 ->leftJoin('lkup_lot_tag','pre_production_check.lot_tag_id','=','lkup_lot_tag.id')
+                ->leftJoin('lkup_q_point','lkup_lot_tag.id','=','lkup_q_point.lot_tag_id')
                 ->leftJoin('lkup_model','lkup_lot_tag.model_id','=','lkup_model.id')
+                ->leftJoin('lkup_type','lkup_lot_tag.type_id','=','lkup_type.id')
                 ->select(
-                    'self_check_production.id',
+                    'self_check_production.*',
                     'lkup_lot_tag.part_no',
                     'lkup_lot_tag.part_name',
+                    'lkup_lot_tag.material_t',
+                    'lkup_type.name as type_name',
                     'lkup_model.name as model_name',
                     'customer.customer_name',
                     'lkup_production_line.line_name',
-                    'lkup_q_point.sheet_name',
-                    'self_check_production.lot_no',
-                    'self_check_production.lot_no_fix',
-                    'self_check_production.at_shlft',
-                    'self_check_production.production_status',
-                    'self_check_production.production_quality_result',
-                    'self_check_production.pqa_status',
-                    'self_check_production.production_date',
-                    'self_check_production.production_order',
-                    'self_check_production.updated_at',
-                    'self_check_production.created_at',
-                    'self_check_production.is_enable'
+                    'lkup_q_point.sheet_name'
                 )
                 ->where('self_check_production.id',$id)
                 ->whereNULL('self_check_production.deleted_at')
                 ->where('self_check_production.is_enable','Y')
                 ->first();
                 $item->lot_no  = str_split($item->lot_no, 6);
-                if($item->production_status == 'C'){
-                    $item->production_quality_result = $this->quality_result_name[$item->production_quality_result];
+                if($item->production_status != 'C'){
+                    $item->production_quality_result = '-';
                 }
-                $item->production_status = $this->status_name[$item->production_status];
                 $item->pqa_status = $this->status_name[$item->pqa_status];
         // echo '<pre>';print_r($item);'</pre>';exit;        
         return view('pages.selfcheckproduction.edit',[
             'item' => $item,
             'proDuctionLineOption' => $proDuctionLineOption,
             'modelOption' => $modelOption,
-            'customerOption' => $customerOption
+            'customerOption' => $customerOption,
+            'status_name' => $this->status_name,
+            'quality_result_name' => $this->quality_result_name,
+            'delivery_check' => $this->delivery_check
            ]);
     }
 
@@ -287,6 +286,7 @@ class SelfcheckproductionController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
+                // echo '<pre>';print_r(Auth::user());'</pre>';exit;
                 $result = DB::table('self_check_production')->where('id',$id)
                 ->update([
                     'pre_production_check_id' => $request->pre_production_check_id,
@@ -294,10 +294,10 @@ class SelfcheckproductionController extends Controller
                     'lot_no_fix' => $request->lot_no_fix,
                     'lot_no' => $request->lot_no,
                     'production_date' => $request->production_date,
-                    'is_rm_type_thickness' => $request->is_rm_type_thickness == 'on' ? 'Y' : 'N',
-                    'is_issue' => $request->is_issue == 'on' ? 'Y' : 'N',
+                    'neck_broken' => $request->neck_broken ? 'Y' : 'N',
+                    'burr' => $request->burr ? 'Y' : 'N',
+                    'work_example' => $request->work_example ? 'Y' : 'N',
                     'issue_detail' => $request->issue_detail ? $request->issue_detail : null,
-                    'is_issue_more' => $request->is_issue_more == 'on' ? 'Y' : 'N',
                     'issue_more_detail' => $request->issue_more_detail ? $request->issue_more_detail : null,
                     'at_shlft' => $request->at_shlft,
                     'production_status' => 'C',
