@@ -1981,6 +1981,7 @@ class ComposerStaticInit8735e22262fd3dc0b9efe90e9daba682
         'League\\Flysystem\\Util\\ContentListingFormatter' => __DIR__ . '/..' . '/league/flysystem/src/Util/ContentListingFormatter.php',
         'League\\Flysystem\\Util\\MimeType' => __DIR__ . '/..' . '/league/flysystem/src/Util/MimeType.php',
         'League\\Flysystem\\Util\\StreamHasher' => __DIR__ . '/..' . '/league/flysystem/src/Util/StreamHasher.php',
+        'LotTagProcessFilesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/LotTagProcessFilesTableSeeder.php',
         'LottagsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/LottagsTableSeeder.php',
         'MaterialsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MaterialsTableSeeder.php',
         'Milon\\Barcode\\BarcodeServiceProvider' => __DIR__ . '/..' . '/milon/barcode/src/Milon/Barcode/BarcodeServiceProvider.php',

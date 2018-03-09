@@ -130,9 +130,9 @@
                     @if(count($item->file_process)>0)
                         @foreach($item->file_process as $key => $file_process)
                         <div class='form-group row' id='{{ 'box_'.($key+1) }}'>
-                            <input type="hidden" value="{{ $file_process->img->id }}" name="{{ 'id_img_'.($key+1) }}">
+                            <input type="hidden" value="{{ @$file_process->img->id }}" name="{{ 'id_img_'.($key+1) }}">
                             <div class='col-4'>
-                                <img id='{{ 'preview_img_'.($key+1) }}' src="{{ $file_process->img->url ? $file_process->img->url : '/img/no-img.png' }}" class="preview-img"/>
+                                <img id='{{ 'preview_img_'.($key+1) }}' src="{{ @$file_process->img->url ? $file_process->img->url : '/img/no-img.png' }}" class="preview-img"/>
                             </div>
                             <div class='col-4'>
                                 <div class='form-group row'>
@@ -144,7 +144,7 @@
                             </div>
                             <div class='col-4'>
                                 <label class='btn btn-success' for='{{ 'img_'.($key+1) }}'>เลือกรูป</label>
-                                <span id='{{ 'img_name_'.($key+1) }}' class='text-add-img-overflow'>{{ $file_process->img->name }}</span>
+                                <span id='{{ 'img_name_'.($key+1) }}' class='text-add-img-overflow'>{{ @$file_process->img->name }}</span>
                                 <button id='{{ 'img_delete_'.($key+1) }}' onclick='deleteItem({{ ($key+1) }})' class='btn-add-delete'><i class="fas fa-trash-alt"></i></button>
                                 <input type='file'class='form-control' name='{{ 'img_'.($key+1) }}' id='{{ 'img_'.($key+1) }}' accept='image/*' onchange='loadPreViewTextImg({{ ($key+1) }})' style='display:none;'>
                             </div>

@@ -1624,6 +1624,7 @@ return array(
     'League\\Flysystem\\Util\\ContentListingFormatter' => $vendorDir . '/league/flysystem/src/Util/ContentListingFormatter.php',
     'League\\Flysystem\\Util\\MimeType' => $vendorDir . '/league/flysystem/src/Util/MimeType.php',
     'League\\Flysystem\\Util\\StreamHasher' => $vendorDir . '/league/flysystem/src/Util/StreamHasher.php',
+    'LotTagProcessFilesTableSeeder' => $baseDir . '/database/seeds/LotTagProcessFilesTableSeeder.php',
     'LottagsTableSeeder' => $baseDir . '/database/seeds/LottagsTableSeeder.php',
     'MaterialsTableSeeder' => $baseDir . '/database/seeds/MaterialsTableSeeder.php',
     'Milon\\Barcode\\BarcodeServiceProvider' => $vendorDir . '/milon/barcode/src/Milon/Barcode/BarcodeServiceProvider.php',

@@ -18,6 +18,15 @@ class ModelsTableSeeder extends Seeder
             ['id' => 2,'name' => 'TEA-LHD'],
             ['id' => 3,'name' => 'TEA-HTR'],
             ['id' => 4,'name' => 'TEA(5DR)'],
+            ['id' => 5,'name' => 'TRD'],
+            ['id' => 6,'name' => 'TRO'],
+            ['id' => 7,'name' => 'T8N'],
+            ['id' => 8,'name' => 'T8N-LHD'],
+            ['id' => 9,'name' => 'T2A'],
+            ['id' => 10,'name' => 'T5L'],
+            ['id' => 11,'name' => 'TEA-5DR'],
+            ['id' => 12,'name' => 'T8N(LHD)'],
+            ['id' => 13,'name' => 'T9A'],
         );
         foreach($list as $key => $l){
             DB::table('lkup_model')->insert([

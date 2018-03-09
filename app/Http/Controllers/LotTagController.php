@@ -248,9 +248,9 @@ class LottagController extends Controller
             }
         }
         $item = DB::table('lkup_lot_tag')
-            ->leftJoin('file','lkup_lot_tag.intro_img_id','=','file.id')
-            ->select('lkup_lot_tag.*','file.id as file_id','file.originalName','file.filebase64')
-            ->where('lkup_lot_tag.id',$id)
+            // ->leftJoin('file','lkup_lot_tag','=','file.id')
+            // ->select('lkup_lot_tag.*','file.id as file_id','file.originalName','file.filebase64')
+            ->where('id',$id)
             ->first();
         $item_file = DB::table('lot_tag_process_file')
             ->leftJoin('lkup_process','lot_tag_process_file.process_id','=','lkup_process.id')
@@ -275,6 +275,7 @@ class LottagController extends Controller
             }
             $item->file_process = $files;
             $item->file_total = count($files);
+            // echo '<pre>';print_r($item->file_process);'</pre>';exit;
         return view('pages.lottag.edit',[
             'item' => $item,
             'modelOption' => $modelOption,
