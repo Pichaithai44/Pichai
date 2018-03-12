@@ -18,8 +18,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/selfcheckproduction','SelfcheckproductionController@index')->name('pages.selfcheckproduction.index');
     Route::get('/selfcheckproduction/add','SelfcheckproductionController@add')->name('pages.selfcheckproduction.add');
     Route::patch('/selfcheckproduction/add','SelfcheckproductionController@create')->name('pages.selfcheckproduction.create');
-    Route::get('/selfcheckproduction/edit/{id}','SelfcheckproductionController@edit')->name('pages.selfcheckproduction.edit');
-    Route::patch('/selfcheckproduction/edit/{id}','SelfcheckproductionController@update')->name('pages.selfcheckproduction.update');
+    Route::get('/selfcheckproduction/edit/{id}/{page}','SelfcheckproductionController@edit')->name('pages.selfcheckproduction.edit');
+    Route::patch('/selfcheckproduction/edit/{id}/{page}','SelfcheckproductionController@update')->name('pages.selfcheckproduction.update');
     Route::get('/selfcheckproduction/autocomplete', 'SelfcheckproductionController@autocomplete')->name('pages.selfcheckproduction.autocomplete');
     Route::get('/selfcheckproduction/pdf/{id}', 'PdfController@selfcheckproduction')->name('selfcheckproduction.pdf');
     

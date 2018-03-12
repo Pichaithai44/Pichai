@@ -32,6 +32,7 @@ class LottagController extends Controller
                         $d->is_enable = $this->is_enable_name[$d->is_enable];
                     }
                 }
+
         return view('pages.lottag.index',[
             'data' => $data
         ]);
@@ -357,7 +358,6 @@ class LottagController extends Controller
                     'refer' => $request->refer,
                     'rev' => $request->rev,
                     'rev_date' => $request->rev_date,
-                    'intro_img_id' => null,
                     'barcode_id' => $id_barcode,
                     'is_enable' => $request->isEnable,
                     'updated_by' => Auth::user()->getAttributes()['id'],

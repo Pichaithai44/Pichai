@@ -144,3 +144,7 @@ table.css-lottag td {
     margin-top: 1rem;
     z-index: 1;
 }
+
+.page-item.disabled a.page-link.bg-grey-300 {
+    background-color: #E0E0E0;
+}

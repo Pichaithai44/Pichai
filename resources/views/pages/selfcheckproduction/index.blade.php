@@ -27,28 +27,54 @@
             <tbody>
                 @foreach($data->items() as $key => $i)
                 <tr>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $data->firstItem() + $key }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->part_no }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->part_name }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->lot_no_fix.$i->lot_no }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->production_date }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->production_status }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->pqa_status }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->created_at }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->updated_at }}</a></td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id]) }}">{{ $i->is_enable }}</a></td>
-                    <td><a href="{{ route('selfcheckproduction.pdf',['id'=> $i->id]) }}" target="_blank">pdf</a></td>
+                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">{{ $data->firstItem() + $key }}</a></td>
+                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">{{ $i->part_no }}</a></td>
+                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">{{ $i->part_name }}</a></td>
+                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">{{ $i->lot_no_fix.$i->lot_no }}</a></td>
+                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">{{ $i->production_date }}</a></td>
+                    <td class="text-center">
+                        <a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">
+                            @foreach($i->production_status as $pd)
+                                <span class="{{ $pd == 'C' ? 'text-success border border-success' : 'text-warning border border-warning' }}">{{ $pd }}</span>
+                            @endforeach
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">
+                            @foreach($i->production_quality_result as $pd_rs)
+                                <span class="{{ $pd_rs == 'T' ? 'text-success border border-success' : ($pd_rs == 'F' ? 'text-danger border border-danger' : 'text-warning border border-warning') }}">{{ $pd_rs }}</span>
+                            @endforeach
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">
+                            @foreach($i->pqa_status as $pqa)
+                                <span class="{{ $pqa == 'C' ? 'text-success border border-success' : 'text-warning border border-warning' }}">{{ $pqa }}</span>
+                            @endforeach
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">
+                            @foreach($i->pqa_quality_result as $pqa_rs)
+                                <span class="{{ $pqa_rs == 'T' ? 'text-success border border-success' : ($pqa_rs == 'F' ? 'text-danger border border-danger' : 'text-warning border border-warning') }}">{{ $pqa_rs }}</span>
+                            @endforeach
+                        </a>
+                    </td>
+                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">{{ $i->is_enable }}</a></td>
+                    <td><a href="{{ route('selfcheckproduction.pdf',['id'=> $i->id,'page'=> null]) }}" target="_blank">pdf</a></td>
                 </tr>
                 @endforeach
             <tbody>
         </table>
         <nav aria-label="model navigation page">
             <ul class="pagination justify-content-end">
-                <li class="page-item"><a class="page-link" href="{{ $data->previousPageUrl() }}">Previous</a></li>
-                @for($i = 1;$i <= $data->lastPage();$i++)
-                <li class="page-item {{ $data->currentPage() == $i ? 'active' : null }}"><a class="page-link" href="{{ $data->url($i) }}">{{ $i }}</a></li>
-                @endfor
-                <li class="page-item"><a class="page-link" href="{{ $data->nextPageUrl() }}">Next</a></li>
+                <li class="page-item {{ $data->currentPage() == 1 ? 'disabled' : null }}"><a class="page-link {{ $data->currentPage() == 1 ? 'bg-grey-300' : null }}" href="{{ $data->url(1) }}"><i class="fas fa-angle-double-left"></i></a></li>
+                <li class="page-item {{ $data->currentPage() == 1 ? 'disabled' : null }}"><a class="page-link {{ $data->currentPage() == 1 ? 'bg-grey-300' : null }}" href="{{ $data->previousPageUrl() }}"><i class="fas fa-angle-left"></i></a></li>
+                    @for($i = $data->currentPage();$i <= ($data->lastPage() >5 ? $data->currentPage()+4 : $data->lastPage());$i++)
+                        <li class="page-item {{ $data->currentPage() == $i ? 'active' : null }}"><a class="page-link" href="{{ $data->url($i) }}" style="font-size: 0.8rem;">{{ $i }}</a></li>
+                    @endfor
+                <li class="page-item {{ $data->currentPage() == $data->lastPage() ? 'disabled' : null }}"><a class="page-link {{ $data->currentPage() == $data->lastPage() ? 'bg-grey-300' : null }}" href="{{ $data->nextPageUrl() }}"><i class="fas fa-angle-right"></i></a></li>
+                <li class="page-item {{ $data->currentPage() == $data->lastPage() ? 'disabled' : null }}"><a class="page-link {{ $data->currentPage() == $data->lastPage() ? 'bg-grey-300' : null }}" href="{{ $data->url($data->lastPage()) }}"><i class="fas fa-angle-double-right"></i></a></li>
             </ul>
         </nav>
     </div>

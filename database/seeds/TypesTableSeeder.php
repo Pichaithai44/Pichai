@@ -27,6 +27,10 @@ class TypesTableSeeder extends Seeder
             ['id' => 11,'name' => 'Y3'],
             ['id' => 12,'name' => 'T6'],
             ['id' => 13,'name' => 'T3'],
+            ['id' => 14,'name' => 'K0'],
+            ['id' => 15,'name' => '30'],
+            ['id' => 16,'name' => 'T2'],
+            ['id' => 17,'name' => 'X0'],
         );
         foreach($list as $key => $l){
             DB::table('lkup_type')->insert([

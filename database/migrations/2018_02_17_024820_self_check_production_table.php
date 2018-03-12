@@ -21,16 +21,20 @@ class SelfCheckProductionTable extends Migration
             $table->string('lot_no_fix');
             $table->string('lot_no');
             $table->string('production_date');
-            $table->enum('neck_broken', ['Y', 'N'])->nullable();
-            $table->enum('burr', ['Y', 'N'])->nullable();
-            $table->enum('work_example', ['Y', 'N'])->nullable();
+            $table->text('neck_broken')->nullable();
+            $table->text('burr')->nullable();
+            $table->text('work_example')->nullable();
+            // $table->enum('neck_broken', ['Y', 'N'])->nullable();
+            // $table->enum('burr', ['Y', 'N'])->nullable();
+            // $table->enum('work_example', ['Y', 'N'])->nullable();
             $table->text('issue_detail')->nullable();
             $table->text('issue_more_detail')->nullable();
             $table->enum('at_shlft', ['01', '02']);
-            $table->enum('production_status', ['W', 'C']);//W = wait, C = checked
-            $table->enum('pqa_status', ['W', 'C']);//W = wait, C = checked
-            $table->enum('production_quality_result', ['T', 'F']);//T = Check through, F = Check failed
-            $table->enum('pqa_quality_result', ['T', 'F']);//T = Check through, F = Check failed
+            $table->text('production_status');//W = wait,C = checked
+            $table->text('pqa_status');//W = wait,C = checked
+            $table->text('production_quality_result');//W = Wait,T = Check through, F = Check failed
+            $table->text('pqa_quality_result');//W = Wait,T = Check through, F = Check failed
+            $table->enum('job_type',['SP', 'A','S','SCR'])->nullable();//SP = Semi Part, A = F/G Assembly, S = F/G Stemping, SCR = Special Case as The Customer Requirement
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();
             $table->timestamps();

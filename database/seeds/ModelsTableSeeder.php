@@ -27,6 +27,11 @@ class ModelsTableSeeder extends Seeder
             ['id' => 11,'name' => 'TEA-5DR'],
             ['id' => 12,'name' => 'T8N(LHD)'],
             ['id' => 13,'name' => 'T9A'],
+            ['id' => 14,'name' => 'T9A(LHD)'],
+            ['id' => 15,'name' => 'TOA'],
+            ['id' => 16,'name' => 'GT1'],
+            ['id' => 17,'name' => 'TLA'],
+            ['id' => 18,'name' => 'T9A-LHD'],
         );
         foreach($list as $key => $l){
             DB::table('lkup_model')->insert([

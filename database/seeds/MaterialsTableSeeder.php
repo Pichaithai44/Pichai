@@ -32,6 +32,7 @@ class MaterialsTableSeeder extends Seeder
             ['id' => 16,'name' => 'JAC270D-45/45'],
             ['id' => 17,'name' => 'ROD'],
             ['id' => 18,'name' => 'JSC780Y'],
+            ['id' => 19,'name' => 'JAC'],
        
         );
         foreach($list as $key => $l){

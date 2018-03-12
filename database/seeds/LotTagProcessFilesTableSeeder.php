@@ -585,7 +585,156 @@ class LotTagProcessFilesTableSeeder extends Seeder
             ['id'=> 484,'lot_tag_id' => 97,'process_id' => 128],
             ['id'=> 485,'lot_tag_id' => 97,'process_id' => 132],
             ['id'=> 486,'lot_tag_id' => 97,'process_id' => 47],
-        
+
+            ['id'=> 487,'lot_tag_id' => 98,'process_id' => 15],
+            ['id'=> 488,'lot_tag_id' => 98,'process_id' => 22],
+            ['id'=> 489,'lot_tag_id' => 98,'process_id' => 128],
+            ['id'=> 490,'lot_tag_id' => 98,'process_id' => 134],
+
+            ['id'=> 495,'lot_tag_id' => 99,'process_id' => 15],
+            ['id'=> 496,'lot_tag_id' => 99,'process_id' => 22],
+            ['id'=> 497,'lot_tag_id' => 99,'process_id' => 128],
+            ['id'=> 498,'lot_tag_id' => 99,'process_id' => 134],
+
+            ['id'=> 499,'lot_tag_id' => 100,'process_id' => 1],
+            ['id'=> 500,'lot_tag_id' => 100,'process_id' => 16],
+            ['id'=> 501,'lot_tag_id' => 100,'process_id' => 128],
+            ['id'=> 502,'lot_tag_id' => 100,'process_id' => 14],
+
+            ['id'=> 503,'lot_tag_id' => 101,'process_id' => 6],
+            ['id'=> 504,'lot_tag_id' => 101,'process_id' => 12],
+            ['id'=> 505,'lot_tag_id' => 101,'process_id' => 7],
+            ['id'=> 506,'lot_tag_id' => 101,'process_id' => 86],
+            ['id'=> 507,'lot_tag_id' => 101,'process_id' => 14],
+
+            ['id'=> 508,'lot_tag_id' => 102,'process_id' => 6],
+            ['id'=> 509,'lot_tag_id' => 102,'process_id' => 12],
+            ['id'=> 510,'lot_tag_id' => 102,'process_id' => 7],
+            ['id'=> 511,'lot_tag_id' => 102,'process_id' => 86],
+            ['id'=> 512,'lot_tag_id' => 102,'process_id' => 14],
+
+            ['id'=> 513,'lot_tag_id' => 103,'process_id' => 15],
+            ['id'=> 514,'lot_tag_id' => 103,'process_id' => 16],
+            ['id'=> 515,'lot_tag_id' => 103,'process_id' => 8],
+            ['id'=> 516,'lot_tag_id' => 103,'process_id' => 24],
+            ['id'=> 517,'lot_tag_id' => 103,'process_id' => 27],
+
+            ['id'=> 518,'lot_tag_id' => 104,'process_id' => 1],
+            ['id'=> 519,'lot_tag_id' => 104,'process_id' => 12],
+            ['id'=> 520,'lot_tag_id' => 104,'process_id' => 48],
+            ['id'=> 521,'lot_tag_id' => 104,'process_id' => 5],
+            ['id'=> 522,'lot_tag_id' => 104,'process_id' => 100],
+            ['id'=> 523,'lot_tag_id' => 104,'process_id' => 135],
+
+            ['id'=> 524,'lot_tag_id' => 105,'process_id' => 1],
+            ['id'=> 525,'lot_tag_id' => 105,'process_id' => 2],
+            ['id'=> 526,'lot_tag_id' => 105,'process_id' => 56],
+            ['id'=> 527,'lot_tag_id' => 105,'process_id' => 128],
+            ['id'=> 528,'lot_tag_id' => 105,'process_id' => 100],
+            ['id'=> 529,'lot_tag_id' => 105,'process_id' => 135],
+
+            ['id'=> 530,'lot_tag_id' => 106,'process_id' => 1],
+            ['id'=> 531,'lot_tag_id' => 106,'process_id' => 2],
+            ['id'=> 532,'lot_tag_id' => 106,'process_id' => 56],
+            ['id'=> 533,'lot_tag_id' => 106,'process_id' => 128],
+            ['id'=> 534,'lot_tag_id' => 106,'process_id' => 100],
+            ['id'=> 535,'lot_tag_id' => 106,'process_id' => 135],
+
+            ['id'=> 536,'lot_tag_id' => 107,'process_id' => 1],
+            ['id'=> 537,'lot_tag_id' => 107,'process_id' => 2],
+            ['id'=> 538,'lot_tag_id' => 107,'process_id' => 136],
+            ['id'=> 539,'lot_tag_id' => 107,'process_id' => 137],
+            ['id'=> 540,'lot_tag_id' => 107,'process_id' => 133],
+            ['id'=> 541,'lot_tag_id' => 107,'process_id' => 23],
+
+            ['id'=> 542,'lot_tag_id' => 108,'process_id' => 1],
+            ['id'=> 543,'lot_tag_id' => 108,'process_id' => 2],
+            ['id'=> 544,'lot_tag_id' => 108,'process_id' => 7],
+            ['id'=> 545,'lot_tag_id' => 108,'process_id' => 106],
+            ['id'=> 546,'lot_tag_id' => 108,'process_id' => 138],
+
+            ['id'=> 547,'lot_tag_id' => 109,'process_id' => 15],
+            ['id'=> 548,'lot_tag_id' => 109,'process_id' => 22],
+            ['id'=> 549,'lot_tag_id' => 109,'process_id' => 8],
+            ['id'=> 550,'lot_tag_id' => 109,'process_id' => 27],
+            ['id'=> 551,'lot_tag_id' => 109,'process_id' => 18],
+
+            ['id'=> 552,'lot_tag_id' => 110,'process_id' => 15],
+            ['id'=> 553,'lot_tag_id' => 110,'process_id' => 16],
+            ['id'=> 554,'lot_tag_id' => 110,'process_id' => 139],
+            ['id'=> 555,'lot_tag_id' => 110,'process_id' => 140],
+            ['id'=> 556,'lot_tag_id' => 110,'process_id' => 27],
+
+            ['id'=> 557,'lot_tag_id' => 111,'process_id' => 15],
+            ['id'=> 558,'lot_tag_id' => 111,'process_id' => 141],
+            ['id'=> 559,'lot_tag_id' => 111,'process_id' => 142],
+
+            ['id'=> 560,'lot_tag_id' => 112,'process_id' => 1],
+            ['id'=> 561,'lot_tag_id' => 112,'process_id' => 2],
+            ['id'=> 562,'lot_tag_id' => 112,'process_id' => 7],
+            ['id'=> 563,'lot_tag_id' => 112,'process_id' => 26],
+            ['id'=> 564,'lot_tag_id' => 112,'process_id' => 27],
+            ['id'=> 565,'lot_tag_id' => 112,'process_id' => 143],
+
+            ['id'=> 566,'lot_tag_id' => 113,'process_id' => 15],
+            ['id'=> 567,'lot_tag_id' => 113,'process_id' => 144],
+            ['id'=> 568,'lot_tag_id' => 113,'process_id' => 5],
+            ['id'=> 569,'lot_tag_id' => 113,'process_id' => 24],
+
+            ['id'=> 570,'lot_tag_id' => 114,'process_id' => 1],
+            ['id'=> 571,'lot_tag_id' => 114,'process_id' => 2],
+            ['id'=> 572,'lot_tag_id' => 114,'process_id' => 3],
+            ['id'=> 573,'lot_tag_id' => 114,'process_id' => 4],
+            ['id'=> 574,'lot_tag_id' => 114,'process_id' => 5],
+
+            ['id'=> 575,'lot_tag_id' => 115,'process_id' => 2],
+            ['id'=> 576,'lot_tag_id' => 115,'process_id' => 7],
+            ['id'=> 577,'lot_tag_id' => 115,'process_id' => 13],
+            ['id'=> 578,'lot_tag_id' => 115,'process_id' => 76],
+
+            ['id'=> 579,'lot_tag_id' => 116,'process_id' => 15],
+            ['id'=> 580,'lot_tag_id' => 116,'process_id' => 16],
+            ['id'=> 581,'lot_tag_id' => 116,'process_id' => 23],
+            ['id'=> 582,'lot_tag_id' => 116,'process_id' => 27],
+
+            ['id'=> 583,'lot_tag_id' => 117,'process_id' => 15],
+            ['id'=> 584,'lot_tag_id' => 117,'process_id' => 16],
+            ['id'=> 585,'lot_tag_id' => 117,'process_id' => 23],
+            ['id'=> 586,'lot_tag_id' => 117,'process_id' => 27],
+
+            ['id'=> 587,'lot_tag_id' => 118,'process_id' => 2],
+            ['id'=> 588,'lot_tag_id' => 118,'process_id' => 7],
+            ['id'=> 589,'lot_tag_id' => 118,'process_id' => 92],
+            ['id'=> 590,'lot_tag_id' => 118,'process_id' => 145],
+
+            ['id'=> 591,'lot_tag_id' => 119,'process_id' => 1],
+            ['id'=> 592,'lot_tag_id' => 119,'process_id' => 2],
+            ['id'=> 593,'lot_tag_id' => 119,'process_id' => 56],
+            ['id'=> 594,'lot_tag_id' => 119,'process_id' => 86],
+            ['id'=> 595,'lot_tag_id' => 119,'process_id' => 146],
+            ['id'=> 596,'lot_tag_id' => 119,'process_id' => 100],
+            ['id'=> 597,'lot_tag_id' => 119,'process_id' => 47],
+
+            ['id'=> 598,'lot_tag_id' => 120,'process_id' => 149],
+            ['id'=> 599,'lot_tag_id' => 120,'process_id' => 2],
+            ['id'=> 600,'lot_tag_id' => 120,'process_id' => 7],
+            ['id'=> 601,'lot_tag_id' => 120,'process_id' => 147],
+            ['id'=> 602,'lot_tag_id' => 120,'process_id' => 148],
+
+            ['id'=> 603,'lot_tag_id' => 121,'process_id' => 1],
+            ['id'=> 604,'lot_tag_id' => 121,'process_id' => 2],
+            ['id'=> 605,'lot_tag_id' => 121,'process_id' => 150],
+            ['id'=> 606,'lot_tag_id' => 121,'process_id' => 151],
+            ['id'=> 607,'lot_tag_id' => 121,'process_id' => 152],
+            ['id'=> 608,'lot_tag_id' => 121,'process_id' => 153],
+
+            ['id'=> 609,'lot_tag_id' => 122,'process_id' => 1],
+            ['id'=> 610,'lot_tag_id' => 122,'process_id' => 2],
+            ['id'=> 611,'lot_tag_id' => 122,'process_id' => 7],
+            ['id'=> 612,'lot_tag_id' => 122,'process_id' => 154],
+            ['id'=> 613,'lot_tag_id' => 122,'process_id' => 85],
+            ['id'=> 614,'lot_tag_id' => 122,'process_id' => 155],
+         
         );
 
         foreach($list as $key => $l){

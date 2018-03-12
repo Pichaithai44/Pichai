@@ -13,7 +13,7 @@ class SelfcheckproductionController extends Controller
 {
     protected $is_enable_name = array('Y'=>'เผยแพร่','N'=>'ไม่เผยแพร่');
     protected $status_name = array('W'=>'รอตรวจสอบ','C'=>'ตรวจสอบแล้ว');
-    protected $quality_result_name = array('T'=>'ผ่าน','F'=>'ไม่ผ่าน');
+    protected $quality_result_name = array('W'=>'รอตรวจสอบ','T'=>'ผ่าน','F'=>'ไม่ผ่าน');
     protected $delivery_check = array(
         0 => '-- กรุณาเลือก --',
         1 => 'ชิ้นงานระหว่างกระบวนการ (Semi Part)',
@@ -38,7 +38,9 @@ class SelfcheckproductionController extends Controller
                 'self_check_production.lot_no',
                 'self_check_production.lot_no_fix',
                 'self_check_production.production_status',
+                'self_check_production.production_quality_result',
                 'self_check_production.pqa_status',
+                'self_check_production.pqa_quality_result',
                 'self_check_production.production_date',
                 'self_check_production.updated_at',
                 'self_check_production.created_at',
@@ -46,12 +48,13 @@ class SelfcheckproductionController extends Controller
                 )
             ->whereNULL('self_check_production.deleted_at')
             ->paginate(8);
-
         if(count($data->items())>0){
             foreach($data->items() as $d){
                 $d->updated_at = $d->updated_at ? $d->updated_at : '-';
-                $d->production_status = $this->status_name[$d->production_status];
-                $d->pqa_status = $this->status_name[$d->pqa_status];
+                $d->production_status = json_decode($d->production_status);
+                $d->production_quality_result = json_decode($d->production_quality_result);
+                $d->pqa_status = json_decode($d->pqa_status);
+                $d->pqa_quality_result = json_decode($d->pqa_quality_result);
                 $d->is_enable = $this->is_enable_name[$d->is_enable];
             }
         }
@@ -113,7 +116,6 @@ class SelfcheckproductionController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
-                // echo '<pre>';print_r($request->all());'</pre>';exit;
                 $data = DB::table('self_check_production')->insert([
                     'pre_production_check_id' => $request->pre_production_check_id,
                     'production_order' => $request->production_order,
@@ -121,10 +123,10 @@ class SelfcheckproductionController extends Controller
                     'lot_no' => $request->lot_no,
                     'production_date' => $request->production_date,
                     'at_shlft' => $request->at_shlft,
-                    'production_quality_result' => 'T',
-                    'pqa_quality_result' => 'T',
-                    'production_status' => 'W',
-                    'pqa_status' => 'W',
+                    'production_quality_result' => json_encode(array('W','W','W')),
+                    'pqa_quality_result' => json_encode(array('W','W','W')),
+                    'production_status' => json_encode(array('W','W','W')),
+                    'pqa_status' => json_encode(array('W','W','W')),
                     'created_by' => Auth::user()->getAttributes()['id'],
                     'created_at' => date('Y-m-d h:i:s'),
                     'is_enable' => 'Y'
@@ -164,7 +166,7 @@ class SelfcheckproductionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id,$page)
     {
         //
         // echo '<pre>';print_r(Auth::user()->getAttributes());'</pre>';exit;
@@ -252,11 +254,18 @@ class SelfcheckproductionController extends Controller
                 ->whereNULL('self_check_production.deleted_at')
                 ->where('self_check_production.is_enable','Y')
                 ->first();
+                $item->production_status = json_decode($item->production_status)[$page];
+                $item->pqa_status = json_decode($item->pqa_status)[$page];
+                $item->production_quality_result = json_decode($item->production_quality_result)[$page];
+                $item->pqa_quality_result = json_decode($item->pqa_quality_result)[$page];
+                $item->neck_broken = json_decode($item->neck_broken)[$page];
+                $item->burr = json_decode($item->burr)[$page];
+                $item->work_example = json_decode($item->work_example)[$page];
+                $item->issue_detail = json_decode($item->issue_detail)[$page];
+                $item->issue_more_detail = json_decode($item->issue_more_detail)[$page];
+                $item->page = $page;
                 $item->lot_no  = str_split($item->lot_no, 6);
-                if($item->production_status != 'C'){
-                    $item->production_quality_result = '-';
-                }
-                $item->pqa_status = $this->status_name[$item->pqa_status];
+                // echo '<pre>';print_r($item);'</pre>';exit;
         // echo '<pre>';print_r($item);'</pre>';exit;        
         return view('pages.selfcheckproduction.edit',[
             'item' => $item,
@@ -276,7 +285,7 @@ class SelfcheckproductionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id,$page)
     {
         //
         if(Auth::user()->getAttributes()['id']){
@@ -286,33 +295,87 @@ class SelfcheckproductionController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
-                // echo '<pre>';print_r(Auth::user());'</pre>';exit;
-                $result = DB::table('self_check_production')->where('id',$id)
-                ->update([
-                    'pre_production_check_id' => $request->pre_production_check_id,
-                    'production_order' => $request->production_order,
-                    'lot_no_fix' => $request->lot_no_fix,
-                    'lot_no' => $request->lot_no,
-                    'production_date' => $request->production_date,
-                    'neck_broken' => $request->neck_broken ? 'Y' : 'N',
-                    'burr' => $request->burr ? 'Y' : 'N',
-                    'work_example' => $request->work_example ? 'Y' : 'N',
-                    'issue_detail' => $request->issue_detail ? $request->issue_detail : null,
-                    'issue_more_detail' => $request->issue_more_detail ? $request->issue_more_detail : null,
-                    'at_shlft' => $request->at_shlft,
-                    'production_status' => 'C',
-                    'production_quality_result' => $request->production_quality_result,
-                    'updated_by' => Auth::user()->getAttributes()['id'],
-                    'updated_at' => date('Y-m-d h:i:s'),
-                    'is_enable' => 'Y'
-                ]);
+                $check = DB::table('self_check_production')->where('id',$id)
+                ->first();
+                $check->production_status = json_decode($check->production_status);
+                $check->production_quality_result = json_decode($check->production_quality_result);
+                $check->neck_broken = json_decode($check->neck_broken);
+                $check->burr = json_decode($check->burr);
+                $check->work_example = json_decode($check->work_example);
+                $check->issue_detail = json_decode($check->issue_detail);
+                $check->issue_more_detail = json_decode($check->issue_more_detail);
+
+                if($page == 0){
+                    $check->production_status = array('C','W','W');
+                    $check->pqa_status = array('C','W','W');
+                    $check->production_quality_result = array($request->production_quality_result,'W','W');
+                    $check->pqa_quality_result = array($request->pqa_quality_result,'W','W');
+                    $check->neck_broken = array($request->neck_broken,null,null);
+                    $check->burr = array($request->burr,null,null);
+                    $check->work_example = array($request->work_example,null,null);
+                    $check->issue_detail = array($request->issue_detail,null,null);
+                    $check->issue_more_detail = array($request->issue_more_detail,null,null);
+                } else if($page == 1){
+                    $check->production_status = array('C','C','W');
+                    $check->pqa_status = array('C','C','W');
+                    $check->production_quality_result[$page] = $request->production_quality_result;
+                    $check->pqa_quality_result[$page] = $request->pqa_quality_result;
+                    $check->neck_broken[$page] = $request->neck_broken;
+                    $check->burr[$page] = $request->burr;
+                    $check->work_example[$page] = $request->work_example;
+                    $check->issue_detail[$page] = $request->issue_detail ? $request->issue_detail : null;
+                    $check->issue_more_detail[$page] = $request->issue_detail ? $request->issue_detail : null;
+                } else if($page == 2){
+                    $check->production_status = array('C','C','C');
+                    $check->pqa_status = array('C','C','C');
+                    $check->production_quality_result[$page] = $request->production_quality_result;
+                    $check->neck_broken[$page] = $request->neck_broken;
+                    $check->burr[$page] = $request->burr;
+                    $check->work_example[$page] = $request->work_example;
+                    $check->issue_detail[$page] = $request->issue_detail;
+                    $check->issue_more_detail[$page] = $request->issue_more_detail;
+                }
+                // echo '<pre>';print_r($check->production_quality_result);'</pre>';exit;
+                if(Auth::user()->getAttributes()['role_id'] == (1 || 2)){
+                    if(Auth::user()->getAttributes()['department_id'] == 1){
+                        $result = DB::table('self_check_production')->where('id',$id)
+                        ->update([
+                            'pre_production_check_id' => $request->pre_production_check_id,
+                            'production_order' => $request->production_order,
+                            'lot_no_fix' => $request->lot_no_fix,
+                            'lot_no' => $request->lot_no,
+                            'production_date' => $request->production_date,
+                            'neck_broken' => json_encode($check->neck_broken),
+                            'burr' => json_encode($check->burr),
+                            'work_example' => json_encode($check->work_example),
+                            'issue_detail' => json_encode($check->issue_detail),
+                            'issue_more_detail' => json_encode($check->issue_more_detail),
+                            'at_shlft' => $request->at_shlft,
+                            'job_type' => $request->job_check == 1 ? 'SP' : ($request->job_check == 2 ? 'A' : ($request->job_check == 3 ? 'S' : 'SCR')),
+                            'production_status' => json_encode($check->production_status),
+                            'production_quality_result' => json_encode($check->production_quality_result),
+                            'updated_by' => Auth::user()->getAttributes()['id'],
+                            'updated_at' => date('Y-m-d h:i:s'),
+                            'is_enable' => 'Y'
+                        ]);
+                    }else if(Auth::user()->getAttributes()['department_id'] == 2){
+                        $result = DB::table('self_check_production')->where('id',$id)
+                        ->update([
+                            'pqa_status' => json_encode($check->pqa_status),
+                            'pqa_quality_result' => json_encode($check->pqa_quality_result),
+                            'updated_by' => Auth::user()->getAttributes()['id'],
+                            'updated_at' => date('Y-m-d h:i:s'),
+                            'is_enable' => 'Y'
+                        ]);
+                    }
+                }
 
                 if($result){
                     $message = 'บันทึกรายการสำเร็จ';
                 }else{
                     $message = 'บันทึกรายการไม่สำเร็จ';
                 }
-                return redirect()->back()->withStatus($message)->withResult($result);
+                return redirect()->back()->withStatus($message)->withResult($result)->withInput();
             }
         } else {
             return redirect('home');
@@ -377,7 +440,7 @@ class SelfcheckproductionController extends Controller
     {
         //
         $rules = [
-            'lot_no' => 'required|numeric|min:2',
+            'lot_no' => 'required|numeric|digits_between:00,99',
             'part_no' => 'required',
             // 'email' => 'required|email',
             // 'role' => 'required',
@@ -393,7 +456,7 @@ class SelfcheckproductionController extends Controller
         $messages = [
             'lot_no.required' => 'กรุณากรอกเลขที่ล็อตให้ครบถ้วน',
             'lot_no.numeric' => 'กรุณากรอกเป็นตัวเลข 0-9',
-            'lot_no.min' => 'กรุณากรอกเลขที่ล็อต 2 ตัวสุดท้ายให้ถูกต้อง',
+            'lot_no.digits_between' => 'กรุณากรอกเลขที่ล็อต 2 ตัวสุดท้ายให้ถูกต้อง',
             'part_no.required' => 'กรุณากรอก Part Number',
             // 'last_name.required' => 'กรุณากรอกนามสกุล',
             // 'last_name.max' => 'นามสกุลความยาวไม่เกิน 20 ตัวอักขระ',

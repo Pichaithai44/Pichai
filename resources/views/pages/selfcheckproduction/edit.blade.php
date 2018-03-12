@@ -26,7 +26,18 @@
     </div>
 @endif
 {{--  ฝั่ง-Production  --}}
-
+    <ul class="nav nav-tabs justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('selfcheckproduction/edit/*/0') ? 'active' : null }}" href="{{ route('pages.selfcheckproduction.edit',['id'=> $item->id,'page'=> 0]) }}"><i class="fas fa-newspaper"></i> เริ่มต้นล๊อตการผลิต (A)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('selfcheckproduction/edit/*/1') ? 'active' : null }}" href="{{ route('pages.selfcheckproduction.edit',['id'=> $item->id,'page'=> 1]) }}"><i class="fas fa-newspaper"></i> กลางล๊อตการผลิต (M)</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ Request::is('selfcheckproduction/edit/*/2') ? 'active' : null }}" href="{{ route('pages.selfcheckproduction.edit',['id'=> $item->id,'page'=> 2]) }}"><i class="fas fa-newspaper"></i> ท้ายล๊อตการผลิต (Z)</a>
+        </li>
+    </ul>
+    <br>
 @can('admin')
     <div>
 @endcan
@@ -46,14 +57,15 @@
         <div style="display: none;">
     @endif
 @endcan
-
-    <p>เอกสาร ตอนที่ 1 <span>สถานะ : {{ $status_name[$item->production_status] }}</span> ผลการตรวจสอบ : {{ $quality_result_name[$item->production_quality_result] }}</p>
-        <form action="{{ route('pages.selfcheckproduction.update',['id'=> $item->id]) }}" method="POST" id="my_form" enctype="multipart/form-data">
+    <p>เอกสาร ตอนที่ 1 สถานะ : <span class="{{ $item->production_status == 'C' ? 'text-success' : 'text-warning' }}">{{ $status_name[$item->production_status] }}</span> ผลการตรวจสอบ : <span class="{{$item->production_quality_result == 'T' ? 'text-success' : ($item->production_quality_result == 'F' ? 'text-danger' : 'text-warning')}}">{{ $quality_result_name[$item->production_quality_result] }}</span></p>
+        <form action="{{ route('pages.selfcheckproduction.update',['id'=> $item->id,'page'=> $item->page]) }}" method="POST" id="my_form" enctype="multipart/form-data">
             {{ csrf_field() }}
             {{ method_field('PATCH') }}
             {{--  data hidden  --}}
-            <input type="hidden" name="pre_production_check_id" id="pre_production_check_id" value="{{ $item->id }}">
+            <input type="hidden" name="pre_production_check_id" id="pre_production_check_id" value="{{ $item->pre_production_check_id }}">
             <input type="hidden" name="lottag_id" id="lottag_id" value="{{ old('lottag_id') }}">
+            <input type="hidden" name="job_type" id="job_type" value="{{ $item->job_type }}">
+            <input type="hidden" name="job_check" id="job_check" value="{{ old('job_check') }}">
     
             <div class="form-group row">
                 <label class="col-2 col-form-label">วันที่ผลิต (Production Data)</label>
@@ -113,7 +125,7 @@
                     @can('admin') 
                     <select class="form-control" name="customer" id="customer">
                         @foreach($customerOption as $m)
-                        <option value="{{ $m['id'] }}" {{ old('customer') ? (old('customer') == $m['name']): ($item->customer_name == $m['name']) ? 'selected' : null }}>{{ $m['name'] }}</option>
+                        <option value="{{ $m['id'] }}" {{ old('customer') ? (old('customer') == $m['name'] ? 'selected' : null): ($item->customer_name == $m['name']) ? 'selected' : null }}>{{ $m['name'] }}</option>
                         @endforeach
                     </select>
                     @endcan
@@ -300,7 +312,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <div class="col">
-                                        <input type="radio" class="@can('user') input-disable-event @endcan" value="F" name="production_quality_result" id="quality_result_f">
+                                        <input type="radio" class="@can('user') input-disable-event @endcan" value="F" name="production_quality_result" id="quality_result_f" {{ $item->production_status == 'C' ? ($item->production_quality_result == 'F' ? 'checked' : null) : null }}>
                                         <label for="quality_result_f" class="col-form-label @can('user') input-disable-event @endcan">ไม่ผ่านตามข้อกำหนดคุณภาพเบื้องต้น (Quick Qualily Check)</label>
                                     </div>
                                 </div>
@@ -348,7 +360,7 @@
     
         {{--  ฝั่ง PQA  --}}
         <p>เอกสาร ตอนที่ 2 <span>สถานะ : {{ $item->pqa_status }}</span></p>
-        <form action="{{ route('pages.selfcheckproduction.update',['id'=> $item->id]) }}" method="POST" id="my_form" enctype="multipart/form-data">
+        <form action="{{ route('pages.selfcheckproduction.update',['id'=> $item->id,'page'=> $item->page]) }}" method="POST" id="my_form" enctype="multipart/form-data">
             {{ csrf_field() }}
             {{ method_field('PATCH') }}
             {{--  data hidden  --}}
@@ -671,6 +683,7 @@
         });
 
         $("#save").on( "click", function() {
+            if(!$("#job_type").val()){
             $( "#dialog" ).dialog({
                 position: { my: "top", at: "top", of: window },
                 dialogClass: "no-close",
@@ -698,6 +711,9 @@
                     }
                 ]
             });
+            } else {
+                document.getElementById('my_form').submit();
+            }
         });
 
         $("#is_neck_broken").on( "click", function() {
@@ -764,6 +780,10 @@
                 $("#rm_thickness").attr("disabled", true);
                 $("#rm_thickness").val(null);
             }
+        });
+
+        $( "#delivery_check" ).change(function(val) {
+            $('#job_check').val(val.target.value);
         });
     </script>
 @endsection
