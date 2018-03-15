@@ -636,6 +636,10 @@ class PdfController extends Controller
         ->whereNULL('lkup_lot_tag.deleted_at')
         ->where('self_check_production.id',$id)
         ->first();
+        $process = DB::table('lkup_process')
+                    ->select('name')
+                    ->where('id',$data->process_id)
+                    ->first();
         $data->neck_broken = json_decode($data->neck_broken);
         $data->burr = json_decode($data->burr);
         $data->issue_detail = json_decode($data->issue_detail);
@@ -643,7 +647,25 @@ class PdfController extends Controller
         $data->issue_more_detail = json_decode($data->issue_more_detail);
         $data->production_status = json_decode($data->production_status);
         $data->production_quality_result = json_decode($data->production_quality_result);
-        // echo '<pre>';print_r($data);'</pre>';exit;
+        $data->pqa_status = json_decode($data->pqa_status);
+        $data->pqa_quality_result = json_decode($data->pqa_quality_result);
+        $data->supervisor_pd = json_decode($data->supervisor_pd);
+        $data->supervisor_pqa = json_decode($data->supervisor_pqa);
+        $sp_name = array();
+        if(count($data->supervisor_pd)>0){
+            foreach($data->supervisor_pd as $sp_pd){
+                if($sp_pd){
+                    $super = DB::table('users')
+                    ->where('is_id',$sp_pd)
+                    ->first();
+                    $sp_name[] = $super->first_name.' '.$super->last_name;
+                }else{
+                    $sp_name[] = null;
+                }
+            }
+        }
+        $data->supervisor_pd = $sp_name;
+        // echo '<pre>';print_r($data->supervisor_pd);'</pre>';exit;
         define('FPDF_FONTPATH',storage_path('app/public/font'));
         $pdf = new Fpdf();
 
@@ -725,8 +747,8 @@ class PdfController extends Controller
             // เนื้อหา 1
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
             $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','วันที่ผลิต '.$data->production_date),0,0,'L');
-            $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','จำนวนที่ผลิต '.$data->product_order.' ชิ้น'),0,0,'L');
-            $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','ล็อตที่ผลิต '.$data->lot_no_fix.$data->lot_no),0,0,'L');
+            $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','จำนวนที่ผลิต '.number_format($data->product_order,0).' ชิ้น'),0,0,'L');
+            $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','ล็อตที่ผลิต '.$data->lot_no_fix.'0'.(intval($data->lot_no)+($i-1))),0,0,'L');
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
             $pdf::Cell(3,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
@@ -770,7 +792,7 @@ class PdfController extends Controller
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
             $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','1. หมายเลขที่ผลิต'),0,0,'L');
             $pdf::SetDash(1,1);
-            $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',$data->part_no),'B',0,'C');
+            $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',$data->part_no.'  ('.$process->name.')'),'B',0,'C');
             $pdf::SetDash();
             $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',0,'C');
@@ -778,7 +800,7 @@ class PdfController extends Controller
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
             $pdf::Cell(45.667,5,iconv( 'UTF-8','TIS-620','1. หมายเลขที่ผลิต'),0,0,'L');
             $pdf::SetDash(1,1);
-            $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',$data->part_no),'B',0,'C');
+            $pdf::Cell(73.0672,5,iconv( 'UTF-8','TIS-620',$data->part_no.'  ('.$process->name.')'),'B',0,'C');
             $pdf::SetDash();
             $pdf::Cell(18.2668,5,iconv( 'UTF-8','TIS-620',null),0,0,'C');
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'R',1,'C');
@@ -1344,7 +1366,7 @@ class PdfController extends Controller
             $pdf::SetDash();
             $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
              $pdf::SetFont('ZapfDingbats','',14);
-            $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+            $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->pqa_status[$i-1] == 'C' ? ($data->pqa_quality_result[$i-1][0] == 'T' ? 4 : null) : null),1,0,'L');
             $pdf::SetFont('THSarabun','',12);
             $pdf::Cell(81.333,5,iconv( 'UTF-8','TIS-620','ผ่านตามข้อกำหนด (Passed Dimension)'),0,0,'L');
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'LR',1,'C');
@@ -1386,7 +1408,7 @@ class PdfController extends Controller
             $pdf::SetDash();
             $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
              $pdf::SetFont('ZapfDingbats','',14);
-            $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',4),1,0,'L');
+            $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->pqa_status[$i-1] == 'C' ? ($data->pqa_quality_result[$i-1][0] == 'F' ? 4 : null) : null),1,0,'L');
             $pdf::SetFont('THSarabun','',12);
             $pdf::Cell(81.333,5,iconv( 'UTF-8','TIS-620','ไม่ผ่านตามข้อกำหนด (Not Passed Dimension)'),0,0,'L');
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'LR',1,'C');
@@ -1424,10 +1446,14 @@ class PdfController extends Controller
             $pdf::Cell(43.167,5,iconv( 'UTF-8','TIS-620',null),'RL',0,'L');
             $pdf::SetDash();
             $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
-             $pdf::SetFont('ZapfDingbats','',14);
-            $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',null),1,0,'L');
+            $pdf::SetFont('ZapfDingbats','',14);
+            $pdf::Cell(5,5,iconv( 'UTF-8','TIS-620',$data->pqa_quality_result[$i-1][1] ? 4 : null),1,0,'L');
             $pdf::SetFont('THSarabun','',12);
-            $pdf::Cell(81.333,5,iconv( 'UTF-8','TIS-620','อื่นๆ (Others)'),0,0,'L');
+            $pdf::Cell(18.333,5,iconv( 'UTF-8','TIS-620','อื่นๆ (Others)'),0,0,'L');
+            $pdf::SetDash(1,1);
+            $pdf::Cell(35,5,iconv( 'UTF-8','TIS-620',$data->pqa_quality_result[$i-1][1]),'B',0,'L');
+            $pdf::SetDash();
+            $pdf::Cell(28,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'LR',1,'C');
             // เนื้อหา 27
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
@@ -1466,7 +1492,7 @@ class PdfController extends Controller
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'L',0,'C');
             $pdf::Cell(30.5,5,iconv( 'UTF-8','TIS-620','หัวหน้างาน (Supervisor):'),0,0,'L');
             $pdf::SetDash(1,1);
-            $pdf::Cell(30,5,iconv( 'UTF-8','TIS-620',null),'B',0,'L');
+            $pdf::Cell(30,5,iconv( 'UTF-8','TIS-620',$data->supervisor_pd[$i-1]),'B',0,'L');
             $pdf::SetDash();
             $pdf::Cell(74,5,iconv( 'UTF-8','TIS-620',null),0,0,'L');
             $pdf::Cell(2.5,5,iconv( 'UTF-8','TIS-620',null),'RL',0,'C');

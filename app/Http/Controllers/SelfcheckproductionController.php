@@ -58,20 +58,18 @@ class SelfcheckproductionController extends Controller
                 $d->is_enable = $this->is_enable_name[$d->is_enable];
             }
         }
-        // echo '<pre>';print_r($data->items());'</pre>';exit;
         return view('pages.selfcheckproduction.index',[
             'data' => $data
         ]);
     }
 
-    public function add()
+    public function add(Request $request)
     {
-        $itemData = new \stdClass();
-        $lot = 'xx';
-        $dataSelfCheckProduction = DB::table('pre_production_check')
-                                ->leftJoin('lkup_lot_tag','pre_production_check.lot_tag_id','=','lkup_lot_tag.id')
-                                ->select('lkup_lot_tag.part_no')
-                                ->get();
+        $process_id = null;
+        $processOption = array();
+        $i['id'] = null;
+        $i['name'] = '-- กรุณาเลือก --';
+        $processOption[] = $i; 
 
         $atShlft = array();
         for($i = 1; $i <= 2; $i++){
@@ -92,12 +90,18 @@ class SelfcheckproductionController extends Controller
             
             $atShlft[] = $item;
         }
-
+        if(!empty($request->has('processOption'))){
+            $processOption = $request->processOption;
+        }
+        if(!empty($request->has('process_id'))){
+            $process_id = $request->process_id;
+        }
+// echo '<pre>';print_r($processOption);'</pre>';exit;
         return view('pages.selfcheckproduction.add',[
-            'lotNo' => date('ymd').$lot,
             'toDate' => date('d/m/Y'),
-            'item' => $itemData,
-            'atShlft' => $atShlft
+            'atShlft' => $atShlft,
+            'processOption' => $processOption,
+            'process_id' => $process_id
         ]);
     }
 
@@ -116,6 +120,39 @@ class SelfcheckproductionController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
+                $check = DB::table('self_check_production')
+                ->where('pre_production_check_id',$request->pre_production_check_id)->get();
+
+                $dataProcesss = DB::table('pre_production_check')
+                ->leftJoin('lkup_lot_tag','pre_production_check.lot_tag_id','=','lkup_lot_tag.id')
+                ->leftJoin('lot_tag_process_file','lkup_lot_tag.id','=','lot_tag_process_file.lot_tag_id')
+                ->leftJoin('lkup_process','lot_tag_process_file.process_id','=','lkup_process.id')
+                ->select('lkup_process.id','lkup_process.name')
+                ->where('pre_production_check.id',$request->pre_production_check_id)
+                ->get();
+                $processOption = array();
+                $i['id'] = 0;
+                $i['name'] = '-- กรุณาเลือก --';
+                $processOption[] = $i; 
+                if(count($dataProcesss)>0){
+                    foreach($dataProcesss as $m){
+                        $i['id'] = $m->id;
+                        $i['name'] = $m->name;
+                        $processOption[] = $i; 
+                    }
+                }
+                if(count($check)>0){
+                    foreach($check as $c){
+                        if($c->lot_no_fix.''.$c->lot_no == $request->lot_no_fix.''.$request->lot_no && ($c->process_id == $request->process) || (!$c->process_id && $request->process == '-- กรุณาเลือก --')){
+                            $message = 'หมายเลขท้ายล๊อต 2 ตัวท้าย ได้ใช้กับ Part Number นี้ไปแล้วในวันนี้';
+                            return redirect()->route('pages.selfcheckproduction.add',[
+                                'processOption'=>$processOption,
+                                'process_id'=>$request->process
+                            ])->withStatus($message)->withResult(false)->withInput();
+                        }
+                    }
+                }
+                // echo '<pre>';print_r($request->all());'</pre>';exit;
                 $data = DB::table('self_check_production')->insert([
                     'pre_production_check_id' => $request->pre_production_check_id,
                     'production_order' => $request->production_order,
@@ -124,9 +161,17 @@ class SelfcheckproductionController extends Controller
                     'production_date' => $request->production_date,
                     'at_shlft' => $request->at_shlft,
                     'production_quality_result' => json_encode(array('W','W','W')),
-                    'pqa_quality_result' => json_encode(array('W','W','W')),
+                    'pqa_quality_result' => json_encode(array(array('W',null),array('W',null),array('W',null))),
                     'production_status' => json_encode(array('W','W','W')),
                     'pqa_status' => json_encode(array('W','W','W')),
+                    'neck_broken' => json_encode(array(null,null,null)),
+                    'burr' => json_encode(array(null,null,null)),
+                    'work_example' => json_encode(array(null,null,null)),
+                    'issue_detail' => json_encode(array(null,null,null)),
+                    'issue_more_detail' => json_encode(array(null,null,null)),
+                    'supervisor_pd' => json_encode(array(null,null,null)),
+                    'supervisor_pqa' => json_encode(array(null,null,null)),
+                    'process_id' => $request->process != '-- กรุณาเลือก --' ? $request->process : null,
                     'created_by' => Auth::user()->getAttributes()['id'],
                     'created_at' => date('Y-m-d h:i:s'),
                     'is_enable' => 'Y'
@@ -169,7 +214,6 @@ class SelfcheckproductionController extends Controller
     public function edit($id,$page)
     {
         //
-        // echo '<pre>';print_r(Auth::user()->getAttributes());'</pre>';exit;
         $dataModel = DB::table('lkup_model')
                 ->whereNULL('deleted_at')
                 ->where('is_enable','Y')
@@ -241,6 +285,7 @@ class SelfcheckproductionController extends Controller
                 ->leftJoin('lkup_type','lkup_lot_tag.type_id','=','lkup_type.id')
                 ->select(
                     'self_check_production.*',
+                    'lkup_lot_tag.id as lottag_id',
                     'lkup_lot_tag.part_no',
                     'lkup_lot_tag.part_name',
                     'lkup_lot_tag.material_t',
@@ -254,6 +299,45 @@ class SelfcheckproductionController extends Controller
                 ->whereNULL('self_check_production.deleted_at')
                 ->where('self_check_production.is_enable','Y')
                 ->first();
+                    $dataProcesss = DB::table('lot_tag_process_file')
+                    ->leftJoin('lkup_process','lot_tag_process_file.process_id','=','lkup_process.id')
+                    ->select('lkup_process.id','lkup_process.name')
+                    ->where('lot_tag_process_file.lot_tag_id',$item->lottag_id)
+                    ->get();
+                    $processOption = array();
+                    $item->processName = null;
+                    $i['id'] = null;
+                    $i['name'] = '-- กรุณาเลือก --';
+                    $processOption[] = $i; 
+                    if(count($dataProcesss)>0){
+                        foreach($dataProcesss as $m){
+                            $i['id'] = $m->id;
+                            $i['name'] = $m->name;
+                            $processOption[] = $i; 
+                        }
+                        if(count($processOption)>0){
+                            foreach($processOption as $pc){
+                                if($pc['id'] == $item->process_id){
+                                    $item->processName = $pc['name'];
+                                }
+                            }
+                        }
+                    }
+                    $supervisor_pd_name = null;
+                    $supervisor_pqa_name = null;
+                    if(json_decode($item->supervisor_pd)[$page]){
+                        $supervisor_pd_name = DB::table('users')
+                                            ->where('is_id',json_decode($item->supervisor_pd)[$page])
+                                            ->first();
+                    }
+                    if(json_decode($item->supervisor_pqa)[$page]){
+                        $supervisor_pqa_name = DB::table('users')
+                                            ->where('is_id',json_decode($item->supervisor_pqa)[$page])
+                                            ->first();
+                    }
+                    
+
+                $item->processOption = $processOption;
                 $item->production_status = json_decode($item->production_status)[$page];
                 $item->pqa_status = json_decode($item->pqa_status)[$page];
                 $item->production_quality_result = json_decode($item->production_quality_result)[$page];
@@ -263,10 +347,13 @@ class SelfcheckproductionController extends Controller
                 $item->work_example = json_decode($item->work_example)[$page];
                 $item->issue_detail = json_decode($item->issue_detail)[$page];
                 $item->issue_more_detail = json_decode($item->issue_more_detail)[$page];
+                $item->supervisor_pd = json_decode($item->supervisor_pd)[$page];
+                $item->supervisor_pd_name = $supervisor_pd_name ? $supervisor_pd_name->first_name.' '.$supervisor_pd_name->last_name : null;
+                $item->supervisor_pqa = json_decode($item->supervisor_pqa)[$page];
+                $item->supervisor_pqa_name = $supervisor_pqa_name ? $supervisor_pqa_name->first_name.' '.$supervisor_pqa_name->last_name : null;
                 $item->page = $page;
                 $item->lot_no  = str_split($item->lot_no, 6);
                 // echo '<pre>';print_r($item);'</pre>';exit;
-        // echo '<pre>';print_r($item);'</pre>';exit;        
         return view('pages.selfcheckproduction.edit',[
             'item' => $item,
             'proDuctionLineOption' => $proDuctionLineOption,
@@ -291,53 +378,34 @@ class SelfcheckproductionController extends Controller
         if(Auth::user()->getAttributes()['id']){
             $validator = Validator::make($request->all(),$this->rules(),$this->messages());
             if($validator->fails()){
-                return redirect('selfcheckproduction/edit/'.$id)
+                return redirect('selfcheckproduction/edit/'.$id.'/'.$page)
                 ->withErrors($validator)
                 ->withInput();
             }else{
                 $check = DB::table('self_check_production')->where('id',$id)
                 ->first();
+                
                 $check->production_status = json_decode($check->production_status);
                 $check->production_quality_result = json_decode($check->production_quality_result);
+                $check->pqa_status = json_decode($check->pqa_status);
+                $check->pqa_quality_result = json_decode($check->pqa_quality_result);
                 $check->neck_broken = json_decode($check->neck_broken);
                 $check->burr = json_decode($check->burr);
                 $check->work_example = json_decode($check->work_example);
                 $check->issue_detail = json_decode($check->issue_detail);
                 $check->issue_more_detail = json_decode($check->issue_more_detail);
-
-                if($page == 0){
-                    $check->production_status = array('C','W','W');
-                    $check->pqa_status = array('C','W','W');
-                    $check->production_quality_result = array($request->production_quality_result,'W','W');
-                    $check->pqa_quality_result = array($request->pqa_quality_result,'W','W');
-                    $check->neck_broken = array($request->neck_broken,null,null);
-                    $check->burr = array($request->burr,null,null);
-                    $check->work_example = array($request->work_example,null,null);
-                    $check->issue_detail = array($request->issue_detail,null,null);
-                    $check->issue_more_detail = array($request->issue_more_detail,null,null);
-                } else if($page == 1){
-                    $check->production_status = array('C','C','W');
-                    $check->pqa_status = array('C','C','W');
-                    $check->production_quality_result[$page] = $request->production_quality_result;
-                    $check->pqa_quality_result[$page] = $request->pqa_quality_result;
-                    $check->neck_broken[$page] = $request->neck_broken;
-                    $check->burr[$page] = $request->burr;
-                    $check->work_example[$page] = $request->work_example;
-                    $check->issue_detail[$page] = $request->issue_detail ? $request->issue_detail : null;
-                    $check->issue_more_detail[$page] = $request->issue_detail ? $request->issue_detail : null;
-                } else if($page == 2){
-                    $check->production_status = array('C','C','C');
-                    $check->pqa_status = array('C','C','C');
-                    $check->production_quality_result[$page] = $request->production_quality_result;
-                    $check->neck_broken[$page] = $request->neck_broken;
-                    $check->burr[$page] = $request->burr;
-                    $check->work_example[$page] = $request->work_example;
-                    $check->issue_detail[$page] = $request->issue_detail;
-                    $check->issue_more_detail[$page] = $request->issue_more_detail;
-                }
-                // echo '<pre>';print_r($check->production_quality_result);'</pre>';exit;
+                $check->supervisor_pd = json_decode($check->supervisor_pd);
+                $check->supervisor_pqa = json_decode($check->supervisor_pqa);
                 if(Auth::user()->getAttributes()['role_id'] == (1 || 2)){
-                    if(Auth::user()->getAttributes()['department_id'] == 1){
+                    if(Auth::user()->getAttributes()['department_id'] == 1 || Auth::user()->getAttributes()['role_id'] == 1){
+                        $check->production_status[$page] = 'C';
+                        $check->production_quality_result[$page] = $request->production_quality_result;
+                        $check->neck_broken[$page] = $request->neck_broken;
+                        $check->burr[$page] = $request->burr;
+                        $check->work_example[$page] = $request->work_example;
+                        $check->issue_detail[$page] = $request->issue_detail;
+                        $check->issue_more_detail[$page] = $request->issue_more_detail;
+                        $check->supervisor_pd[$page] = $request->supervisor_pd_id;
                         $result = DB::table('self_check_production')->where('id',$id)
                         ->update([
                             'pre_production_check_id' => $request->pre_production_check_id,
@@ -352,29 +420,41 @@ class SelfcheckproductionController extends Controller
                             'issue_more_detail' => json_encode($check->issue_more_detail),
                             'at_shlft' => $request->at_shlft,
                             'job_type' => $request->job_check == 1 ? 'SP' : ($request->job_check == 2 ? 'A' : ($request->job_check == 3 ? 'S' : 'SCR')),
+                            'supervisor_pd' => json_encode($check->supervisor_pd),
                             'production_status' => json_encode($check->production_status),
                             'production_quality_result' => json_encode($check->production_quality_result),
-                            'updated_by' => Auth::user()->getAttributes()['id'],
+                            'updated_pd_by' => Auth::user()->getAttributes()['id'],
                             'updated_at' => date('Y-m-d h:i:s'),
                             'is_enable' => 'Y'
                         ]);
+                        if($page == 2){
+                            $result_total = DB::table('self_check_production')->where('id',$id)
+                            ->update([
+                                'total_check_result' => $request->total_check_result
+                            ]);
+                        }
+
                     }else if(Auth::user()->getAttributes()['department_id'] == 2){
+                        if($check->production_status[$page] == 'W'){
+                            $message = 'production ยังไม่ได้ตรวจในล๊อตการผลิตนี้';
+                            return redirect()->back()->withStatus($message)->withResult(false)->withInput();
+                        }
+                        $check->pqa_status[$page] = 'C';
+                        $check->pqa_quality_result[$page] = array($request->pqa_quality_result,$request->other_comment);
+                        $check->supervisor_pqa[$page] = $request->supervisor_pqa_id;
                         $result = DB::table('self_check_production')->where('id',$id)
                         ->update([
                             'pqa_status' => json_encode($check->pqa_status),
                             'pqa_quality_result' => json_encode($check->pqa_quality_result),
-                            'updated_by' => Auth::user()->getAttributes()['id'],
+                            'supervisor_pqa' => json_encode($check->supervisor_pqa),
+                            'updated_pqa_by' => Auth::user()->getAttributes()['id'],
                             'updated_at' => date('Y-m-d h:i:s'),
                             'is_enable' => 'Y'
                         ]);
                     }
                 }
 
-                if($result){
-                    $message = 'บันทึกรายการสำเร็จ';
-                }else{
-                    $message = 'บันทึกรายการไม่สำเร็จ';
-                }
+                $message = $result ? 'บันทึกรายการสำเร็จ' : 'บันทึกรายการไม่สำเร็จ';
                 return redirect()->back()->withStatus($message)->withResult($result)->withInput();
             }
         } else {
@@ -417,9 +497,13 @@ class SelfcheckproductionController extends Controller
                 )
             ->where('lkup_lot_tag.part_no', 'LIKE', '%'.$term.'%')
             ->take(10)->get();
-            // echo '<pre>';print_r($queries);'</pre>';exit;
         foreach ($queries as $query)
         {
+            $processs = DB::table('lot_tag_process_file')
+                ->leftJoin('lkup_process','lot_tag_process_file.process_id','=','lkup_process.id')
+                ->select('lkup_process.id','lkup_process.name')
+                ->where('lot_tag_process_file.lot_tag_id',$query->lottag_id)->get();
+
             $results[] = [
                 'value' => $query->part_no,
                 'pre_production_check_id' => $query->id,
@@ -430,7 +514,55 @@ class SelfcheckproductionController extends Controller
                 'production_line' => $query->line_name,
                 'model_name' => $query->model_name,
                 'product_order' => $query->product_order,
-                'sheet_name' => $query->sheet_name
+                'sheet_name' => $query->sheet_name,
+                'process' => count($processs) > 0 ? $processs : null
+            ];
+        }
+        return Response::json($results);
+    }
+    public function autocompletesupervisor(){
+        $term = Input::get('term');
+        $results = array();
+       
+        $queries = DB::table('users')
+            ->select(
+                'is_id',
+                'first_name',
+                'last_name'
+                )
+            ->where('role_id',3)
+            ->where('department_id',Auth::user()->getAttributes()['department_id'])
+            ->where('first_name', 'LIKE', '%'.$term.'%')
+            ->orWhere('last_name', 'LIKE', '%'.$term.'%')
+            ->take(10)->get();
+        foreach ($queries as $query)
+        {
+            $results[] = [
+                'value' => $query->first_name.' '.$query->last_name,
+                'id' => $query->is_id
+            ];
+        }
+        return Response::json($results);
+    }
+    public function autocompletesupervisorid(){
+        $term = Input::get('term');
+        $results = array();
+       
+        $queries = DB::table('users')
+            ->select(
+                'is_id',
+                'first_name',
+                'last_name'
+                )
+            ->where('role_id',3)
+            ->where('department_id',Auth::user()->getAttributes()['department_id'])
+            ->where('is_id', 'LIKE', '%'.$term.'%')
+            ->take(10)->get();
+        foreach ($queries as $query)
+        {
+            $results[] = [
+                'name' => $query->first_name.' '.$query->last_name,
+                'value' => $query->is_id
             ];
         }
         return Response::json($results);
@@ -442,10 +574,6 @@ class SelfcheckproductionController extends Controller
         $rules = [
             'lot_no' => 'required|numeric|digits_between:00,99',
             'part_no' => 'required',
-            // 'email' => 'required|email',
-            // 'role' => 'required',
-            // 'password' => 'required|min:8',
-            // 'confirm_password' => 'required|min:8|same:password',
         ];
         return $rules;
     }
@@ -457,17 +585,7 @@ class SelfcheckproductionController extends Controller
             'lot_no.required' => 'กรุณากรอกเลขที่ล็อตให้ครบถ้วน',
             'lot_no.numeric' => 'กรุณากรอกเป็นตัวเลข 0-9',
             'lot_no.digits_between' => 'กรุณากรอกเลขที่ล็อต 2 ตัวสุดท้ายให้ถูกต้อง',
-            'part_no.required' => 'กรุณากรอก Part Number',
-            // 'last_name.required' => 'กรุณากรอกนามสกุล',
-            // 'last_name.max' => 'นามสกุลความยาวไม่เกิน 20 ตัวอักขระ',
-            // 'email.required' => 'กรุณากรอกอิเมล',
-            // 'email.email' => 'กรุณากรอกที่อยู่อิเมลให้ถูกต้อง',
-            // 'role.required' => 'กรุณาระบุสิทธิการใช้งาน',
-            // 'password.required' => 'กรุณากรอกรหัสผ่าน',
-            // 'password.min' => 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักขระ',
-            // 'confirm_password.required' => 'กรุณากรอกยืนยันรหัสผ่าน',
-            // 'confirm_password.min' => 'ยืนยันรหัสผ่านต้องมีอย่างน้อย 8 ตัวอักขระ',
-            // 'confirm_password.same' => 'รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน',
+            'part_no.required' => 'กรุณากรอก Part Number'
         ];
         return $messages;
     }

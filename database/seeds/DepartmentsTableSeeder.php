@@ -1,9 +1,8 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
-class JobpositionsTableSeeder extends Seeder
+class DepartmentsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,12 +13,11 @@ class JobpositionsTableSeeder extends Seeder
     {
         //
         $list = array(
-            ['name' => 'chief'],
-            ['name' => 'supervisor'],
-            ['name'=> 'support']
+            ['name' => 'production'],
+            ['name' => 'pqa']
         );
         foreach($list as $key => $l){
-            DB::table('job_position')->insert([
+            DB::table('department')->insert([
                 'id' => ( $key + 1 ),
                 'name' => $l['name'],
                 'created_by' => 1,

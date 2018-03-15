@@ -33,7 +33,6 @@ class PreProductionCheckController extends Controller
                     'lkup_model.name as model_name',
                     'customer.customer_name',
                     'lkup_production_line.line_name',
-                    'lkup_q_point.sheet_name',
                     'pre_production_check.created_at',
                     'pre_production_check.updated_at',
                     'pre_production_check.is_enable'
@@ -41,11 +40,69 @@ class PreProductionCheckController extends Controller
                 ->whereNULL('pre_production_check.deleted_at')
                 ->paginate(8);
         if(count($data->items())>0){
+            $items = array();
             foreach($data->items() as $d){
-                $d->updated_at = $d->updated_at ? $d->updated_at : '-';
+                // echo '<pre>';print_r($data->items());'</pre>';exit;
+                $check = DB::table('self_check_production')
+                ->select('production_quality_result','pqa_quality_result','lot_no_fix','lot_no','total_check_result')
+                ->whereNULL('deleted_at')
+                ->where('pre_production_check_id',$d->id)
+                ->get();
+                $d->lot = $check;
+                if(count($d->lot)>0){
+                    foreach($d->lot as $lot){
+                        $lot->production_quality_result = json_decode($lot->production_quality_result);
+                        $lot->pqa_quality_result = json_decode($lot->pqa_quality_result);
+
+                        if(count($lot->production_quality_result)>0){
+                            $cpd = array();
+                            foreach($lot->production_quality_result as $pd){
+                               $cpd[] = $pd; 
+                            }
+                        }
+                        if(count($lot->pqa_quality_result)>0){
+                            $cpqa = array();
+                            foreach($lot->pqa_quality_result as $pqa){
+                                $cpd[] = $pqa[0];
+                            }
+                        }
+                        $is_ng = false;
+                        if(count($cpd)>0){
+                            foreach($cpd as $p){
+                                if($p == 'F' && !$is_ng){
+                                    $is_ng = true;
+                                } 
+                            }
+                        }
+                        if($is_ng){
+                            $item['lot'] = $lot->lot_no_fix.''.$lot->lot_no;
+                            $item['status'] = 'NG';
+                            $item['total'] = $lot->total_check_result ? $lot->total_check_result : 0;
+                        }else{
+                            $is_w = false;
+                            foreach($cpd as $p){
+                                if($p == 'W' && !$is_w){
+                                    $is_w = true;
+                                } 
+                            }
+                            if($is_w){
+                                $item['lot'] = $lot->lot_no_fix.''.$lot->lot_no;
+                                $item['status'] = 'WAIT';
+                                $item['total'] = $lot->total_check_result ? $lot->total_check_result : 0;
+                            } else{
+                                $item['lot'] = $lot->lot_no_fix.''.$lot->lot_no;
+                                $item['status'] = 'OK';
+                                $item['total'] = $lot->total_check_result ? $lot->total_check_result : 0;
+                            }
+                        }
+                        $items[] = $item;
+                    }
+                    $d->lot = $items;
+                }
                 $d->is_enable = $this->is_enable_name[$d->is_enable];
             }
         }
+        // echo '<pre>';print_r($data->items());exit;
         return view('pages.preproductioncheck.index',[
             'data' => $data
         ]);

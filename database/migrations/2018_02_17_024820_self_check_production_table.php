@@ -24,9 +24,6 @@ class SelfCheckProductionTable extends Migration
             $table->text('neck_broken')->nullable();
             $table->text('burr')->nullable();
             $table->text('work_example')->nullable();
-            // $table->enum('neck_broken', ['Y', 'N'])->nullable();
-            // $table->enum('burr', ['Y', 'N'])->nullable();
-            // $table->enum('work_example', ['Y', 'N'])->nullable();
             $table->text('issue_detail')->nullable();
             $table->text('issue_more_detail')->nullable();
             $table->enum('at_shlft', ['01', '02']);
@@ -35,8 +32,13 @@ class SelfCheckProductionTable extends Migration
             $table->text('production_quality_result');//W = Wait,T = Check through, F = Check failed
             $table->text('pqa_quality_result');//W = Wait,T = Check through, F = Check failed
             $table->enum('job_type',['SP', 'A','S','SCR'])->nullable();//SP = Semi Part, A = F/G Assembly, S = F/G Stemping, SCR = Special Case as The Customer Requirement
+            $table->decimal('total_check_result',5,2)->nullable();//SP = Semi Part, A = F/G Assembly, S = F/G Stemping, SCR = Special Case as The Customer Requirement
+            $table->integer('process_id')->unsigned()->nullable();
             $table->integer('created_by');
-            $table->integer('updated_by')->nullable();
+            $table->text('supervisor_pd')->nullable();
+            $table->text('supervisor_pqa')->nullable();
+            $table->integer('updated_pd_by')->unsigned()->nullable();
+            $table->integer('updated_pqa_by')->unsigned()->nullable();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
             $table->enum('is_enable', ['Y', 'N']);

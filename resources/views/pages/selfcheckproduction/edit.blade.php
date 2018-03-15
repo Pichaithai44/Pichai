@@ -27,14 +27,15 @@
 @endif
 {{--  ฝั่ง-Production  --}}
     <ul class="nav nav-tabs justify-content-end">
+        <a class="nav-link"><div class="text-truncate float-left" style="max-width:25rem;">ประเภทชิ้นงาน : <span class="text-primary">{{ $item->job_type ? ($delivery_check[$item->job_type == 'SP' ? 1 : ($item->job_type == 'A' ? 2 : ($item->job_type == 'S' ? 3 : ($item->job_type == 'SCR' ? 4 : null)))]) : 'ยังไม่ได้ถูกเลือก'}}</span></div></a>
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('selfcheckproduction/edit/*/0') ? 'active' : null }}" href="{{ route('pages.selfcheckproduction.edit',['id'=> $item->id,'page'=> 0]) }}"><i class="fas fa-newspaper"></i> เริ่มต้นล๊อตการผลิต (A)</a>
+            <a class="nav-link {{ Request::is('selfcheckproduction/edit/*/0') ? 'active' : null }}" href="{{ route('pages.selfcheckproduction.edit',['id'=> $item->id,'page'=> 0]) }}"> เริ่มต้นล๊อตการผลิต (A)</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('selfcheckproduction/edit/*/1') ? 'active' : null }}" href="{{ route('pages.selfcheckproduction.edit',['id'=> $item->id,'page'=> 1]) }}"><i class="fas fa-newspaper"></i> กลางล๊อตการผลิต (M)</a>
+            <a class="nav-link {{ Request::is('selfcheckproduction/edit/*/1') ? 'active' : null }}" href="{{ route('pages.selfcheckproduction.edit',['id'=> $item->id,'page'=> 1]) }}"> กลางล๊อตการผลิต (M)</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ Request::is('selfcheckproduction/edit/*/2') ? 'active' : null }}" href="{{ route('pages.selfcheckproduction.edit',['id'=> $item->id,'page'=> 2]) }}"><i class="fas fa-newspaper"></i> ท้ายล๊อตการผลิต (Z)</a>
+            <a class="nav-link {{ Request::is('selfcheckproduction/edit/*/2') ? 'active' : null }}" href="{{ route('pages.selfcheckproduction.edit',['id'=> $item->id,'page'=> 2]) }}"> ท้ายล๊อตการผลิต (Z)</a>
         </li>
     </ul>
     <br>
@@ -66,6 +67,7 @@
             <input type="hidden" name="lottag_id" id="lottag_id" value="{{ old('lottag_id') }}">
             <input type="hidden" name="job_type" id="job_type" value="{{ $item->job_type }}">
             <input type="hidden" name="job_check" id="job_check" value="{{ old('job_check') }}">
+            <input type="hidden" name="total_check_result" id="total_check_result" value="{{ old('total_check_result') }}">
     
             <div class="form-group row">
                 <label class="col-2 col-form-label">วันที่ผลิต (Production Data)</label>
@@ -83,7 +85,7 @@
                 <input class="form-control text-left @can('user') input-disable-event @endcan" type="text" name="lot_no_fix" id="lot_no_fix" value="{{ $item->lot_no_fix }}" data-date-format="yymmdd"/>
                 </div>
                 <div class="col-1">
-                <input class="form-control text-left {{$errors->has('lot_no') ? 'errors-has-danger' : null}} @can('user') input-disable-event @endcan" type="text" maxlength="2" placeholder="xx" name="lot_no" value="{{ old('lot_no') ? old('lot_no') : $item->lot_no[0] }}"/>
+                <input class="form-control text-left {{$errors->has('lot_no') ? 'errors-has-danger' : null}} @can('user') input-disable-event @endcan" type="text" maxlength="2" placeholder="xx" name="lot_no" value="{{ old('lot_no') ? old('lot_no') : '0'.(intval($item->lot_no[0])+$item->page) }}"/>
                 </div>
             </div>
             @if ($errors->has('lot_no'))
@@ -96,8 +98,15 @@
     
             <div class="form-group row">
                 <label class="col-4 col-form-label">1. หมายเลขที่ผลิต (Part Number)</label>
-                <div class="col-8">
-                <input class="form-control text-left {{$errors->has('part_no') ? 'errors-has-danger' : null}} @can('user') input-disable-event @endcan" type="text" name="part_no" value="{{ old('part_no') ? old('part_no') : $item->part_no }}" id="part_no"/>
+                <div class="col-6">
+                    <input class="form-control text-left {{$errors->has('part_no') ? 'errors-has-danger' : null}} @can('user') input-disable-event @endcan" type="text" name="part_no" value="{{ old('part_no') ? old('part_no') : $item->part_no }}" id="part_no"/>
+                </div>
+                <div class="col-2">
+                    <select class="form-control" name="process" id="process">
+                        @foreach($item->processOption as $m)
+                        <option value="{{ $m['id'] }}" {{ old('process') ? (old('process') == $m['id'] ? 'selected' : null) : ($item->process_id == $m['id'] ? 'selected' : null) }}>{{ $m['name'] }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             @if ($errors->has('part_no'))
@@ -278,21 +287,21 @@
         
             <div class="form-group row">
                 <div class="col-md-3 offset-md-1">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan" id="is_issue" name="is_issue" {{ $item->issue_detail ? 'checked' : null }}>
+                    <input type="checkbox" class="@can('user') input-disable-event @endcan" id="is_issue" name="is_issue" {{ old('issue_detail') ? (old('issue_detail')  ? 'checked' : null) : ($item->issue_detail ? 'checked' : null) }}>
                     <label for="is_issue" class="col-form-label @can('user') input-disable-event @endcan">ปัญหาอะไร ?</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" id="issue_detail" name="issue_detail" class="form-control @can('user') input-disable-event @endcan" style="width:100%;" value="{{ $item->issue_detail }}" {{ $item->issue_detail ? null : 'disabled' }}>
+                    <input type="text" id="issue_detail" name="issue_detail" class="form-control @can('user') input-disable-event @endcan" style="width:100%;" value="{{ $item->issue_detail }}" {{ old('issue_detail') ? (old('issue_detail') ? null : 'disabled') : ($item->issue_detail ? null : 'disabled') }}>
                 </div>
             </div>
     
             <div class="form-group row">
                 <div class="col-md-3 offset-md-1">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan" id="is_issue_more" name="is_issue_more" {{ $item->issue_more_detail ? 'checked' : null }}>
+                    <input type="checkbox" class="@can('user') input-disable-event @endcan" id="is_issue_more" name="is_issue_more" {{ old('issue_more_detail') ? (old('issue_more_detail') ? 'checked' : null) : ($item->issue_more_detail ? 'checked' : null) }}>
                     <label for="is_issue_more" class="col-form-label @can('user') input-disable-event @endcan">เป็นปัญหาอีกหรือไม่</label>
                 </div>
                 <div class="col-md-8">
-                    <input type="text" id="issue_more_detail" name="issue_more_detail" class="form-control @can('user') input-disable-event @endcan" style="width:100%;" value="{{ $item->issue_more_detail }}" {{ $item->issue_more_detail ? null : 'disabled' }}>
+                    <input type="text" id="issue_more_detail" name="issue_more_detail" class="form-control @can('user') input-disable-event @endcan" style="width:100%;" value="{{ $item->issue_more_detail }}" {{ old('issue_more_detail') ? (old('issue_more_detail') ? null : 'disabled') : ($item->issue_more_detail ? null : 'disabled') }}>
                 </div>
             </div>
     
@@ -328,12 +337,15 @@
                         <div class="form-group row">
                             <label class="col-form-label">หัวหน้างาน (Supervisor): </label>
                             <div class="col-md-4">
-                                <input type="text"class="form-control @can('user') input-disable-event @endcan">
+                                <input type="text"class="form-control @can('user') input-disable-event @endcan" id="supervisor_pd" name="supervisor_pd" value="{{ old('supervisor_pd') ? old('supervisor_pd') : $item->supervisor_pd_name }}">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text"class="form-control @can('user') input-disable-event @endcan" id="supervisor_pd_id" name="supervisor_pd_id" value="{{ old('supervisor_pd_id') ? old('supervisor_pd_id') : $item->supervisor_pd }}">
                             </div>
                         </div>
                     </div>
             </div>
-        </form>
+        {{--  </form>  --}}
         {{--  end-Production  --}}
 </div>
     
@@ -359,17 +371,16 @@
 
     
         {{--  ฝั่ง PQA  --}}
-        <p>เอกสาร ตอนที่ 2 <span>สถานะ : {{ $item->pqa_status }}</span></p>
-        <form action="{{ route('pages.selfcheckproduction.update',['id'=> $item->id,'page'=> $item->page]) }}" method="POST" id="my_form" enctype="multipart/form-data">
+        <p>เอกสาร ตอนที่ 2 สถานะ : <span class="{{ $item->pqa_status == 'C' ? 'text-success' : 'text-warning' }}">{{ $status_name[$item->pqa_status] }}</span> ผลการตรวจสอบ : <span class="{{$item->pqa_quality_result[0] == 'T' ? 'text-success' : ($item->pqa_quality_result[0] == 'F' ? 'text-danger' : 'text-warning')}}">{{ $quality_result_name[$item->pqa_quality_result[0]] }}</span></p>
             {{ csrf_field() }}
             {{ method_field('PATCH') }}
             {{--  data hidden  --}}
-            <input type="hidden" name="pre_production_check_id" id="pre_production_check_id" value="{{ $item->id }}">
+            <input type="hidden" name="pre_production_check_id" id="pre_production_check_id" value="{{ $item->pre_production_check_id }}">
     
             <div class="form-group row">
                 <label class="col-4 col-form-label">วันที่ผลิต (Production Data)</label>
                 <div class="col-2">
-                <input class="form-control text-left @can('user') input-disable-event @endcan" type="text" name="production_date" id="production_date" value="{{ old('production_date') ? old('production_date') : $item->production_date }}"/>
+                <input class="form-control text-left input-disable-event" type="text" name="production_date" id="production_date" value="{{ old('production_date') ? old('production_date') : $item->production_date }}"/>
                 </div>
     
                 <label class="col-2 col-form-label">กะผลิต (At Shlft)</label>
@@ -377,12 +388,12 @@
                     <div class="form-group row">
                       
                         <div class="col-md-6">
-                            <input type="checkbox" name="at_shlft" id="01" value="01" {{ $item->at_shlft == '01' ? 'checked' : null }} class="form-check-input @can('user') input-disable-event @endcan">
-                            <label class="form-check-label">01</label>
+                            <input type="radio" name="at_shlft_one" id="01" value="01" {{ $item->at_shlft == '01' ? 'checked' : null }} class="form-check-input input-disable-event">
+                            <label for="01" class="form-check-label input-disable-event">01</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="checkbox" name="at_shlft" id="02" value="02" {{ $item->at_shlft == '02' ? 'checked' : null }} class="form-check-input @can('user') input-disable-event @endcan">
-                            <label class="form-check-label">02</label>
+                            <input type="radio" name="at_shlft_one" id="02" value="02" {{ $item->at_shlft == '02' ? 'checked' : null }} class="form-check-input input-disable-event">
+                            <label for="02" class="form-check-label input-disable-event">02</label>
                         </div>
                   
                     </div>
@@ -399,7 +410,7 @@
             <div class="form-group row">
                 <label class="col-4 col-form-label">1. หมายเลขที่ผลิต (Part Number)</label>
                 <div class="col-8">
-                <input class="form-control text-left {{$errors->has('part_no') ? 'errors-has-danger' : null}} @can('user') input-disable-event @endcan" type="text" name="part_no" value="{{ old('part_no') ? old('part_no') : $item->part_no }}" id="part_no"/>
+                <input class="form-control text-left {{$errors->has('part_no') ? 'errors-has-danger' : null}} input-disable-event" type="text" name="part_no" value="{{ old('part_no') ? old('part_no') : $item->part_no.' ('.$item->processName.')' }}" id="part_no"/>
                 </div>
             </div>
             @if ($errors->has('part_no'))
@@ -413,36 +424,36 @@
             <div class="form-group row">
                 <label class="col-4 col-form-label">2. ชื่อชิ้นงาน (Part Name)</label>
                 <div class="col-8">
-                <input class="form-control text-left @can('user') input-disable-event @endcan" type="text" id="part_name" name="part_name"   value="{{ old('part_name') ? old('part_name') : $item->part_name }}" />
+                <input class="form-control text-left input-disable-event" type="text" id="part_name" name="part_name"   value="{{ old('part_name') ? old('part_name') : $item->part_name }}" />
                 </div>
             </div>
     
             <div class="form-group row">
                 <label class="col-4 col-form-label">3. ชื่อรุ่นชิ้นงาน / ลูกค้า (Model / Customer)</label>
                 <div class="col-4">
-                <input class="form-control text-left @can('user') input-disable-event @endcan" type="text" name="model" id="model" value="{{ old('model') ? old('model') : $item->model_name }}"/>
+                <input class="form-control text-left input-disable-event" type="text" name="model" id="model" value="{{ old('model') ? old('model') : $item->model_name }}"/>
                 </div>
                 <div class="col-4">
-                <input class="form-control text-left @can('user') input-disable-event @endcan" type="text" name="customer" id="customer" value="{{ old('customer') ? old('customer') : $item->customer_name }}"/>
+                <input class="form-control text-left input-disable-event" type="text" name="customer" id="customer" value="{{ old('customer') ? old('customer') : $item->customer_name }}"/>
                 </div>
             </div>
     
             <div class="form-group row">
                 <label class="col-4 col-form-label">4. ไลน์การผลิต (At Production Line)</label>
                 <div class="col-2">
-                <input class="form-control text-left @can('user') input-disable-event @endcan" type="text" name="at_production_line" id="at_production_line" value="{{ old('at_production_line') ? old('at_production_line') : $item->line_name}}"/>
+                <input class="form-control text-left input-disable-event" type="text" name="at_production_line" id="at_production_line" value="{{ old('at_production_line') ? old('at_production_line') : $item->line_name}}"/>
                 </div>
                 <label class="col-2 col-form-label">กะผลิต (At Shlft)</label>
                 <div class="col-4">
                     <div class="form-group row">
                       
                         <div class="col-md-6">
-                            <input type="checkbox" name="at_shlft" id="01" value="01" {{ $item->at_shlft == '01' ? 'checked' : null }} class="form-check-input @can('user') input-disable-event @endcan">
-                            <label class="form-check-label">01</label>
+                            <input type="radio" name="at_shlft_two" id="01" value="01" {{ $item->at_shlft == '01' ? 'checked' : null }} class="form-check-input input-disable-event">
+                            <label for="01" class="form-check-label input-disable-event">01</label>
                         </div>
                         <div class="col-md-6">
-                            <input type="checkbox" name="at_shlft" id="02" value="02" {{ $item->at_shlft == '02' ? 'checked' : null }} class="form-check-input @can('user') input-disable-event @endcan">
-                            <label class="form-check-label">02</label>
+                            <input type="radio" name="at_shlft_two" id="02" value="02" {{ $item->at_shlft == '02' ? 'checked' : null }} class="form-check-input input-disable-event">
+                            <label for="02" class="form-check-label input-disable-event">02</label>
                         </div>
                   
                     </div>
@@ -451,81 +462,81 @@
     
             <div class="form-group row">
                 <div class="col-md-12">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ $item->job_type == 'SP' ? 'checked' : null }}>
                     <label class="col-form-label">ชิ้นงานระหว่างกระบวนการ (Semi Part)</label>
                 </div>
             </div>
     
             <div class="form-group row">
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'SP') && ($item->page == 0) ? 'checked' : null }}>
                     <label class="col-form-label">เริ่มต้นล๊อตการผลิต (A)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'SP') && ($item->page == 1) ? 'checked' : null }}>
                     <label class="col-form-label">กลางล๊อตการผลิต (M)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'SP') && ($item->page == 2) ? 'checked' : null }}>
                     <label class="col-form-label">ท้ายล๊อตการผลิต (Z)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event">
                     <label class="col-form-label">อื่นๆ</label>
                 </div>
             </div>
     
             <div class="form-group row">
                 <div class="col-md-12">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ $item->job_type == 'A' ? 'checked' : null }}>
                     <label class="col-form-label">ชิ้นงานสำเร็จรูปจากไลน์ประกอบ (F/G Assembly)</label>
                 </div>
             </div>
     
             <div class="form-group row">
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'A') && ($item->page == 0) ? 'checked' : null }}>
                     <label class="col-form-label">เริ่มต้นล๊อตการผลิต (A)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'A') && ($item->page == 1) ? 'checked' : null }}>
                     <label class="col-form-label">กลางล๊อตการผลิต (M)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'A') && ($item->page == 2) ? 'checked' : null }}>
                     <label class="col-form-label">ท้ายล๊อตการผลิต (Z)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event">
                     <label class="col-form-label">อื่นๆ</label>
                 </div>
             </div>
     
             <div class="form-group row">
                 <div class="col-md-12">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ $item->job_type == 'S' ? 'checked' : null }}>
                     <label class="col-form-label">ชิ้นงานสำเร็จรูปจากไลน์ปั๊มชิ้นส่วน (F/G Stemping)</label>
                 </div>
             </div>
     
             <div class="form-group row">
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'S') && ($item->page == 0) ? 'checked' : null }}>
                     <label class="col-form-label">เริ่มต้นล๊อตการผลิต (A)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'S') && ($item->page == 1) ? 'checked' : null }}>
                     <label class="col-form-label">กลางล๊อตการผลิต (M)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'S') && ($item->page == 2) ? 'checked' : null }}>
                     <label class="col-form-label">ท้ายล๊อตการผลิต (Z)</label>
                 </div>
                 <div class="col-md-3">
                    
                     <div class="form-group row">
                         <div class="col-md-12">
-                            <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                            <input type="radio" class="input-disable-event">
                             <label class="col-form-label">อื่นๆ</label>
                         </div>
                     </div> 
@@ -534,26 +545,26 @@
     
             <div class="form-group row">
                 <div class="col-md-12">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ $item->job_type == 'SCR' ? 'checked' : null }}>
                     <label class="col-form-label">ตรวจสอบตามเงื่อนไขพิเศษ (Special Case as The Customer Requirement)</label>
                 </div>
             </div>
     
             <div class="form-group row">
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'SCR') && ($item->page == 0) ? 'checked' : null }}>
                     <label class="col-form-label">เริ่มต้นล๊อตการผลิต (A)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'SCR') && ($item->page == 1) ? 'checked' : null }}>
                     <label class="col-form-label">กลางล๊อตการผลิต (M)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event" {{ ($item->job_type == 'SCR') && ($item->page == 2) ? 'checked' : null }}>
                     <label class="col-form-label">ท้ายล๊อตการผลิต (Z)</label>
                 </div>
                 <div class="col-md-3">
-                    <input type="checkbox" class="@can('user') input-disable-event @endcan">
+                    <input type="radio" class="input-disable-event">
                     <label class="col-form-label">อื่นๆ</label>
                 </div>
             </div>
@@ -568,23 +579,23 @@
                             <div class="col-md-8">
                                 <div class="form-group row">
                                     <div class="col">
-                                        <input type="checkbox" class="@can('user') input-disable-event @endcan">
-                                        <label class="col-form-label">ผ่านตามข้อกำหนด (Passed Dimension)</label>
+                                        <input type="radio" class="@can('user') input-disable-event @endcan" value="T" id="pqa_quality_result_t" name="pqa_quality_result" {{ $item->pqa_status == 'C' ? ($item->pqa_quality_result[0] == 'T' ? 'checked' : null) : (old('pqa_quality_result') == 'T' ? 'checked' : null) }}>
+                                        <label for="pqa_quality_result_t" class="col-form-label @can('user') input-disable-event @endcan">ผ่านตามข้อกำหนด (Passed Dimension)</label>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col">
-                                        <input type="checkbox" class="@can('user') input-disable-event @endcan">
-                                        <label class="col-form-label">ไม่ผ่านตามข้อกำหนด (Not Passed Dimension)</label>
+                                        <input type="radio" class="@can('user') input-disable-event @endcan" value="F" id="pqa_quality_result_f" name="pqa_quality_result" {{ $item->pqa_status == 'C' ? ($item->pqa_quality_result[0] == 'F' ? 'checked' : null) : (old('pqa_quality_result') == 'F' ? 'checked' : null) }}>
+                                        <label for="pqa_quality_result_f" class="col-form-label @can('user') input-disable-event @endcan">ไม่ผ่านตามข้อกำหนด (Not Passed Dimension)</label>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <div class="col-md-3">
-                                        <input type="checkbox" class="@can('user') input-disable-event @endcan">
-                                        <label class="col-form-label">อื่นๆ (Others)</label>
+                                        <input type="checkbox" class="@can('user') input-disable-event @endcan" id="is_other_comment" name="is_other_comment" {{ old('other_comment') ? (old('other_comment') ? 'checked' : null) : ($item->pqa_quality_result[1] ? 'checked' : null) }}>
+                                        <label class="col-form-label @can('user') input-disable-event @endcan" for="is_other_comment">อื่นๆ (Others)</label>
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control @can('user') input-disable-event @endcan">
+                                        <input type="text" class="form-control @can('user') input-disable-event @endcan" id="other_comment" name="other_comment" value="{{ old('other_comment') ? old('other_comment') : $item->pqa_quality_result[1] }}" {{ old('other_comment') ? (old('other_comment') ? null : 'disabled') : ($item->pqa_quality_result[1] ? null : 'disabled') }}>
                                     </div>
                                 </div>
                             </div>
@@ -594,7 +605,10 @@
                         <div class="form-group row">
                             <label class="col-form-label">หัวหน้างาน (Supervisor): </label>
                             <div class="col-md-4">
-                                <input type="text"class="form-control">
+                                <input type="text"class="form-control @can('user') input-disable-event @endcan" id="supervisor_pqa" name="supervisor_pqa" value="{{ old('supervisor_pqa') ? old('supervisor_pqa') : $item->supervisor_pqa_name }}">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text"class="form-control @can('user') input-disable-event @endcan" id="supervisor_pqa_id" name="supervisor_pqa_id" value="{{ old('supervisor_pqa_id') ? old('supervisor_pqa_id') : $item->supervisor_pqa }}">
                             </div>
                         </div>
                     </div>
@@ -613,12 +627,23 @@
             @endcan
         </div>
     </div>
+    <div id="dialog_total" title="แจ้งจำนวนที่ผลิตได้" style="display: none;">
+        <div class="row">
+            <div class="reload-status" id="reload_status_total">
+                <i class="fas fa-spinner fa-pulse fa-3x"></i>
+            </div>
+            <label class="col-5 col-form-label">จำนวนที่ผลิตได้จริง</label>
+            <input class="col-7 form-control" name="total_check" id="total_check">
+        </div>
+        <br>
+        <sub class="text-danger" style="display: none;" id="validate_delivery_check_total"><i>-- กรุณากรอกจำนวนที่ผลิตได้จริง --</i></sub>
+    </div>
     <div id="dialog" title="เลือกประเภทชิ้นงาน" style="display: none;">
         <div class="row">
             <div class="reload-status" id="reload_status">
                 <i class="fas fa-spinner fa-pulse fa-3x"></i>
             </div>
-            <label class="col-5 col-form-label">ประเภทงาน</label>
+            <label class="col-5 col-form-label">ประเภทชิ้นงาน</label>
             <select class="col-7 form-control" name="delivery_check" id="delivery_check">
                 @foreach($delivery_check as $key => $m)
                     <option value="{{ $key }}">{{ $m }}</option>
@@ -634,6 +659,7 @@
     <script>
         $(document).ready(function() {
             $( "#reload_status" ).hide();
+            $( "#reload_status_total" ).hide();
             $( "div.alert-success" ).slideUp(600);
         });
         $(function()
@@ -652,11 +678,58 @@
                     $('#pre_production_check_id').val(ui.item.pre_production_check_id);
                     $('#production_order').val(ui.item.product_order);
                     $('#q_point_sheet').val(ui.item.sheet_name);
+                    $('#process option').remove();
+                    $('#process').append($('<option>', {
+                            value: null,
+                            text : '-- กรุณาเลือก --' 
+                        }));
+                    $.each(ui.item.process,function(i, item){
+                        $('#process').append($('<option>', {
+                            value: item.id,
+                            text : item.name 
+                        }));
+                    });
                     document.getElementById("PartNumber_2").value = ui.item.value;
                     document.getElementById("PartName_2").value = ui.item.part_name;
                     document.getElementById("Model_2").value = ui.item.model_name;
                     document.getElementById("Customer_2").value = ui.item.customer_name;
                     document.getElementById("AtProductionLine_2").value = ui.item.production_line;
+                }
+            });
+            $( "#supervisor_pd" ).autocomplete({
+                source: "{{ route('pages.selfcheckproduction.autocompletesupervisor') }}",
+                minlenght:1,
+                autoFocus:true,
+                select: function(event, ui) {
+                    $('#supervisor_pd').val(ui.item.value);
+                    $('#supervisor_pd_id').val(ui.item.id);
+                }
+            });
+            $( "#supervisor_pd_id" ).autocomplete({
+                source: "{{ route('pages.selfcheckproduction.autocompletesupervisorid') }}",
+                minlenght:1,
+                autoFocus:true,
+                select: function(event, ui) {
+                    $('#supervisor_pd_id').val(ui.item.value);
+                    $('#supervisor_pd').val(ui.item.name);
+                }
+            });
+            $( "#supervisor_pqa" ).autocomplete({
+                source: "{{ route('pages.selfcheckproduction.autocompletesupervisor') }}",
+                minlenght:1,
+                autoFocus:true,
+                select: function(event, ui) {
+                    $('#supervisor_pqa').val(ui.item.value);
+                    $('#supervisor_pqa_id').val(ui.item.id);
+                }
+            });
+            $( "#supervisor_pqa_id" ).autocomplete({
+                source: "{{ route('pages.selfcheckproduction.autocompletesupervisorid') }}",
+                minlenght:1,
+                autoFocus:true,
+                select: function(event, ui) {
+                    $('#supervisor_pqa_id').val(ui.item.value);
+                    $('#supervisor_pqa').val(ui.item.name);
                 }
             });
         });
@@ -683,7 +756,7 @@
         });
 
         $("#save").on( "click", function() {
-            if(!$("#job_type").val()){
+            if(!$("#job_type").val() && "{{ Auth::user()->getAttributes()['department_id'] != 2 }}"){
             $( "#dialog" ).dialog({
                 position: { my: "top", at: "top", of: window },
                 dialogClass: "no-close",
@@ -700,6 +773,34 @@
                                 }, 5000);
                             }else{
                                 $( "#validate_delivery_check" ).show(); 
+                            }
+                        }
+                    },
+                    {
+                        text : "ปิด",
+                        click: function() {
+                            $( this ).dialog( "close" );
+                        }
+                    }
+                ]
+            });
+            } else if("{{$item->page == 2}}" && "{{ Auth::user()->getAttributes()['department_id'] != 2 }}"){
+                $( "#dialog_total" ).dialog({
+                position: { my: "top", at: "top", of: window },
+                dialogClass: "no-close",
+                buttons: [
+                    {
+                        text: "บันทึก",
+                        click: function() {
+                            if($("#total_check").val()){
+                                $( "#reload_status_total" ).show();
+                                $( "#validate_delivery_check_total" ).hide();
+                                document.getElementById('my_form').submit();
+                                setTimeout(() => {
+                                $( this ).dialog( "close" );
+                                }, 5000);
+                            }else{
+                                $( "#validate_delivery_check_total" ).show(); 
                             }
                         }
                     },
@@ -782,8 +883,22 @@
             }
         });
 
+        $("#is_other_comment").on( "click", function() {
+            if($("#is_other_comment").is(':checked')){
+                $("#other_comment").removeAttr("disabled"); 
+            } else {
+                $("#other_comment").attr("disabled", true);
+                $("#other_comment").val(null);
+            }
+        });
+
         $( "#delivery_check" ).change(function(val) {
             $('#job_check').val(val.target.value);
         });
+        $( "#total_check" ).keyup(function() {
+            var value = $( this ).val();
+            $( "#total_check_result" ).val( value );
+        })
+        .keyup();
     </script>
 @endsection

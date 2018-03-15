@@ -16,11 +16,10 @@
                     <th>PART Name</th>
                     <th>หมายเลขล็อต</th>
                     <th>วันที่ผลิต</th>
-                    <th>อยู่ในขั้นตอน pd</th>
-                    <th>อยู่ในขั้นตอน pqa</th>
-                    <th>วันที่สร้าง</th>
-                    <th>วันที่แก้ไข</th>
-                    <th>สถานะ</th>
+                    <th>การตรวจสอบ pd</th>
+                    <th>ผลการตรวสอบ pd</th>
+                    <th>การตรวจสอบ pqa</th>
+                    <th>ผลการตรวสอบ pqa</th>
                     <th>PDF</th>
                 </tr>
             <thead>
@@ -42,7 +41,7 @@
                     <td class="text-center">
                         <a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">
                             @foreach($i->production_quality_result as $pd_rs)
-                                <span class="{{ $pd_rs == 'T' ? 'text-success border border-success' : ($pd_rs == 'F' ? 'text-danger border border-danger' : 'text-warning border border-warning') }}">{{ $pd_rs }}</span>
+                                <span class="{{ $pd_rs == 'T' ? 'text-success border border-success' : ($pd_rs == 'F' ? 'text-danger border border-danger' : 'text-warning border border-warning') }}">{{ $pd_rs == 'T' ? 'O' :($pd_rs == 'F' ? 'X' : 'W') }}</span>
                             @endforeach
                         </a>
                     </td>
@@ -56,11 +55,10 @@
                     <td class="text-center">
                         <a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">
                             @foreach($i->pqa_quality_result as $pqa_rs)
-                                <span class="{{ $pqa_rs == 'T' ? 'text-success border border-success' : ($pqa_rs == 'F' ? 'text-danger border border-danger' : 'text-warning border border-warning') }}">{{ $pqa_rs }}</span>
+                                <span class="{{ $pqa_rs[0] == 'T' ? 'text-success border border-success' : ($pqa_rs[0] == 'F' ? 'text-danger border border-danger' : 'text-warning border border-warning') }}">{{ $pqa_rs[0] == 'T' ? 'O' :($pqa_rs[0] == 'F' ? 'X' : 'W') }}</span>
                             @endforeach
                         </a>
                     </td>
-                    <td><a href="{{ route('pages.selfcheckproduction.edit',['id'=> $i->id,'page'=> 0]) }}">{{ $i->is_enable }}</a></td>
                     <td><a href="{{ route('selfcheckproduction.pdf',['id'=> $i->id,'page'=> null]) }}" target="_blank">pdf</a></td>
                 </tr>
                 @endforeach

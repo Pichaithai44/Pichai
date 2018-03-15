@@ -2,7 +2,15 @@
 @section('title', 'Page Title')
 @section('list', 'เอกสารยืนยันการตรวจสอบชิ้นงานก่อนการผลิต (Self Check Production)')
 @section('content')
-<p>เอกสาร ตอนที่ 1 <span>สถานะ : ยังไม่ได้ยืนยันการตรวจสอบ</span></p></p>
+@if (session('status'))
+    <div class="alert {{ session('result') ? 'alert-success' : 'alert-danger' }}" role="alert">
+        <strong>{{ session('status') }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
+<p>เอกสาร ตอนที่ 1 สถานะ : <span class="text-danger">ยังไม่ได้ยืนยันการตรวจสอบ</span></p>
     <form action="{{ route('pages.selfcheckproduction.create') }}" method="POST" id="my_form" enctype="multipart/form-data">
         {{ csrf_field() }}
         {{ method_field('PATCH') }}
@@ -24,7 +32,7 @@
             <input class="form-control text-left input-disable-event" type="text" name="lot_no_fix" id="lot_no_fix" value="{{ date('ymd') }}"/>
             </div>
             <div class="col-1">
-            <input class="form-control text-left {{$errors->has('lot_no') ? 'errors-has-danger' : null}}" type="text" maxlength="2" placeholder="xx" name="lot_no" value="{{ old('lot_no') }}"/>
+            <input class="form-control text-left input-disable-event {{$errors->has('lot_no') ? 'errors-has-danger' : null}}" type="text" maxlength="2" placeholder="XX" name="lot_no" value="01"/>
             </div>
         </div>
         @if ($errors->has('lot_no'))
@@ -37,8 +45,15 @@
 
         <div class="form-group row">
             <label class="col-4 col-form-label">1. หมายเลขที่ผลิต (Part Number)</label>
-            <div class="col-8">
-            <input class="form-control text-left {{$errors->has('part_no') ? 'errors-has-danger' : null}}" type="text" name="part_no" value="{{ old('part_no') }}" id="part_no"/>
+            <div class="col-6">
+                <input class="form-control text-left {{$errors->has('part_no') ? 'errors-has-danger' : null}}" type="text" name="part_no" value="{{ old('part_no') }}" id="part_no"/>
+            </div>
+            <div class="col-2">
+                <select class="form-control" name="process" id="process">
+                    @foreach($processOption as $m)
+                    <option value="{{ $m['id'] ? $m['id'] : null }}" {{ $process_id ? ($process_id == $m['id'] ? 'selected' : null) : null }}>{{ $m['name'] }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
         @if ($errors->has('part_no'))
@@ -248,11 +263,17 @@
                     $('#pre_production_check_id').val(ui.item.pre_production_check_id);
                     $('#production_order').val(ui.item.product_order);
                     $('#q_point_sheet').val(ui.item.sheet_name);
-                    document.getElementById("PartNumber_2").value = ui.item.value;
-                    document.getElementById("PartName_2").value = ui.item.part_name;
-                    document.getElementById("Model_2").value = ui.item.model_name;
-                    document.getElementById("Customer_2").value = ui.item.customer_name;
-                    document.getElementById("AtProductionLine_2").value = ui.item.production_line;
+                    $('#process option').remove();
+                    $('#process').append($('<option>', {
+                            value: null,
+                            text : '-- กรุณาเลือก --' 
+                        }));
+                    $.each(ui.item.process,function(i, item){
+                        $('#process').append($('<option>', {
+                            value: item.id,
+                            text : item.name 
+                        }));
+                    });
                 }
             });
         });

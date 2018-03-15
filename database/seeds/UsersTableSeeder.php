@@ -12,370 +12,452 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        //
-        DB::table('users')->insert([
-            'first_name' => 'super',
-            'last_name' => 'admin',
-            'email' => 'admin@test.com',
-            'password' => bcrypt('password'),
-            'role_id' => '1',
-            'is_enable' => 'Y',
-        ]);
+        //        
+        $list = array(
+            [
+                'first_name'=> 'super',
+                'last_name'=> 'admin',
+                'email'=> 'admin@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> null,
+                'role_id'=> 1,//สิทธิใช้งาน
+                'department_id'=> null,//
+                'job_position_id'=> null,//ตำแหน่ง
+                'created_by'=> null,//admins
+            ],
+            [
+                'first_name'=> 'วัณณะ',
+                'last_name'=> 'จุมแพง',
+                'email'=> '10909000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10909',
+                'role_id'=> 3,//สิทธิใช้งาน
+                'department_id'=> 1,//
+                'job_position_id'=> 1,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'ตรัยรัตน์',
+                'last_name'=> 'หลงสุข',
+                'email'=> '11421000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11421',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 2,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'กฤษณะ',
+                'last_name'=> 'คอนวิมาน',
+                'email'=> '10625000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10625',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 2,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'นนทวี',
+                'last_name'=> 'แก้วโกย',
+                'email'=> '11278000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11278',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 3,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'วุฒิกร',
+                'last_name'=> 'ทองมี',
+                'email'=> '11809000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11809',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 3,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'อาทิตย์',
+                'last_name'=> 'ไชยสิทธิ์',
+                'email'=> '11039000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11039',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 2,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'พลวิวัฒ',
+                'last_name'=> 'อัศวินจันลา',
+                'email'=> '10824000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10824',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 3,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'กมล',
+                'last_name'=> 'ยะพลหา',
+                'email'=> '11433000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11433',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 3,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'วิชัย',
+                'last_name'=> 'พวงศรี',
+                'email'=> '10308000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10308',
+                'role_id'=> 3,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 1,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'กิตติพงษ์',
+                'last_name'=> 'ยืนนาน',
+                'email'=> '10392000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10392',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 2,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'คริสต์',
+                'last_name'=> 'สมทรัพย์',
+                'email'=> '11405000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11405',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>3 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'ชุมพล',
+                'last_name'=> 'แสนพวง',
+                'email'=> '11479000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11479',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>3 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'จำนงค์',
+                'last_name'=> 'ไชยศรีษะ',
+                'email'=> '11060000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11060',
+                'role_id'=> 3,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>1 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'อภิชาติ',
+                'last_name'=> 'สุนทรสุข',
+                'email'=> '10286000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10286',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>2 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'บัณฑิต',
+                'last_name'=> 'ฉลวยศรี',
+                'email'=> '11059000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11059',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>2 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'สราวุธ',
+                'last_name'=> 'บรรลือเขต',
+                'email'=> '11322000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11322',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 3,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'สุธิศักดิ์',
+                'last_name'=> 'แช่มช้อน',
+                'email'=> '11309000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11309',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 3,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'จตุพร',
+                'last_name'=> 'ไวยรัตน์',
+                'email'=> '10071000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10071',
+                'role_id'=> 3,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>1 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'พสิษฐ์',
+                'last_name'=> 'อัตรา',
+                'email'=> '11072000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11072',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>2 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'สยุมภู',
+                'last_name'=> 'ดีเส็ง',
+                'email'=> '10581000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10581',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>3 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'กฤษณะ',
+                'last_name'=> 'อรัญ',
+                'email'=> '10485000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10485',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>1 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'วิทยา',
+                'last_name'=> 'สุทธิชัยฤทธิ็',
+                'email'=> '10285000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10285',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 2,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'สุทิน',
+                'last_name'=> 'นิลพัตร',
+                'email'=> '10927000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10927',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 2,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'สมจิตร',
+                'last_name'=> 'มั่นคง',
+                'email'=> '11438000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11438',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>3 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'วิรัช',
+                'last_name'=> 'มาตเรียง',
+                'email'=> '10795000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10795',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>3 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'ชัยยงค์',
+                'last_name'=> 'วงทศรี',
+                'email'=> '11049000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11049',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=> 3,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'ชัยฤทธิ์',
+                'last_name'=> 'จงธรรมจินดา',
+                'email'=> '11498000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '11498',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>3,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'ประยุทธ',
+                'last_name'=> 'ราทะวงษ์',
+                'email'=> '17002000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '17002',
+                'role_id'=> 3,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>1,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'ดารากร',
+                'last_name'=> 'เจริญศรี',
+                'email'=> '10141000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10141',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>3 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'พิสิษฐ์',
+                'last_name'=> 'ศริพิทักษ์โชค',
+                'email'=> '10578000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10578',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>2 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'ประทวน',
+                'last_name'=> 'ม่วงประเสริฐ',
+                'email'=> '10679000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10679',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>3 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'สำราญ',
+                'last_name'=> 'คนพันธ์',
+                'email'=> '10906000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10906',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 1,//แผนก
+                'job_position_id'=>2 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'กิตติรัตน์',
+                'last_name'=> 'ดอกจันทร์',
+                'email'=> '10082000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10082',
+                'role_id'=> 3,//สิทธิใช้งานs
+                'department_id'=> 2,//แผนก
+                'job_position_id'=>1 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'จันทร์รัตน์',
+                'last_name'=> 'บุญร่วง',
+                'email'=> '10566000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10566',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 2,//แผนก
+                'job_position_id'=>2 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ],
+            [
+                'first_name'=> 'เฉลิมขวัญ',
+                'last_name'=> 'จดจำ',
+                'email'=> '10547000@test.com',
+                'password'=> bcrypt('password'),
+                'is_id'=> '10547',
+                'role_id'=> 2,//สิทธิใช้งาน
+                'department_id'=> 2,//แผนก
+                'job_position_id'=>2 ,//ตำแหน่ง
+                'created_by'=> 1,//admin
+            
+            ], 
+        );
+        foreach($list as $key => $l){ 
+            DB::table('users')->insert([
+                'first_name' => $l['first_name'],
+                'last_name' => $l['last_name'],
+                'email' => $l['email'],
+                'password' => $l['password'],
+                'is_id' => $l['is_id'],
+                'role_id' => $l['role_id'],
+                'department_id' => $l['department_id'],
+                'job_position_id' => $l['job_position_id'],
+                'is_enable' => 'Y'
+            ]);
+        }
     }
 }
-    // $list = array(
-    //     [
-    //         'part_no'=> '63722-TET-HOOO-50',
-    //         'part_name'=> 'ADPE L RR COMBI',
-    //         'model_id'=> 1,
-    //         'type_id'=> 1,
-    //         'material_id'=> 1,
-    //         'material_t'=> '0.6',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '63322-TET-HOOO-50',
-    //         'part_name'=> 'ADPT R RR COMBI',
-    //         'model_id'=> 1,
-    //         'type_id'=> 1,
-    //         'material_id'=> 1,
-    //         'material_t'=> '0.6',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65685-TBA-AOOO-H1',
-    //         'part_name'=> 'BRKT L FUEL TANK',
-    //         'model_id'=> 1,
-    //         'type_id'=> 2,
-    //         'material_id'=> 2,
-    //         'material_t'=> '2.3',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '61522-TBA-AOOO-H1',
-    //         'part_name'=> 'C/MBR R DA/BD LWR',
-    //         'model_id'=> 2,
-    //         'type_id'=> 2,
-    //         'material_id'=> 3,
-    //         'material_t'=> '1.6',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65667-TEA-TOOO-H1',
-    //         'part_name'=> 'OUTRIGGER L RR FRM SIDE',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 4,
-    //         'material_t'=> '0.7',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65617-TEA-TOOO-H1',
-    //         'part_name'=> 'OUTRIGGER R RR FRM SIDE',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 4,
-    //         'material_t'=> '0.7',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65667-TEZ-YOOO-H1',
-    //         'part_name'=> 'OUTRIGGER L RR FRM SIDE',
-    //         'model_id'=> 3,
-    //         'type_id'=> 4,
-    //         'material_id'=> 3,
-    //         'material_t'=> '0.7',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65617-TEZ-YOOO-H1',
-    //         'part_name'=> 'OUTRIGGER R RR FRM SIDE',
-    //         'model_id'=> 3,
-    //         'type_id'=> 4,
-    //         'material_id'=> 5,
-    //         'material_t'=> '0.7',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65776-TEA-TOOO-H1',
-    //         'part_name'=> 'ANCHOR L RR SEAT BELT',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 6,
-    //         'material_t'=> '1.4',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65726-TEA-TOOO-H1',
-    //         'part_name'=> 'ANCHOR R RR SEAT BELT',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 6,
-    //         'material_t'=> '1.4',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65776-TET-HOOO-H1',
-    //         'part_name'=> 'ANCHOR L RR SEAT BELT',
-    //         'model_id'=> 1,
-    //         'type_id'=> 1,
-    //         'material_id'=> 6,
-    //         'material_t'=> '1.4',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65726-TET-HOOO-H1',
-    //         'part_name'=> 'ANCHOR R RR SEAT BELT',
-    //         'model_id'=> 1,
-    //         'type_id'=> 1,
-    //         'material_id'=> 6,
-    //         'material_t'=> '1.4',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65776-TGG-AOOO-H1',
-    //         'part_name'=> 'ANCHOR L RR SEAT BELT',
-    //         'model_id'=> 1,
-    //         'type_id'=> 2,
-    //         'material_id'=> 7,
-    //         'material_t'=> '1.4',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65726-TGG-AOOO-H1',
-    //         'part_name'=> 'ANCHOR R RR SEAT BELT',
-    //         'model_id'=> 1,
-    //         'type_id'=> 2,
-    //         'material_id'=> 8,
-    //         'material_t'=> '1.4',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65683-TEA-TOOO-H1',
-    //         'part_name'=> 'BRKT L RR SUB FRAME',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 9,
-    //         'material_t'=> '1.6',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65633-TEA-TOOO-H1',
-    //         'part_name'=> 'BRKT R RR SUB FRAME',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 9,
-    //         'material_t'=> '1.6',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65669-TEZ-YOOO-H1',
-    //         'part_name'=> 'BRKT L BPR BEAM',
-    //         'model_id'=> 3,
-    //         'type_id'=> 4,
-    //         'material_id'=> 10,
-    //         'material_t'=> '2.0',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65619-TEZ-YOOO-H1',
-    //         'part_name'=> 'BRKT R RR BPR BEAM',
-    //         'model_id'=> 3,
-    //         'type_id'=> 4,
-    //         'material_id'=> 10,
-    //         'material_t'=> '2.0',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65674-TBA-AOOO-H1',
-    //         'part_name'=> 'BRKT L TRG ARM',
-    //         'model_id'=> 1,
-    //         'type_id'=> 2,
-    //         'material_id'=> 11,
-    //         'material_t'=> '1.0',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65624-TBA-AOOO-H1',
-    //         'part_name'=> 'BRKT R TRG ARM',
-    //         'model_id'=> 1,
-    //         'type_id'=> 2,
-    //         'material_id'=> 11,
-    //         'material_t'=> '1.0',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '64336/736-TEA-TOO1-H1',
-    //         'part_name'=> 'GST R/L RR SHELH RR',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 4,
-    //         'material_t'=> '0.8',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65518-TBA-AOOO-H1',
-    //         'part_name'=> 'ROD CHILD ANCHOR',
-    //         'model_id'=> 1,
-    //         'type_id'=> 2,
-    //         'material_id'=> 12,
-    //         'material_t'=> '',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '01',
-    //         'rev_date'=> '15/8/2014'
-    //     ],
-    //     [
-    //         'part_no'=> '64735-TEA-TOOO-H1',
-    //         'part_name'=> 'GST L SHELF FR',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 13,
-    //         'material_t'=> '0.6',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '64335-TEA-TOOO-H1',
-    //         'part_name'=> 'GST R SHELF FR',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 13,
-    //         'material_t'=> '0.6',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65687-TEA-TOOO-H1',
-    //         'part_name'=> 'BRKT B L R RR SUB FRAME',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 3,
-    //         'material_t'=> '2.0',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65637-TEA-TOOO-H1',
-    //         'part_name'=> 'BRKT B R R RR SUB FRAME',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 3,
-    //         'material_t'=> '2.0',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65736-TEX-YOO1-H1',
-    //         'part_name'=> 'PIOVT RR SEAT',
-    //         'model_id'=> 1,
-    //         'type_id'=> 4,
-    //         'material_id'=> 14,
-    //         'material_t'=> '1.4',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65633/683-TEA-TOOO-H1',
-    //         'part_name'=> 'BRKT R/L RR SUB FRAME',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 9,
-    //         'material_t'=> '1.6',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '61524-TEA-TOOO-H1',
-    //         'part_name'=> 'STIFF R DA/BD L WR TUNNEL',
-    //         'model_id'=> 1,
-    //         'type_id'=> 3,
-    //         'material_id'=> 15,
-    //         'material_t'=> '1.2',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '61522-TET-HOOO-H1',
-    //         'part_name'=> 'C/MBR R DA/BD LWR',
-    //         'model_id'=> 1,
-    //         'type_id'=> 1,
-    //         'material_id'=> 4,
-    //         'material_t'=> '1.6',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],
-    //     [
-    //         'part_no'=> '65624-TBA-AOOO-H1',
-    //         'part_name'=> 'BRKT R TRG ARM',
-    //         'model_id'=> 1,
-    //         'type_id'=> 2,
-    //         'material_id'=> 11,
-    //         'material_t'=> '1.0',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'
-    //     ],  
-    //     [
-    //         'part_no'=> '65688-TEA-TOOO-H1',
-    //         'part_name'=> 'BRKT C L RR SUB FRAME',
-    //         'model_id'=> 1,
-    //         'type_id'=> 2,
-    //         'material_id'=> 11,
-    //         'material_t'=> '2.3',
-    //         'refer'=> 'FM-QA-33',
-    //         'rev'=> '02',
-    //         'rev_date'=> '20/12/2017'//345 จบ
-    //     ],
-        
-       
-    
