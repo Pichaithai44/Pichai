@@ -375,6 +375,7 @@ class SelfcheckproductionController extends Controller
     public function update(Request $request, $id,$page)
     {
         //
+        // echo '<pre>';print_r($request->all());'</pre>';exit;
         if(Auth::user()->getAttributes()['id']){
             $validator = Validator::make($request->all(),$this->rules(),$this->messages());
             if($validator->fails()){
@@ -397,7 +398,53 @@ class SelfcheckproductionController extends Controller
                 $check->supervisor_pd = json_decode($check->supervisor_pd);
                 $check->supervisor_pqa = json_decode($check->supervisor_pqa);
                 if(Auth::user()->getAttributes()['role_id'] == (1 || 2)){
-                    if(Auth::user()->getAttributes()['department_id'] == 1 || Auth::user()->getAttributes()['role_id'] == 1){
+                    if(Auth::user()->getAttributes()['role_id'] == 1){
+                        $check->production_status[$page] = 'C';
+                        $check->pqa_status[$page] = 'C';
+                        $check->production_quality_result[$page] = $request->production_quality_result;
+                        $check->pqa_quality_result[$page] = array($request->pqa_quality_result,$request->other_comment);
+                        $check->neck_broken[$page] = $request->neck_broken;
+                        $check->burr[$page] = $request->burr;
+                        $check->work_example[$page] = $request->work_example;
+                        $check->issue_detail[$page] = $request->issue_detail;
+                        $check->issue_more_detail[$page] = $request->issue_more_detail;
+                        $check->supervisor_pd[$page] = $request->supervisor_pd_id;
+                        $check->supervisor_pqa[$page] = $request->supervisor_pqa_id;
+
+                        $result = DB::table('self_check_production')->where('id',$id)
+                        ->update([
+                            'pre_production_check_id' => $request->pre_production_check_id,
+                            'production_order' => $request->production_order,
+                            'lot_no_fix' => $request->lot_no_fix,
+                            'lot_no' => $request->lot_no,
+                            'production_date' => $request->production_date,
+                            'neck_broken' => json_encode($check->neck_broken),
+                            'burr' => json_encode($check->burr),
+                            'work_example' => json_encode($check->work_example),
+                            'issue_detail' => json_encode($check->issue_detail),
+                            'issue_more_detail' => json_encode($check->issue_more_detail),
+                            'at_shlft' => $request->at_shlft,
+                            'job_type' => $request->job_check == 1 ? 'SP' : ($request->job_check == 2 ? 'A' : ($request->job_check == 3 ? 'S' : 'SCR')),
+                            'supervisor_pd' => json_encode($check->supervisor_pd),
+                            'supervisor_pqa' => json_encode($check->supervisor_pqa),
+                            'production_status' => json_encode($check->production_status),
+                            'production_quality_result' => json_encode($check->production_quality_result),
+                            'pqa_status' => json_encode($check->pqa_status),
+                            'pqa_quality_result' => json_encode($check->pqa_quality_result),
+                            'updated_pd_by' => Auth::user()->getAttributes()['id'],
+                            'updated_pqa_by' => Auth::user()->getAttributes()['id'],
+                            'updated_at' => date('Y-m-d h:i:s'),
+                            'is_enable' => 'Y'
+                        ]);
+
+                        if($page == 2){
+                            $result_total = DB::table('self_check_production')->where('id',$id)
+                            ->update([
+                                'total_check_result' => $request->total_check_result
+                            ]);
+                        }
+                        
+                    } else if(Auth::user()->getAttributes()['department_id'] == 1){
                         $check->production_status[$page] = 'C';
                         $check->production_quality_result[$page] = $request->production_quality_result;
                         $check->neck_broken[$page] = $request->neck_broken;
@@ -571,22 +618,76 @@ class SelfcheckproductionController extends Controller
     public function rules()
     {
         //
-        $rules = [
-            'lot_no' => 'required|numeric|digits_between:00,99',
-            'part_no' => 'required',
-        ];
+        if(Auth::user()->getAttributes()['role_id'] == 1){
+            $rules = [
+                'lot_no' => 'required|numeric|digits_between:00,99',
+                'part_no' => 'required',
+                'production_quality_result' => 'required',
+                'supervisor_pd' => 'required',
+                'supervisor_pd_id' => 'required|numeric|digits_between:00000,99999',
+                'pqa_quality_result' => 'required',
+                'supervisor_pqa' => 'required',
+                'supervisor_pqa_id' => 'required|numeric|digits_between:00000,99999',
+            ];
+        } else if(Auth::user()->getAttributes()['department_id'] == 1){
+            $rules = [
+                'lot_no' => 'required|numeric|digits_between:00,99',
+                'part_no' => 'required',
+                'production_quality_result' => 'required',
+                'supervisor_pd' => 'required',
+                'supervisor_pd_id' => 'required|numeric|digits_between:00000,99999',
+            ];
+        } else if(Auth::user()->getAttributes()['department_id'] == 2){
+            $rules = [
+                'pqa_quality_result' => 'required',
+                'supervisor_pqa' => 'required',
+                'supervisor_pqa_id' => 'required|numeric|digits_between:00000,99999',
+            ];
+        }
         return $rules;
     }
 
     public function messages()
     {
         //
-        $messages = [
-            'lot_no.required' => 'กรุณากรอกเลขที่ล็อตให้ครบถ้วน',
-            'lot_no.numeric' => 'กรุณากรอกเป็นตัวเลข 0-9',
-            'lot_no.digits_between' => 'กรุณากรอกเลขที่ล็อต 2 ตัวสุดท้ายให้ถูกต้อง',
-            'part_no.required' => 'กรุณากรอก Part Number'
-        ];
+        if(Auth::user()->getAttributes()['role_id'] == 1){
+            $messages = [
+                'lot_no.required' => 'กรุณากรอกเลขที่ล็อตให้ครบถ้วน',
+                'lot_no.numeric' => 'กรุณากรอกเป็นตัวเลข 0-9',
+                'lot_no.digits_between' => 'กรุณากรอกเลขที่ล็อต 2 ตัวสุดท้ายให้ถูกต้อง',
+                'part_no.required' => 'กรุณากรอก Part Number',
+                'production_quality_result.required' => 'กรุณาเลือกผลการตรวจสอบ',
+                'supervisor_pd.required' => 'กรุณากรอกชื่อ',
+                'supervisor_pd_id.required' => 'กรุณากรอกรหัสประจำตัว',
+                'supervisor_pd_id.numeric' => 'กรอกรหัสประจำตัวเป็นตัวเลข',
+                'supervisor_pd_id.digits_between' => 'กรอกรหัสประจำตัวให้ถูกต้อง',
+                'pqa_quality_result.required' => 'กรุณาเลือกผลการตรวจสอบ',
+                'supervisor_pqa.required' => 'กรุณากรอกชื่อ',
+                'supervisor_pqa_id.required' => 'กรุณากรอกรหัสประจำตัว',
+                'supervisor_pqa_id.numeric' => 'กรอกรหัสประจำตัวเป็นตัวเลข',
+                'supervisor_pqa_id.digits_between' => 'กรอกรหัสประจำตัวให้ถูกต้อง',
+            ];
+        } else if(Auth::user()->getAttributes()['department_id'] == 1){
+            $messages = [
+                'lot_no.required' => 'กรุณากรอกเลขที่ล็อตให้ครบถ้วน',
+                'lot_no.numeric' => 'กรุณากรอกเป็นตัวเลข 0-9',
+                'lot_no.digits_between' => 'กรุณากรอกเลขที่ล็อต 2 ตัวสุดท้ายให้ถูกต้อง',
+                'part_no.required' => 'กรุณากรอก Part Number',
+                'production_quality_result.required' => 'กรุณาเลือกผลการตรวจสอบ',
+                'supervisor_pd.required' => 'กรุณากรอกชื่อ',
+                'supervisor_pd_id.required' => 'กรุณากรอกรหัสประจำตัว',
+                'supervisor_pd_id.numeric' => 'กรอกรหัสประจำตัวเป็นตัวเลข',
+                'supervisor_pd_id.digits_between' => 'กรอกรหัสประจำตัวให้ถูกต้อง',
+            ];
+        } else if(Auth::user()->getAttributes()['department_id'] == 2){
+            $messages = [
+                'pqa_quality_result.required' => 'กรุณาเลือกผลการตรวจสอบ',
+                'supervisor_pqa.required' => 'กรุณากรอกชื่อ',
+                'supervisor_pqa_id.required' => 'กรุณากรอกรหัสประจำตัว',
+                'supervisor_pqa_id.numeric' => 'กรอกรหัสประจำตัวเป็นตัวเลข',
+                'supervisor_pqa_id.digits_between' => 'กรอกรหัสประจำตัวให้ถูกต้อง',
+            ];
+        }
         return $messages;
     }
 

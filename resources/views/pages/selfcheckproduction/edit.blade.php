@@ -325,6 +325,13 @@
                                         <label for="quality_result_f" class="col-form-label @can('user') input-disable-event @endcan">ไม่ผ่านตามข้อกำหนดคุณภาพเบื้องต้น (Quick Qualily Check)</label>
                                     </div>
                                 </div>
+                                @if ($errors->has('production_quality_result'))
+                                    <div class="form-group row">
+                                        <div class="col-8 validate-danger">
+                                            {{ $errors->first('production_quality_result') }}
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="row">
                                     <div class="col">
                                         <label class="col-form-label">-กรณีไม่ผ่านแจ้งระดับหัวหน้าที่สูงขึ้น และ/หรือ ผู้จัดการทันที</label>
@@ -340,9 +347,23 @@
                                 <input type="text"class="form-control @can('user') input-disable-event @endcan" id="supervisor_pd" name="supervisor_pd" value="{{ old('supervisor_pd') ? old('supervisor_pd') : $item->supervisor_pd_name }}">
                             </div>
                             <div class="col-md-2">
-                                <input type="text"class="form-control @can('user') input-disable-event @endcan" id="supervisor_pd_id" name="supervisor_pd_id" value="{{ old('supervisor_pd_id') ? old('supervisor_pd_id') : $item->supervisor_pd }}">
+                                <input type="text"class="form-control @can('user') input-disable-event @endcan" id="supervisor_pd_id" name="supervisor_pd_id" value="{{ old('supervisor_pd_id') ? old('supervisor_pd_id') : $item->supervisor_pd }}" maxlength="5">
                             </div>
                         </div>
+                        @if ($errors->has('supervisor_pd'))
+                            <div class="form-group row">
+                                <div class=" offset-4 col-8 validate-danger">
+                                    {{ $errors->first('supervisor_pd') }}
+                                </div>
+                            </div>
+                        @endif
+                        @if ($errors->has('supervisor_pd_id'))
+                            <div class="form-group row">
+                                <div class=" offset-4 col-8 validate-danger">
+                                    {{ $errors->first('supervisor_pd_id') }}
+                                </div>
+                            </div>
+                        @endif
                     </div>
             </div>
         {{--  </form>  --}}
@@ -589,6 +610,13 @@
                                         <label for="pqa_quality_result_f" class="col-form-label @can('user') input-disable-event @endcan">ไม่ผ่านตามข้อกำหนด (Not Passed Dimension)</label>
                                     </div>
                                 </div>
+                                @if ($errors->has('pqa_quality_result'))
+                                    <div class="form-group row">
+                                        <div class="col-8 validate-danger">
+                                            {{ $errors->first('pqa_quality_result') }}
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="form-group row">
                                     <div class="col-md-3">
                                         <input type="checkbox" class="@can('user') input-disable-event @endcan" id="is_other_comment" name="is_other_comment" {{ old('other_comment') ? (old('other_comment') ? 'checked' : null) : ($item->pqa_quality_result[1] ? 'checked' : null) }}>
@@ -605,12 +633,26 @@
                         <div class="form-group row">
                             <label class="col-form-label">หัวหน้างาน (Supervisor): </label>
                             <div class="col-md-4">
-                                <input type="text"class="form-control @can('user') input-disable-event @endcan" id="supervisor_pqa" name="supervisor_pqa" value="{{ old('supervisor_pqa') ? old('supervisor_pqa') : $item->supervisor_pqa_name }}">
+                                <input type="text"class="form-control {{$errors->has('supervisor_pqa') ? 'errors-has-danger' : null}} @can('user') input-disable-event @endcan" id="supervisor_pqa" name="supervisor_pqa" value="{{ old('supervisor_pqa') ? old('supervisor_pqa') : $item->supervisor_pqa_name }}">
                             </div>
                             <div class="col-md-2">
-                                <input type="text"class="form-control @can('user') input-disable-event @endcan" id="supervisor_pqa_id" name="supervisor_pqa_id" value="{{ old('supervisor_pqa_id') ? old('supervisor_pqa_id') : $item->supervisor_pqa }}">
+                                <input type="text"class="form-control {{$errors->has('supervisor_pqa_id') ? 'errors-has-danger' : null}} @can('user') input-disable-event @endcan" id="supervisor_pqa_id" name="supervisor_pqa_id" value="{{ old('supervisor_pqa_id') ? old('supervisor_pqa_id') : $item->supervisor_pqa }}" maxlength="5">
                             </div>
                         </div>
+                        @if ($errors->has('supervisor_pqa'))
+                            <div class="form-group row">
+                                <div class=" offset-4 col-8 validate-danger">
+                                    {{ $errors->first('supervisor_pqa') }}
+                                </div>
+                            </div>
+                        @endif
+                        @if ($errors->has('supervisor_pqa_id'))
+                            <div class="form-group row">
+                                <div class=" offset-4 col-8 validate-danger">
+                                    {{ $errors->first('supervisor_pqa_id') }}
+                                </div>
+                            </div>
+                        @endif
                     </div>
             </div>
         </form>
