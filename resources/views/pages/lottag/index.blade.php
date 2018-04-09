@@ -26,7 +26,7 @@
                 @foreach($data->items() as $key => $i)
                 <tr>
                     <td><a href="{{ route('pages.lottag.edit',['id'=> $i->id]) }}">{{ $data->firstItem() + $key }}</a></td>
-                    <td><a href="{{ route('pages.lottag.edit',['id'=> $i->id]) }}"><img src="{{ $i->barcode_id }}"></a></td>
+                    <td><a href="{{ $i->barcode_id }}" data-lightbox="{{ $i->part_no }}" data-title="{{ $i->part_no }}"><img src="{{ $i->barcode_id }}"></a></td>
                     <td><a href="{{ route('pages.lottag.edit',['id'=> $i->id]) }}">{{ $i->model_name }}{{$data->perPage()}}</a></td>
                     <td><a href="{{ route('pages.lottag.edit',['id'=> $i->id]) }}">{{ $i->part_no }}</a></td>
                     <td><a href="{{ route('pages.lottag.edit',['id'=> $i->id]) }}">{{ $i->part_name }}</a></td>

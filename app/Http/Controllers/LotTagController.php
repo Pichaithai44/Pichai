@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use \Milon\Barcode\DNS1D;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class LottagController extends Controller
 {
@@ -263,20 +264,25 @@ class LottagController extends Controller
                 )
             ->where('lot_tag_process_file.lot_tag_id',$id)
             ->get();
+            
             $files = array();
             if(count($item_file)>0){
                 foreach($item_file as $file){
                     $item_img = DB::table('file')
-                    ->select('id','originalName as name','filebase64 as url')
+                    ->select('id','mimeType','originalName as name','hashName as url')
                     ->where('id',$file->file_id)
                     ->first();
+                    if($item_img){
+                        $item_img->url = url('/images/'.($item_img->url ? $item_img->url.'.'.MimeType::search($item_img->mimeType) : $item_img->name));
+                    }
                     $file->img = $item_img;
                     $files[] = $file; 
                 }
             }
+            // echo '<pre>';print_r($files);'</pre>';exit;
             $item->file_process = $files;
             $item->file_total = count($files);
-            // echo '<pre>';print_r($item->file_process);'</pre>';exit;
+            // echo '<pre>';print_r($item);'</pre>';exit;
         return view('pages.lottag.edit',[
             'item' => $item,
             'modelOption' => $modelOption,
@@ -363,18 +369,24 @@ class LottagController extends Controller
                     'updated_by' => Auth::user()->getAttributes()['id'],
                     'updated_at' => date('Y-m-d h:i:s')
                 ]);
-
+                $public_path_img = public_path().'/images/';
+                $tm_result = array();
                 for( $i = 1; $i <= 15; $i++ ){
                     if($request->hasFile('img_'.$i)){
+                        $fileName = md5($request->file('img_'.$i)->getClientOriginalName().time());
+                        Image::configure(array('driver' => 'gd'));
+                        $img = Image::make($request->file('img_'.$i)->getPathName());
+                        $img->backup();
+                        $img->encode($request->file('img_'.$i)->getClientMimeType(),100)->save($public_path_img.$fileName.'.'.MimeType::search($request->file('img_'.$i)->getClientMimeType()),75)->reset();
                         $id_img = DB::table('file')->insertGetId([
                             'originalName' => $request->file('img_'.$i)->getClientOriginalName(),
                             'mimeType' => $request->file('img_'.$i)->getClientMimeType(),
                             'size' => $request->file('img_'.$i)->getClientSize(),
-                            'filebase64' => 'data:'.$request->file('img_'.$i)->getClientMimeType().';base64,'.base64_encode(file_get_contents($request->file('img_'.$i))),
+                            'hashName' => $fileName,
                             'created_by' => Auth::user()->getAttributes()['id'],
                             'created_at' => date('Y-m-d h:i:s')
                         ]);
-                      
+                        
                         $process = DB::table('lkup_process')
                             ->select('id')
                             ->where('name', $request->{'process_'.$i})
@@ -390,9 +402,11 @@ class LottagController extends Controller
                             'created_by' => Auth::user()->getAttributes()['id'],
                             'created_at' => date('Y-m-d h:i:s')
                         ]);
+                        $tm_result[] = $lot_tag_process_file_id;
                     }
                 }
-                if($lot_tag_process_file_id){
+                // echo '<pre>';print_r($tm_result);'</pre>';exit;
+                if(count($tm_result)){
                     $result = true;
                     $message = 'บันทึกรายการสำเร็จ';
                 }else{
@@ -459,4 +473,36 @@ class LottagController extends Controller
         return $messages;
     }
 
+    public function deleteimg(Request $request)
+    {
+        //
+        $result = new \stdClass();
+        $result->message = '';
+        $result->result = false;
+        $public_path = public_path().'/images';
+        $result_step1 = DB::table('lot_tag_process_file')
+                        ->where('id', $request['id'])->first();
+        $result_step2 = DB::table('file')
+                        ->where('id', $result_step1->file_id)->first();
+        $result_step3 = DB::table('lot_tag_process_file')
+                        ->where('id', $request['id'])->delete();
+        
+        if($result_step2){
+            $result_step4 = DB::table('file')
+                            ->where('id', $result_step2->id)->delete();
+            $url_remove = $public_path.'/'.($result_step2->hashName ? $result_step2->hashName.'.'.MimeType::search($result_step2->mimeType) : $result_step2->originalName);
+            $result->remove = unlink($url_remove);
+
+        }
+
+        if($result_step3){
+            $result->message = 'ลบสำเร็จ';
+            $result->result = true;
+        } else {
+            $result->message = 'ลบไม่สำเร็จ';
+            $result->result = false; 
+        }
+
+        return response()->json($result);
+    }
 }

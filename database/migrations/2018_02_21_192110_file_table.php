@@ -19,7 +19,7 @@ class FileTable extends Migration
             $table->string('originalName');
             $table->string('mimeType');
             $table->integer('size');
-            $table->mediumText('filebase64')->charset('ascii')->nullable();
+            $table->text('hashName')->nullable();
             $table->integer('created_by');
             $table->integer('updated_by')->nullable();
             $table->timestamp('created_at');

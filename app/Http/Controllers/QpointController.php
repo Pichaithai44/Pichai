@@ -190,24 +190,19 @@ class QpointController extends Controller
     public function autocomplete(){
         $term = Input::get('term');
         $results = array();
-        
         $queries = DB::table('lkup_lot_tag')
             ->leftJoin('lkup_model','lkup_lot_tag.model_id','=','lkup_model.id')
             ->leftJoin('lkup_material','lkup_lot_tag.material_id','=','lkup_material.id')
             ->leftJoin('lkup_type','lkup_lot_tag.type_id','=','lkup_type.id')
-            ->leftJoin('file','lkup_lot_tag.intro_img_id','=','file.id')
             ->select(
                 'lkup_lot_tag.id as lottag_id',
                 'lkup_lot_tag.part_no',
                 'lkup_lot_tag.part_name',
-                'lkup_model.name as model_name',
-                'lkup_material.name as material_name',
-                'lkup_type.name as type_name',
-                'lkup_lot_tag.material_t',
-                'file.filebase64 as img'
+                'lkup_model.name as model_name'
                 )
             ->where('lkup_lot_tag.part_no', 'LIKE', '%'.$term.'%')
             ->take(10)->get();
+            // echo '<pre>';print_r($queries);'</pre>';exit;
         foreach ($queries as $query)
         {
             $results[] = [
@@ -215,12 +210,9 @@ class QpointController extends Controller
                 'lottag_id' => $query->lottag_id,
                 'part_name' => $query->part_name,
                 'model_name' => $query->model_name,
-                'material_name' => $query->material_name,
-                'type_name' => $query->type_name,
-                'material_t' => $query->material_t,
-                'img' => $query->img
             ];
         }
+        echo '<pre>';print_r($results);'</pre>';exit;
         return Response::json($results);
     }
 

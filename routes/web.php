@@ -46,6 +46,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('/department/edit/{id}','DepartmentController@update')->name('pages.department.update');
     Route::get('/department/delete/{id}','DepartmentController@destroy')->name('pages.department.delete');
 
+    Route::get('/subdepartment','SubdeparmentController@index')->name('pages.subdepartment.index');
+    Route::get('/subdepartment/add',function () {return view('pages.subdepartment.add');});
+    Route::patch('/subdepartment/add','SubdeparmentController@create')->name('pages.subdepartment.create');
+    Route::get('/subdepartment/edit/{id}','SubdeparmentController@edit')->name('pages.subdepartment.edit');
+    Route::patch('/subdepartment/edit/{id}','SubdeparmentController@update')->name('pages.subdepartment.update');
+    Route::get('/subdepartment/delete/{id}','SubdeparmentController@destroy')->name('pages.subdepartment.delete');
+
     Route::get('/jobposition','JobpositionController@index')->name('pages.jobposition.index');
     Route::get('/jobposition/add',function () {return view('pages.jobposition.add');});
     Route::patch('/jobposition/add','JobpositionController@create')->name('pages.jobposition.create');
@@ -101,6 +108,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::patch('/lottag/add','LotTagController@create')->name('pages.lottag.create');
     Route::get('/lottag/edit/{id}','LotTagController@edit')->name('pages.lottag.edit');
     Route::patch('/lottag/edit/{id}','LotTagController@update')->name('pages.lottag.update');
+    Route::get('/lottag/edit/delete/img', 'LotTagController@deleteimg')->name('pages.lottag.deleteimg');
     Route::get('/lottag/delete/{id}','LotTagController@destroy')->name('pages.lottag.delete');
     Route::get('/lottag/pdf/{id}','PdfController@lottag')->name('lottag.pdf');
     
