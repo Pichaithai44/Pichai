@@ -20,5 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MaterialsTableSeeder::class);
         $this->call(LottagsTableSeeder::class);
         $this->call(ProcessTableSeeder::class);
+        $this->call(LotTagProcessFilesTableSeeder::class);
+        $this->call(DepartmentsTableSeeder::class);
     }
 }

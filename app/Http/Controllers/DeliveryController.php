@@ -212,7 +212,7 @@ class DeliveryController extends Controller
                     'created_by' => Auth::user()->getAttributes()['id'],
                     'created_at' => date('Y-m-d h:i:s')
                 ]);
-                DB::table('delivery')->where('id',$id)
+                $result = DB::table('delivery')->where('id',$id)
                 ->update([
                     'lot_tag_id' => $request->lottag_id,
                     'customer_id' => $request->customer,
@@ -222,10 +222,12 @@ class DeliveryController extends Controller
                     'updated_by' => Auth::user()->getAttributes()['id'],
                     'updated_at' => date('Y-m-d h:i:s')
                 ]);
-                
-                return redirect()->route('pages.delivery.edit',[
-                    'id' => $id
-                ]);
+                if($result){
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
             }
         } else {
             return redirect('home');

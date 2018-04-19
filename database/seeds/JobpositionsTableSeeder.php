@@ -14,16 +14,17 @@ class JobpositionsTableSeeder extends Seeder
     {
         //
         $list = array(
+            ['name' => 'chief'],
             ['name' => 'supervisor'],
-            ['name'=> 'staff']
-    );
+            ['name'=> 'support']
+        );
         foreach($list as $key => $l){
             DB::table('job_position')->insert([
                 'id' => ( $key + 1 ),
                 'name' => $l['name'],
                 'created_by' => 1,
                 'is_enable' => 'Y',
-                'created_at' => date('Y-m-d h:i:s'),
+                'created_at' => date('Y-m-d h:i:s')
             ]);
         }
     }

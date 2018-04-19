@@ -2,6 +2,14 @@
 @section('title', 'Page Title')
 @section('list', 'แก้ไขข้อมูลค่าเริ่มต้น Lot Tag')
 @section('content')
+@if (session('status'))
+    <div class="alert {{ session('result') ? 'alert-success' : 'alert-danger' }}" role="alert">
+        <strong>{{ session('status') }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
     <div class="container form-control">
         <form action="{{ route('pages.lottag.update',['id'=> $item->id]) }}" id="my_form" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
@@ -122,9 +130,11 @@
                     @if(count($item->file_process)>0)
                         @foreach($item->file_process as $key => $file_process)
                         <div class='form-group row' id='{{ 'box_'.($key+1) }}'>
-                            <input type="hidden" value="{{ $file_process->img->id }}" name="{{ 'id_img_'.($key+1) }}">
+                            <input type="hidden" value="{{ @$file_process->img->id }}" name="{{ 'id_img_'.($key+1) }}">
                             <div class='col-4'>
-                                <img id='{{ 'preview_img_'.($key+1) }}' src="{{ $file_process->img->url ? $file_process->img->url : '/img/no-img.png' }}" class="preview-img"/>
+                                <a href="{{ @$file_process->img->url ? $file_process->img->url : '/img/no-img.png' }}" data-lightbox="image-group" data-title="{{ old('process_'.($key+1)) ? old('process_'.($key+1)) : $file_process->process_name }}">
+                                    <img id='{{ 'preview_img_'.($key+1) }}' src="{{ @$file_process->img->url ? $file_process->img->url : '/img/no-img.png' }}" class="preview-img"/>    
+                                </a>
                             </div>
                             <div class='col-4'>
                                 <div class='form-group row'>
@@ -136,8 +146,8 @@
                             </div>
                             <div class='col-4'>
                                 <label class='btn btn-success' for='{{ 'img_'.($key+1) }}'>เลือกรูป</label>
-                                <span id='{{ 'img_name_'.($key+1) }}' class='text-add-img-overflow'>{{ $file_process->img->name }}</span>
-                                <button id='{{ 'img_delete_'.($key+1) }}' onclick='deleteItem({{ ($key+1) }})' class='btn-add-delete'><i class="fas fa-trash-alt"></i></button>
+                                <span id='{{ 'img_name_'.($key+1) }}' class='text-add-img-overflow'>{{ @$file_process->img->name }}</span>
+                                <a id='{{ 'img_delete_'.($key+1) }}' onclick='deleteItem({{ $file_process->id }},{{ ($key+1) }})' class='btn btn-add-delete text-white'><i class='fas fa-trash-alt'></i></a>
                                 <input type='file'class='form-control' name='{{ 'img_'.($key+1) }}' id='{{ 'img_'.($key+1) }}' accept='image/*' onchange='loadPreViewTextImg({{ ($key+1) }})' style='display:none;'>
                             </div>
                         </div>
@@ -212,12 +222,16 @@
             </div>
         </div>
     </div>
+    <p></p>
 @endsection
 @section('script')
     <script>
         function submit(){
             document.getElementById('my_form').submit();
         }
+        $(document).ready(function() {
+            $( "div.alert-success" ).slideUp(600);
+        });
         $( function() {
             $.fn.datepicker.dates['th'] = {
                 days: ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"],
@@ -243,7 +257,9 @@
                 $( "#add_input" ).append( `
                     <div class='form-group row' id='box_${item}'>
                         <div class='col-4'>
-                            <img id='preview_img_${item}' src="/img/no-img.png" class="preview-img"/>
+                            <a href="/img/no-img.png" data-lightbox="image-group-new" data-title="process">
+                                <img id='preview_img_${item}' src="/img/no-img.png" class="preview-img"/>
+                            </a>
                         </div>
                         <div class='col-4'>
                             <div class='form-group row'>
@@ -256,7 +272,7 @@
                         <div class='col-4'>
                             <label class='btn btn-success' for='img_${item}'>เลือกรูป</label>
                             <span id='img_name_${item}' class='text-add-img-overflow'></span>
-                            <button id='img_delete_${item}' onclick='deleteItem(${item})' class='btn-add-delete'><i class="fas fa-trash-alt"></i></button>
+                            <a id='img_delete_${item}' onclick='deleteItem(null,${item})' class='btn btn-add-delete text-white'><i class="fas fa-trash-alt"></i></a>
                             <input type='file'class='form-control' name='img_${item}' id='img_${item}' accept='image/*' onchange='loadPreViewTextImg(${item})' style='display:none;'>
                         </div>
                     </div>
@@ -281,8 +297,55 @@
                 document.getElementById(`img_name_${number ? number : null}`).innerHTML = fileToLoad.name;
             };
         }
-        function deleteItem(number){
-            $(`#box_${number}`).remove();
+        function deleteItem(id,number){
+            if(id){
+                $.ajax({
+                type: "GET",
+                url: "{{ route('pages.lottag.deleteimg') }}",
+                data: {'id':id},
+                success: function(data){
+                if(data.result){
+
+                    $("p").append(`
+                        <div id="dialog-message" title="แจ้งเตือน" class="success-message">
+                            <p>${data.message}</p>
+                        </div>`);
+
+                    $( "#dialog-message" ).slideDown(600).delay(600).slideUp(1000);
+                    $( "#dialog-message" ).dialog({
+                        dialogClass: "no-close dialog-success-message",
+                        height: 100,
+                        width: 200,
+                        resizable: false,
+                    });
+
+                    $(`#box_${number}`).remove();
+
+                }else{
+                    $("p").append(`
+                        <div id="dialog-message" title="แจ้งเตือน" class="error-message">
+                            <p>${data.message}</p>
+                        </div>`);
+
+                    $( "#dialog-message" ).slideDown(600).delay(600).slideUp(1000);
+                    $( "#dialog-message" ).dialog({
+                        dialogClass: "no-close dialog-error-message",
+                        height: 100,
+                        width: 200,
+                        resizable: false,
+                    });
+                }
+                setTimeout(() => {
+                    $( "#dialog-message" ).dialog( "close" );
+                }, 1500);
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {}
+            });
+            } else{
+                $(`#box_${number}`).remove();
+            }
         }
+
     </script>
 @endsection

@@ -16,7 +16,7 @@ class LotTagProcessFileTable extends Migration
         //
         Schema::create('lot_tag_process_file', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('file_id')->unsigned();
+            $table->integer('file_id')->unsigned()->nullable();
             $table->integer('lot_tag_id')->unsigned();
             $table->integer('process_id')->unsigned();
             $table->integer('created_by')->unsigned();

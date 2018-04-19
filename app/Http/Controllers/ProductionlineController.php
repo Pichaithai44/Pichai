@@ -41,7 +41,6 @@ class ProductionlineController extends Controller
     public function create(Request $request)
     {
         //
-
         if(Auth::user()->getAttributes()['id']){
             $validator = Validator::make($request->all(),$this->rules(),$this->messages());
             if($validator->fails()){
@@ -117,16 +116,20 @@ class ProductionlineController extends Controller
                             ->withErrors($validator)
                             ->withInput();
             }else{
-                DB::table('lkup_production_line')->where('id',$id)
+                $result = DB::table('lkup_production_line')->where('id',$id)
                 ->update([
                     'line_name' => $request->name,
                     'is_enable' => $request->isEnable,
                     'updated_at' => date('Y-m-d h:i:s'),
                     'updated_by' => Auth::user()->getAttributes()['id']
                 ]);
-                return redirect()->route('pages.productionline.edit',[
-                    'id' => $id
-                ]);
+                
+                if($result){
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
             }
         } else{
             return redirect('home');

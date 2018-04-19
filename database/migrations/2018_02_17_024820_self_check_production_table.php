@@ -21,21 +21,24 @@ class SelfCheckProductionTable extends Migration
             $table->string('lot_no_fix');
             $table->string('lot_no');
             $table->string('production_date');
-            $table->string('quality_important')->nullable();
-            $table->enum('is_rm_type_thickness', ['Y', 'N']);
-            $table->string('rm_type')->nullable();
-            $table->string('rm_thickness')->nullable();
-            $table->enum('is_issue', ['Y', 'N']);
-            $table->string('issue_detail')->nullable();
-            $table->enum('is_issue_more', ['Y', 'N']);
-            $table->string('issue_more_detail')->nullable();
+            $table->text('neck_broken')->nullable();
+            $table->text('burr')->nullable();
+            $table->text('work_example')->nullable();
+            $table->text('issue_detail')->nullable();
+            $table->text('issue_more_detail')->nullable();
             $table->enum('at_shlft', ['01', '02']);
-            $table->enum('production_status', ['W', 'C']);//W = wait, C = checked
-            $table->enum('pqa_status', ['W', 'C']);//W = wait, C = checked
-            $table->enum('production_quality_result', ['T', 'F']);//T = Check through, F = Check failed
-            $table->enum('pqa_quality_result', ['T', 'F']);//T = Check through, F = Check failed
+            $table->text('production_status');//W = wait,C = checked
+            $table->text('pqa_status');//W = wait,C = checked
+            $table->text('production_quality_result');//W = Wait,T = Check through, F = Check failed
+            $table->text('pqa_quality_result');//W = Wait,T = Check through, F = Check failed
+            $table->enum('job_type',['SP', 'A','S','SCR'])->nullable();//SP = Semi Part, A = F/G Assembly, S = F/G Stemping, SCR = Special Case as The Customer Requirement
+            $table->decimal('total_check_result',5,2)->nullable();//SP = Semi Part, A = F/G Assembly, S = F/G Stemping, SCR = Special Case as The Customer Requirement
+            $table->integer('process_id')->unsigned()->nullable();
             $table->integer('created_by');
-            $table->integer('updated_by')->nullable();
+            $table->text('supervisor_pd')->nullable();
+            $table->text('supervisor_pqa')->nullable();
+            $table->integer('updated_pd_by')->unsigned()->nullable();
+            $table->integer('updated_pqa_by')->unsigned()->nullable();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
             $table->enum('is_enable', ['Y', 'N']);

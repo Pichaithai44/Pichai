@@ -63,6 +63,9 @@
             <li class="{{ Request::is('department') || Request::is('department/*') ? 'active' : null }}">
               <a href="{{route('pages.department.index')}}"><i class="fas fa-cube"></i> แผนก</a>
             </li>
+            <li class="{{ Request::is('subdepartment') || Request::is('subdepartment/*') ? 'active' : null }}">
+              <a href="{{route('pages.subdepartment.index')}}"><i class="fas fa-cube"></i> ฝ่ายย่อยในแผนก</a>
+            </li>
             <li class="{{ Request::is('jobposition') || Request::is('jobposition/*') ? 'active' : null }}">
               <a href="{{route('pages.jobposition.index')}}"><i class="fas fa-cube"></i> ตำแหน่งงาน</a>
             </li>

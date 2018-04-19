@@ -60,53 +60,6 @@
                 </div>
             @endif
             <div class="form-group row">
-                <label class="col-4 col-form-label">Material</label>
-                <div class="col-8">
-                    <input class="form-control text-left" type="text" name="material" id="material" value="{{ old('material') }}"/>
-                </div>
-            </div>
-            @if ($errors->has('material'))
-                <div class="form-group row">
-                    <div class=" offset-4 col-8 validate-danger">
-                        {{ $errors->first('material') }}
-                    </div>
-                </div>
-            @endif
-            <div class="form-group row">
-                <label class="col-4 col-form-label">type</label>
-                <div class="col-8">
-                    <input class="form-control text-left" type="text" name="type" id="type" value="{{ old('type') }}"/>
-                </div>
-            </div>
-            @if ($errors->has('type'))
-                <div class="form-group row">
-                    <div class=" offset-4 col-8 validate-danger">
-                        {{ $errors->first('type') }}
-                    </div>
-                </div>
-            @endif
-            <div class="form-group row">
-                <label class="col-4 col-form-label">T.</label>
-                <div class="col-8">
-                    <input class="form-control text-left" type="text" name="t_value" id="t_value" value="{{ old('t_value') }}"/>
-                </div>
-            </div>
-            @if ($errors->has('t_value'))
-                <div class="form-group row">
-                    <div class=" offset-4 col-8 validate-danger">
-                        {{ $errors->first('t_value') }}
-                    </div>
-                </div>
-            @endif
-            <div class="form-group row">
-                <label class="col-12 col-form-label">Image</label>
-            </div>
-            <div class="form-group row">
-                <div class="col-4">
-                    <img id="preview" src="/img/no-img.png" class="preview-img"/>
-                </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-4 col-form-label">สถานะ</label>
                 <div class="col-8">
                     <div class="form-check form-check-inline">
@@ -145,14 +98,11 @@
             minlenght:3,
             autoFocus:true,
             select: function(event, ui) {
+                console.log(ui);
                 $('#part_no').val(ui.item.value);
                 $('#part_name').val(ui.item.part_name);
                 $('#model_name').val(ui.item.model_name);
-                $('#material').val(ui.item.material_name);
-                $('#type').val(ui.item.type_name);
-                $('#t_value').val(ui.item.material_t);
                 $('#lottag_id').val(ui.item.lottag_id);
-                document.getElementById("preview").src = ui.item.img;
             }
             });
         });

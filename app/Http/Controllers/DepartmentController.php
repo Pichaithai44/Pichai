@@ -117,16 +117,19 @@ class DepartmentController extends Controller
                 ->withErrors($validator)
                 ->withInput();
             }else{
-                DB::table('department')->where('id',$id)
+                $result = DB::table('department')->where('id',$id)
                 ->update([
                     'name' => $request->name,
                     'is_enable' => $request->isEnable,
                     'updated_at' => date('Y-m-d h:i:s'),
                     'updated_by' => Auth::user()->getAttributes()['id']
                 ]);
-                return redirect()->route('pages.department.edit',[
-                    'id' => $id
-                ]);
+                if($result){
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
             }
         } else {
             return redirect('home');
