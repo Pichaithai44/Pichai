@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\ArrayToXml\ArrayToXml;
+use Vyuldashev\XmlToArray\XmlToArray;
 use Validator;
 
 class SettingSystemController extends Controller
@@ -17,7 +19,12 @@ class SettingSystemController extends Controller
     {
         $result = [];
 
-        $result["data"] = DB::table('systems')->first();
+        $systems_result = DB::table('systems')->first();
+        if(!empty($systems_result->xml_info)) {
+
+            $xml_info = XmlToArray::convert($systems_result->xml_info);
+            $result['data'] = $xml_info['system_local'];
+        }
 
         return view('pages.settingsystem.index',[
             'result' => $result
@@ -42,7 +49,6 @@ class SettingSystemController extends Controller
      */
     public function store(Request $request)
     {
-        
         $validator = Validator::make($request->all(), $this->rules(), $this->messages());
         if($validator->fails()){
             return redirect('settingsystem')
@@ -53,41 +59,85 @@ class SettingSystemController extends Controller
             $systems_rs = DB::table('systems')->first();
             $params = [];
     
+            $xml = [
+                'pawn_name' => $request->pawn_name,
+                'info'   => [
+                    'address'       => $request->address
+                    ,'moo'           => $request->moo
+                    ,'soi'           => $request->soi
+                    ,'road'          => $request->road
+                    ,'sub_district'  => $request->sub_district
+                    ,'district'      => $request->district
+                    ,'province'      => $request->province
+                    ,'postal_code'   => $request->postal_code
+                ],
+                'contact'   => [
+                    'tel'       => $request->tel
+                ],
+                'system_default' => [
+                    'interest_rate' => $request->interest_rate
+                    ,'owe'           => $request->owe 
+                ]
+            ];
+
+            $xml_result = ArrayToXml::convert($xml, [
+                'rootElementName' => 'system_local',
+                '_attributes' => [
+                    'xmlns' => 'localhost://pawn.test',
+                ],
+            ], true, 'UTF-8');
+
             $params = [
-                'pawn_name'      => $request->pawn_name
-                ,'address'       => $request->address
-                ,'moo'           => $request->moo
-                ,'soi'           => $request->soi
-                ,'road'          => $request->road
-                ,'sub_district'  => $request->sub_district
-                ,'district'      => $request->district
-                ,'province'      => $request->province
-                ,'postal_code'   => $request->postal_code
-                ,'tel'           => $request->tel
-                ,'interest_rate' => $request->interest_rate
-                ,'owe'           => $request->owe
+                'xml_info'      => $xml_result
                 ,'created_at'    => date('Y-m-d h:i:s')
                 ,'updated_at'    => date('Y-m-d h:i:s')
             ];
-            
-            $result = DB::table('systems')->where('id', $systems_rs->id)->update($params);
-            // if($systems_rs) {
-            //     $result = DB::table('systems')->update($params);
-            // } else {
-            //     $result = DB::table('systems')->insert($params);
-            // }
-            // DB::beginTransaction();
-            // try {
-    
-           
-            
-            //     DB::commit();
-            //     // all good
-            // } catch (\Exception $e) {
-            //     DB::rollback();
-            //     // something went wrong
-            // }
-    
+      
+            DB::beginTransaction();
+
+            if($systems_rs) {
+                
+                try {
+        
+                    $result = DB::table('systems')->where('id', $systems_rs->id)->update($params);
+                    
+                } catch(ValidationException $e) {
+                  
+                    DB::rollback();
+
+                    return redirect('settingsystem')
+                        ->withErrors($e->getErrors())
+                        ->withInput();
+
+                } catch (\Exception $e) {
+
+                    DB::rollback();
+                    throw $e;
+                }
+                
+            } else {
+
+                try {
+        
+                $result = DB::table('systems')->insert($params);
+                    
+                } catch(ValidationException $e) {
+                  
+                    DB::rollback();
+
+                    return redirect('settingsystem')
+                        ->withErrors($e->getErrors())
+                        ->withInput();
+
+                } catch (\Exception $e) {
+
+                    DB::rollback();
+                    throw $e;
+                }
+            }
+
+            DB::commit();
+       
             if($result) {
 
                 $message = 'บันทึกรายการสำเร็จ';

@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ asset('css/bootstrap-4.0.0-dist/bootstrap-grid.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('css/bootstrap-4.0.0-dist/bootstrap-reboot.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('css/bootstrap-4.0.0-dist/bootstrap-reboot.min.css') }}" type="text/css">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-toggle-master/bootstrap2-toggle.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('js/jquery-ui-1.12.1/jquery-ui.min.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('js/jquery.tablesorter/css/style.css') }}" type="text/css">
     <link rel="stylesheet" href="{{ asset('css/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css') }}" type="text/css">
@@ -29,6 +30,7 @@
         $.widget.bridge('uibutton', $.ui.button);
     </script>
     <script type="text/javascript" src="{{ asset('js/bootstrap-4.0.0-dist/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap-toggle-master/bootstrap2-toggle.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/sidebar/raphael.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/sidebar/morris.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/sidebar/jquery.sparkline.min.js') }}"></script>
@@ -38,7 +40,7 @@
     <script type="text/javascript" src="{{ asset('js/sidebar/moment.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/sidebar/daterangepicker.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/sidebar/bootstrap-datepicker.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/sidebar/bootstrap3-wysihtml5.all.min.js') }}"></script>
+    {{-- <script type="text/javascript" src="{{ asset('js/sidebar/bootstrap3-wysihtml5.all.min.js') }}"></script> --}}
     <script type="text/javascript" src="{{ asset('js/sidebar/jquery.slimscroll.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/sidebar/fastclick.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/sidebar/adminlte.min.js') }}"></script>

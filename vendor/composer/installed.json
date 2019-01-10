@@ -672,17 +672,17 @@
     },
     {
         "name": "fideloper/proxy",
-        "version": "4.0.0",
-        "version_normalized": "4.0.0.0",
+        "version": "4.1.0",
+        "version_normalized": "4.1.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/fideloper/TrustedProxy.git",
-            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a"
+            "reference": "177c79a2d1f9970f89ee2fb4c12b429af38b6dfb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/fideloper/TrustedProxy/zipball/cf8a0ca4b85659b9557e206c90110a6a4dba980a",
-            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a",
+            "url": "https://api.github.com/repos/fideloper/TrustedProxy/zipball/177c79a2d1f9970f89ee2fb4c12b429af38b6dfb",
+            "reference": "177c79a2d1f9970f89ee2fb4c12b429af38b6dfb",
             "shasum": ""
         },
         "require": {
@@ -694,7 +694,7 @@
             "mockery/mockery": "~1.0",
             "phpunit/phpunit": "^6.0"
         },
-        "time": "2018-02-07T20:20:57+00:00",
+        "time": "2019-01-10T14:06:47+00:00",
         "type": "library",
         "extra": {
             "laravel": {
@@ -1291,6 +1291,44 @@
             }
         ],
         "description": "Highlight PHP code in terminal"
+    },
+    {
+        "name": "larapack/dd",
+        "version": "1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/larapack/dd.git",
+            "reference": "561b5111a13d0094b59b5c81b1572489485fb948"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/larapack/dd/zipball/561b5111a13d0094b59b5c81b1572489485fb948",
+            "reference": "561b5111a13d0094b59b5c81b1572489485fb948",
+            "shasum": ""
+        },
+        "require": {
+            "symfony/var-dumper": "*"
+        },
+        "time": "2016-12-15T09:34:34+00:00",
+        "type": "package",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "src/helper.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Mark Topper",
+                "email": "hi@webman.io"
+            }
+        ],
+        "description": "`dd` is a helper method in Laravel. This package will add the `dd` to your application."
     },
     {
         "name": "laravel/dusk",
@@ -4436,6 +4474,57 @@
         ]
     },
     {
+        "name": "spatie/array-to-xml",
+        "version": "2.8.0",
+        "version_normalized": "2.8.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/spatie/array-to-xml.git",
+            "reference": "c7dc15c460eeaf0fa8f8f2d0606155d48f93a9bd"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/spatie/array-to-xml/zipball/c7dc15c460eeaf0fa8f8f2d0606155d48f93a9bd",
+            "reference": "c7dc15c460eeaf0fa8f8f2d0606155d48f93a9bd",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^7.0"
+        },
+        "require-dev": {
+            "mockery/mockery": "^1.0",
+            "phpunit/phpunit": "^6.3",
+            "spatie/phpunit-snapshot-assertions": "^1.0"
+        },
+        "time": "2018-11-29T16:24:53+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Spatie\\ArrayToXml\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Freek Van der Herten",
+                "email": "freek@spatie.be",
+                "homepage": "https://murze.be",
+                "role": "Developer"
+            }
+        ],
+        "description": "Convert an array to xml",
+        "homepage": "https://github.com/spatie/array-to-xml",
+        "keywords": [
+            "array",
+            "convert",
+            "xml"
+        ]
+    },
+    {
         "name": "swiftmailer/swiftmailer",
         "version": "v6.1.3",
         "version_normalized": "6.1.3.0",
@@ -5725,6 +5814,49 @@
             "env",
             "environment"
         ]
+    },
+    {
+        "name": "vyuldashev/xml-to-array",
+        "version": "v1.0.1",
+        "version_normalized": "1.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/vyuldashev/xml-to-array.git",
+            "reference": "ae1713b167093716b8e8d56bfb318befac4a8c4b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/vyuldashev/xml-to-array/zipball/ae1713b167093716b8e8d56bfb318befac4a8c4b",
+            "reference": "ae1713b167093716b8e8d56bfb318befac4a8c4b",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.1"
+        },
+        "require-dev": {
+            "larapack/dd": "^1.1",
+            "phpunit/phpunit": "^6.4",
+            "spatie/array-to-xml": "^2.7"
+        },
+        "time": "2018-04-22T15:20:09+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Vyuldashev\\XmlToArray\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Vladimir Yuldashev",
+                "email": "misterio92@gmail.com"
+            }
+        ],
+        "description": "Convert xml to an array"
     },
     {
         "name": "webmozart/assert",

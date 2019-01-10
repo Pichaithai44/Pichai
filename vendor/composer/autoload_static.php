@@ -25,6 +25,7 @@ class ComposerStaticInit8735e22262fd3dc0b9efe90e9daba682
         '40360c0b9b437e69bcbb7f1349ce029e' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/parse_cookie_header.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '0e423a14e27410a071e5d815d3ffc856' => __DIR__ . '/..' . '/larapack/dd/src/helper.php',
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
@@ -52,6 +53,10 @@ class ComposerStaticInit8735e22262fd3dc0b9efe90e9daba682
             'Whoops\\' => 7,
             'Webmozart\\Assert\\' => 17,
         ),
+        'V' => 
+        array (
+            'Vyuldashev\\XmlToArray\\' => 22,
+        ),
         'T' => 
         array (
             'TijsVerkoyen\\CssToInlineStyles\\' => 31,
@@ -76,6 +81,7 @@ class ComposerStaticInit8735e22262fd3dc0b9efe90e9daba682
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
+            'Spatie\\ArrayToXml\\' => 18,
         ),
         'R' => 
         array (
@@ -190,6 +196,10 @@ class ComposerStaticInit8735e22262fd3dc0b9efe90e9daba682
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
+        'Vyuldashev\\XmlToArray\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/vyuldashev/xml-to-array/src',
+        ),
         'TijsVerkoyen\\CssToInlineStyles\\' => 
         array (
             0 => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src',
@@ -265,6 +275,10 @@ class ComposerStaticInit8735e22262fd3dc0b9efe90e9daba682
         'Symfony\\Bridge\\PsrHttpMessage\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/psr-http-message-bridge',
+        ),
+        'Spatie\\ArrayToXml\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/array-to-xml/src',
         ),
         'Ramsey\\Uuid\\' => 
         array (
@@ -3905,6 +3919,7 @@ class ComposerStaticInit8735e22262fd3dc0b9efe90e9daba682
         'SebastianBergmann\\Timer\\RuntimeException' => __DIR__ . '/..' . '/phpunit/php-timer/src/RuntimeException.php',
         'SebastianBergmann\\Timer\\Timer' => __DIR__ . '/..' . '/phpunit/php-timer/src/Timer.php',
         'SebastianBergmann\\Version' => __DIR__ . '/..' . '/sebastian/version/src/Version.php',
+        'Spatie\\ArrayToXml\\ArrayToXml' => __DIR__ . '/..' . '/spatie/array-to-xml/src/ArrayToXml.php',
         'Svg\\DefaultStyle' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/DefaultStyle.php',
         'Svg\\Document' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Document.php',
         'Svg\\Gradient\\Stop' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Gradient/Stop.php',
@@ -4572,6 +4587,7 @@ class ComposerStaticInit8735e22262fd3dc0b9efe90e9daba682
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Processor' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Processor.php',
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Rule' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Rule.php',
         'UsersTableSeeder' => __DIR__ . '/../..' . '/database/seeds/UsersTableSeeder.php',
+        'Vyuldashev\\XmlToArray\\XmlToArray' => __DIR__ . '/..' . '/vyuldashev/xml-to-array/src/XmlToArray.php',
         'Webmozart\\Assert\\Assert' => __DIR__ . '/..' . '/webmozart/assert/src/Assert.php',
         'Whoops\\Exception\\ErrorException' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Exception/ErrorException.php',
         'Whoops\\Exception\\Formatter' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Exception/Formatter.php',

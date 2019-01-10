@@ -25,11 +25,14 @@ Route::group(['middleware' => ['auth']], function () {
     // ตั้งค่าผู้ใช้งาน
     Route::get('/settinguser','SettingUserController@index')->name('pages.settinguser.index');
 
-    // ตั้งค่าผู้ใช้งาน เพิ่ม
+    // ตั้งค่าผู้ใช้งาน หน้าเพิ่ม
     Route::get('/settinguser/create','SettingUserController@create')->name('pages.settinguser.create');
 
-    // ตั้งค่าผู้ใช้งาน ปรับปรุง
+    // ตั้งค่าผู้ใช้งาน เพิ่ม
     Route::patch('/settinguser/create','SettingUserController@store')->name('pages.settinguser.store');
+
+    // ตั้งค่าผู้ใช้งาน ปรับปรุง
+    Route::get('/settinguser/edit/{id}','SettingUserController@update')->name('pages.settinguser.update');
 
     // จำนำของ
     Route::get('/pledge','PledgeController@index')->name('pages.pledge.index');

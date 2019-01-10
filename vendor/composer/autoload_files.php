@@ -24,6 +24,7 @@ return array(
     '40360c0b9b437e69bcbb7f1349ce029e' => $vendorDir . '/zendframework/zend-diactoros/src/functions/parse_cookie_header.php',
     'c964ee0ededf28c96ebd9db5099ef910' => $vendorDir . '/guzzlehttp/promises/src/functions_include.php',
     '37a3dc5111fe8f707ab4c132ef1dbc62' => $vendorDir . '/guzzlehttp/guzzle/src/functions_include.php',
+    '0e423a14e27410a071e5d815d3ffc856' => $vendorDir . '/larapack/dd/src/helper.php',
     'f0906e6318348a765ffb6eb24e0d0938' => $vendorDir . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
     '58571171fd5812e6e447dce228f52f4d' => $vendorDir . '/laravel/framework/src/Illuminate/Support/helpers.php',
     '6124b4c8570aa390c21fafd04a26c69f' => $vendorDir . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
