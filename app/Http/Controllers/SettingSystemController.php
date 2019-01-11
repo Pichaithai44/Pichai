@@ -25,7 +25,7 @@ class SettingSystemController extends Controller
             $xml_info = XmlToArray::convert($systems_result->xml_info);
             $result['data'] = $xml_info['system_local'];
         }
-
+        
         return view('pages.settingsystem.index',[
             'result' => $result
         ]);
@@ -88,11 +88,12 @@ class SettingSystemController extends Controller
             ], true, 'UTF-8');
 
             $params = [
-                'xml_info'      => $xml_result
+                'id'             => 1
+                ,'xml_info'      => $xml_result
                 ,'created_at'    => date('Y-m-d h:i:s')
                 ,'updated_at'    => date('Y-m-d h:i:s')
             ];
-      
+       
             DB::beginTransaction();
 
             if($systems_rs) {

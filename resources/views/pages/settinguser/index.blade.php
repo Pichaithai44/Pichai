@@ -24,14 +24,13 @@
                     <td scope="col">
                         <div class="btn-group" role="group" aria-label="Basic example">
                             <button type="button" class="btn btn-sm btn-warning" onclick="location='{{ route('pages.settinguser.edit',['id' => $item->personal_code]) }}'" data-toggle="tooltip" data-placement="top" title="แก้ไข"><i class="far fa-edit"></i></button>
-                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"><i class="far fa-trash-alt"></i></button>
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"  onclick="deleteItem('{{  $item->personal_code }}');"><i class="far fa-trash-alt"></i></button>
                         </div>
                     </td>
                     <td scope="col"><a>{{ "{$item->personal_title_name}{$item->personal_first_name} {$item->personal_last_name}" }}</a></td>
                     <td scope="col"><a>{{ $item->created_at }}</a></td>
                     <td scope="col"><a>{{ $item->updated_at }}</a></td>
                     <td scope="col"><a>{{ $item->is_active }}</a></td>
-                    <td scope="col"></td>
                 </tr>
                 @endforeach
             </tbody>
@@ -55,22 +54,23 @@
     </div>
 
     <!-- Modal HTML -->
-    <div id="myModal" class="modal fade">
-        <div class="modal-dialog modal-confirm">
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div class="icon-box">
-                        <i class="material-icons">&#xE5CD;</i>
-                    </div>				
-                    <h4 class="modal-title">Are you sure?</h4>	
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h5 class="modal-title">แจ้งเตือน</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="modal-body">
-                    <p>Do you really want to delete these records? This process cannot be undone.</p>
+                    <p>ต้องการลบรายการนี้ ใช่ หรือ ไม่ ?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger">Delete</button>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <form id="my_form" method="POST" enctype="multipart/form-data">
+                            <button type="button" class="btn btn-info" data-dismiss="modal">ยกเลิก</button>
+                            <button type="button" class="btn btn-danger">ลบ</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -86,6 +86,11 @@
         $(document).ready(function() { 
             $("table").tablesorter( {sortzoneone: [false]} ); 
         });
+
+        function deleteItem(id) {
+            $('#my_form').attr('action', `settinguser/delete/${id}`);
+            $('#myModal').modal('show');
+        }
     </script>
 @endsection   
 

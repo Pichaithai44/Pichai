@@ -37,6 +37,9 @@ Route::group(['middleware' => ['auth']], function () {
     // ตั้งค่าผู้ใช้งาน ปรับปรุง
     Route::patch('/settinguser/edit/{id}','SettingUserController@update')->name('pages.settinguser.update');
 
+    // ตั้งค่าผู้ใช้งาน ลบ
+    Route::patch('/settinguser/delete/{id}','SettingUserController@destroy')->name('pages.settinguser.destroy');
+
     // จำนำของ
     Route::get('/pledge','PledgeController@index')->name('pages.pledge.index');
 

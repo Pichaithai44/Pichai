@@ -253,7 +253,41 @@ class SettingUserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $result = [];
+        echo print_r($id);exit;
+        if(Crypt::decryptString($id)) {
+
+            $id = Crypt::decryptString($id);
+            DB::beginTransaction();
+
+            try {
+        
+                $result = DB::table('personals')->where('personal_code', $id)->delete();
+                
+            } catch(ValidationException $e) {
+                
+                DB::rollback();
+
+                return redirect('settinguser')
+                    ->withErrors($e->getErrors())
+                    ->withInput();
+
+            } catch (\Exception $e) {
+
+                DB::rollback();
+                throw $e;
+            }
+
+            DB::commit();
+
+            if($result){
+                $message = 'ลบรายการสำเร็จ';
+            }else{
+                $message = 'บันทึกรายการไม่สำเร็จ';
+            }
+
+            return redirect()->back()->withStatus($message)->withResult($result);
+        }
     }
 
     public function rules()
