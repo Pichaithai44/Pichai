@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\ArrayToXml\ArrayToXml;
 use Vyuldashev\XmlToArray\XmlToArray;
 use Validator;
+use Illuminate\Support\Facades\Crypt;
 
 class SettingUserController extends Controller
 {
@@ -20,6 +21,11 @@ class SettingUserController extends Controller
         $result = [];
 
         $personals_result = DB::table('personals')->paginate(10);
+        if(!empty($personals_result->items()) && count($personals_result->items()) > 0){
+            foreach ($personals_result->items() as $key => $item) {
+                $item->personal_code = Crypt::encryptString($item->personal_code);
+            }
+        }
 
         $result['data_arr'] = $personals_result;
      
@@ -63,7 +69,7 @@ class SettingUserController extends Controller
             $xml = [
                 'personal_code' => $personal_code,
                 'info'   => [
-                    'personal_title_name'   => $request->personal_title_name,
+                    'personal_title_name'  => $request->personal_title_name,
                     'personal_first_name'  => $request->personal_first_name,
                     'personal_last_name'   => $request->personal_last_name,
                     'personal_citizen_id'  => $request->personal_citizen_id,
@@ -138,7 +144,21 @@ class SettingUserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $result = [];
+       
+        if(Crypt::decryptString($id)) {
+            $id = Crypt::decryptString($id);
+            $personals_result = DB::table('personals')->where('personal_code', $id)->first();
+            if(!empty($personals_result)) {
+                $personals_result->personal_code = Crypt::encryptString($personals_result->personal_code);
+                $result['data'] = $personals_result;
+            }
+            unset($personals_result);
+        }
+
+        return view('pages.settinguser.edit',[
+            'result' => $result
+        ]);
     }
 
     /**
@@ -150,7 +170,79 @@ class SettingUserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if(Crypt::decryptString($id)) {
+
+            $validator = Validator::make($request->all(), $this->rules(), $this->messages());
+            if($validator->fails()){
+                return redirect('settinguser/edit/'.$id)
+                ->withErrors($validator)
+                ->withInput();
+            }else{
+
+                $id = Crypt::decryptString($id);
+                $xml = [
+                    'personal_code' => $id,
+                    'info'   => [
+                        'personal_title_name'  => $request->personal_title_name,
+                        'personal_first_name'  => $request->personal_first_name,
+                        'personal_last_name'   => $request->personal_last_name,
+                        'personal_citizen_id'  => $request->personal_citizen_id,
+                    ],
+                    'is_active' => $request->is_active,
+                    'created_at' => $request->created_at,
+                    'created_by' => $request->created_by,
+                ];
+    
+                $xml_result = ArrayToXml::convert($xml, [
+                    'rootElementName' => 'system_local',
+                    '_attributes' => [
+                        'xmlns' => 'localhost://pawn.test',
+                    ],
+                ], true, 'UTF-8');
+    
+                $params = [
+                    'personal_title_name'  => $request->personal_title_name
+                    ,'personal_first_name'  => $request->personal_first_name
+                    ,'personal_last_name'   => $request->personal_last_name
+                    ,'personal_citizen_id'  => $request->personal_citizen_id
+                    ,'personal_xml'         => $xml_result
+                    ,'is_active'            => $request->is_active
+                    ,'updated_at'           => date('Y-m-d h:i:s')
+                    ,'updated_by'           => 'SYSTEM'
+                ];
+
+                DB::beginTransaction();
+
+                try {
+            
+                    $result = DB::table('personals')->where('personal_code', $id)->update($params);
+                    
+                } catch(ValidationException $e) {
+                    
+                    DB::rollback();
+    
+                    return redirect('settinguser/create')
+                        ->withErrors($e->getErrors())
+                        ->withInput();
+    
+                } catch (\Exception $e) {
+    
+                    DB::rollback();
+                    throw $e;
+                }
+    
+                DB::commit();
+
+                if($result){
+                    $message = 'บันทึกรายการสำเร็จ';
+                }else{
+                    $message = 'บันทึกรายการไม่สำเร็จ';
+                }
+                return redirect()->back()->withStatus($message)->withResult($result);
+            }
+        } else {
+            return redirect('home');
+        }
     }
 
     /**

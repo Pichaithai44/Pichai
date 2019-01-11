@@ -11,6 +11,7 @@
         <table class="tablesorter">
             <thead>
                 <tr>
+                    <th scope="row"></th>
                     <th scope="row">ชื่อ-นามสกุล</th>
                     <th scope="row">วันที่สร้าง</th>
                     <th scope="row">วันที่แก้ไขล่าสุด</th>
@@ -20,10 +21,17 @@
             <tbody>
                 @foreach($result['data_arr']->items() as $item)
                 <tr>
-                    <td scope="col"><a href="{{ route('pages.settinguser.update',['id' => $item->id]) }}">{{ "{$item->personal_title_name}{$item->personal_first_name} {$item->personal_last_name}" }}</a></td>
-                    <td scope="col"><a href="{{ route('pages.settinguser.update',['id' => $item->id]) }}">{{ $item->created_at }}</a></td>
-                    <td scope="col"><a href="{{ route('pages.settinguser.update',['id' => $item->id]) }}">{{ $item->updated_at }}</a></td>
-                    <td scope="col"><a href="{{ route('pages.settinguser.update',['id' => $item->id]) }}">{{ $item->is_active }}</a></td>
+                    <td scope="col">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-sm btn-warning" onclick="location='{{ route('pages.settinguser.edit',['id' => $item->personal_code]) }}'" data-toggle="tooltip" data-placement="top" title="แก้ไข"><i class="far fa-edit"></i></button>
+                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"><i class="far fa-trash-alt"></i></button>
+                        </div>
+                    </td>
+                    <td scope="col"><a>{{ "{$item->personal_title_name}{$item->personal_first_name} {$item->personal_last_name}" }}</a></td>
+                    <td scope="col"><a>{{ $item->created_at }}</a></td>
+                    <td scope="col"><a>{{ $item->updated_at }}</a></td>
+                    <td scope="col"><a>{{ $item->is_active }}</a></td>
+                    <td scope="col"></td>
                 </tr>
                 @endforeach
             </tbody>
@@ -45,9 +53,36 @@
             </ul>
         </nav>
     </div>
+
+    <!-- Modal HTML -->
+    <div id="myModal" class="modal fade">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="icon-box">
+                        <i class="material-icons">&#xE5CD;</i>
+                    </div>				
+                    <h4 class="modal-title">Are you sure?</h4>	
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Do you really want to delete these records? This process cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>  
 @endsection
 @section('script')
     <script>
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+
         $(document).ready(function() { 
             $("table").tablesorter( {sortzoneone: [false]} ); 
         });
