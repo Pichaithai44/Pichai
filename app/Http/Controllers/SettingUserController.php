@@ -254,7 +254,7 @@ class SettingUserController extends Controller
     public function destroy($id)
     {
         $result = [];
-        echo print_r($id);exit;
+        
         if(Crypt::decryptString($id)) {
 
             $id = Crypt::decryptString($id);
