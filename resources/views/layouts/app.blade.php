@@ -14,6 +14,7 @@
                 @include('layouts.sidebar')
             @show
             <div class="content-wrapper">
+                @yield('breadcrumbs')
                 <section class="content-header">
                     <h1>
                         <h3>
@@ -21,6 +22,7 @@
                         </h3>
                     </h1>
                 </section>
+
                 <section class="content">
                     @yield('content')
                 </section>
