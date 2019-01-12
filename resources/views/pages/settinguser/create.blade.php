@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Page Title')
 @section('list', 'รายการเพิ่มข้อมูลลูกค้า')
+@section('breadcrumbs')
+{{ Breadcrumbs::render('create_user') }}
+@endsection
 @section('content')
 <div class="container form-control">
     <form action="{{ route('pages.settinguser.store') }}" id="my_form" method="POST" enctype="multipart/form-data">

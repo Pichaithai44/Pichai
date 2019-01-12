@@ -148,3 +148,28 @@ table.css-lottag td {
 .page-item.disabled a.page-link.bg-grey-300 {
     background-color: #E0E0E0;
 }
+
+#wrapper {
+    width: 100%;
+}
+
+#page_wrapper {
+    padding: 0 15px;
+    min-height: 568px;
+    background-color: white;
+}
+
+@media (min-width: 768px) {
+    #page-wrapper {
+        position: inherit;
+        margin: 0 0 0 10px;
+        padding: 0 30px;
+        /* border-bottom: 1px solid black; */
+    }
+}
+
+.page-header {
+    padding-bottom: 9px;
+    margin: 40px 0 20 px;
+    border-bottom: 1px solid #000;
+}

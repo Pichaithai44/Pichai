@@ -45,6 +45,9 @@ Route::group(['middleware' => ['auth']], function () {
 
     // นำของเข้าระบบ วิว
     Route::get('/pledge/create','PledgeController@create')->name('pages.pledge.create');
+    
+    // autocomplete หาคน
+    Route::get('/pledge/autocomplete', 'PledgeController@autocomplete')->name('pages.pledge.autocomplete');
 
     // นำของเข้าระบบ เพิ่ม
     Route::patch('/pledge/create','PledgeController@store')->name('pages.pledge.store');

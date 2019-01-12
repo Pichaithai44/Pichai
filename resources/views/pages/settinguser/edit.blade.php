@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Page Title')
 @section('list', 'ชำระค่างวด')
+@section('breadcrumbs')
+{{ Breadcrumbs::render('edit_user', $result['data']->personal_code) }}
+@endsection
 @section('content')
 @if (session('status'))
     <div class="alert {{ session('result') ? 'alert-success' : 'alert-danger' }}" role="alert">

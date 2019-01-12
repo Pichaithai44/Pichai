@@ -24,68 +24,25 @@ Breadcrumbs::for('create_user', function ($trail) {
 });
 
 // หน้าหลัก > ตั้งค่าผู้ใช้งาน > แก้ไขผู้ใช้งาน
-Breadcrumbs::for('edit_user', function ($trail) {
+Breadcrumbs::for('edit_user', function ($trail, $user_id) {
     $trail->parent('settinguser');
-    $trail->push('แก้ไขผู้ใช้งาน', route('pages.settinguser.edit'));
+    $trail->push('แก้ไขผู้ใช้งาน', route('pages.settinguser.edit',['id' => $user_id]));
 });
 
-// // Home > Blog
-// Breadcrumbs::for('blog', function ($trail) {
-//     $trail->parent('home');
-//     $trail->push('Blog', route('blog'));
-// });
+// หน้าหลัก > จำนำของ
+Breadcrumbs::for('pledge', function ($trail) {
+    $trail->parent('home');
+    $trail->push('จำนำของ', route('pages.pledge.index'));
+});
 
-// // Home > Blog > [Category]
-// Breadcrumbs::for('category', function ($trail, $category) {
-//     $trail->parent('blog');
-//     $trail->push($category->title, route('category', $category->id));
-// });
+// หน้าหลัก > จำนำของ > นำของเข้าระบบ
+Breadcrumbs::for('create_pledge', function ($trail) {
+    $trail->parent('pledge');
+    $trail->push('นำของเข้าระบบ', route('pages.pledge.create'));
+});
 
-// // Home > Blog > [Category] > [Post]
-// Breadcrumbs::for('post', function ($trail, $post) {
-//     $trail->parent('category', $post->category);
-//     $trail->push($post->title, route('post', $post->id));
-// });
-
-
-//  // ตั้งค่าระบบ
-//  Route::get('/settingsystem','SettingSystemController@index')->name('pages.settingsystem.index');
-
-//  // ปรับปรุงตั้งค่าระบบ
-//  Route::patch('/settingsystem','SettingSystemController@store')->name('pages.settingsystem.store');
-
-//  // ตั้งค่าผู้ใช้งาน
-//  Route::get('/settinguser','SettingUserController@index')->name('pages.settinguser.index');
-
-//  // ตั้งค่าผู้ใช้งาน หน้าเพิ่ม
-//  Route::get('/settinguser/create','SettingUserController@create')->name('pages.settinguser.create');
-
-//  // ตั้งค่าผู้ใช้งาน เพิ่ม
-//  Route::patch('/settinguser/create','SettingUserController@store')->name('pages.settinguser.store');
-
-//  // ตั้งค่าผู้ใช้งาน หน้าปรับปรุง
-//  Route::get('/settinguser/edit/{id}','SettingUserController@edit')->name('pages.settinguser.edit');
-
-//  // ตั้งค่าผู้ใช้งาน ปรับปรุง
-//  Route::patch('/settinguser/edit/{id}','SettingUserController@update')->name('pages.settinguser.update');
-
-//  // ตั้งค่าผู้ใช้งาน ลบ
-//  Route::patch('/settinguser/delete/{id}','SettingUserController@destroy')->name('pages.settinguser.destroy');
-
-//  // จำนำของ
-//  Route::get('/pledge','PledgeController@index')->name('pages.pledge.index');
-
-//  // นำของเข้าระบบ วิว
-//  Route::get('/pledge/create','PledgeController@create')->name('pages.pledge.create');
-
-//  // นำของเข้าระบบ เพิ่ม
-//  Route::patch('/pledge/create','PledgeController@store')->name('pages.pledge.store');
-
-//  // ชำระค่างวด วิว
-//  Route::get('/pledge/edit/{id}','PledgeController@edit')->name('pages.pledge.edit');
-
-//  // ปรับปรุงชำระค่างวด 
-//  Route::patch('/pledge/edit/{id}','PledgeController@update')->name('pages.pledge.update');
-
-//  // นำของออกจากระบบ 
-//  Route::patch('/pledge/delete/{id}','PledgeController@destroy')->name('pages.pledge.destroy');
+// หน้าหลัก > จำนำของ > ชำระค่างวด
+Breadcrumbs::for('edit_pledge', function ($trail, $pledge_id) {
+    $trail->parent('pledge');
+    $trail->push('ชำระค่างวด', route('pages.pledge.edit',['id' => $pledge_id]));
+});

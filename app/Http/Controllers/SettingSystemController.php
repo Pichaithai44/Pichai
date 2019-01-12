@@ -73,10 +73,6 @@ class SettingSystemController extends Controller
                 ],
                 'contact'   => [
                     'tel'       => $request->tel
-                ],
-                'system_default' => [
-                    'interest_rate' => $request->interest_rate
-                    ,'owe'           => $request->owe 
                 ]
             ];
 
@@ -97,7 +93,7 @@ class SettingSystemController extends Controller
             DB::beginTransaction();
 
             if($systems_rs) {
-                
+            
                 try {
         
                     $result = DB::table('systems')->where('id', $systems_rs->id)->update($params);
@@ -202,8 +198,6 @@ class SettingSystemController extends Controller
         //
         $rules = [
             'pawn_name'     => 'required',
-            'interest_rate' => 'required|numeric',
-            'owe'           => 'required|numeric'
         ];
         return $rules;
     }
@@ -213,10 +207,6 @@ class SettingSystemController extends Controller
         //
         $messages = [
             'pawn_name.required'        => 'กรุณากรอกชื่อโรงรับจำนำ',
-            'interest_rate.required'    => 'กรุณากรอกอัตตราดอกเบี้ย',
-            'interest_rate.numeric'     => 'กรุณากรอกตัวเลข',
-            'owe.required'              => 'กรุณากรอกค้างชำระ',
-            'owe.numeric'               => 'กรุณากรอกตัวเลข'
         ];
         return $messages;
     }
