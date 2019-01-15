@@ -74,7 +74,16 @@ class SettingUserController extends Controller
                     'personal_last_name'   => $request->personal_last_name,
                     'personal_citizen_id'  => $request->personal_citizen_id,
                 ],
-                'is_active' => $request->is_active,
+                'address'   => [
+                    'personal_adr'            => $request->personal_adr
+                    ,'personal_moo'           => $request->personal_moo
+                    ,'personal_soi'           => $request->personal_soi
+                    ,'personal_road'          => $request->personal_road
+                ],
+                'contact'   => [
+                    'personal_tel_id'       => $request->personal_tel_id
+                ],
+                'is_active'  => 1,
                 'created_at' => $request->created_at,
                 'created_by' => $request->created_by,
             ];
@@ -93,7 +102,7 @@ class SettingUserController extends Controller
                 ,'personal_last_name'   => $request->personal_last_name
                 ,'personal_citizen_id'  => $request->personal_citizen_id
                 ,'personal_xml'         => $xml_result
-                ,'is_active'            => $request->is_active
+                ,'is_active'            => 1
                 ,'created_at'           => date('Y-m-d h:i:s')
                 ,'created_by'           => 'SYSTEM'
                 ,'updated_by'           => 'SYSTEM'
@@ -151,11 +160,19 @@ class SettingUserController extends Controller
             $personals_result = DB::table('personals')->where('personal_code', $id)->first();
             if(!empty($personals_result)) {
                 $personals_result->personal_code = Crypt::encryptString($personals_result->personal_code);
+
                 $result['data'] = $personals_result;
+
+                if(!empty($personals_result->personal_xml)) {
+
+                    $xml_info = XmlToArray::convert($personals_result->personal_xml);
+                    $result['data']->address = !empty($xml_info['system_local']['address']) ? $xml_info['system_local']['address'] : [];
+                    $result['data']->contact = !empty($xml_info['system_local']['contact']) ? $xml_info['system_local']['contact'] : [];
+                }
             }
             unset($personals_result);
         }
-
+     
         return view('pages.settinguser.edit',[
             'result' => $result
         ]);
@@ -171,7 +188,6 @@ class SettingUserController extends Controller
     public function update(Request $request, $id)
     {
         if(Crypt::decryptString($id)) {
-
             $validator = Validator::make($request->all(), $this->rules(), $this->messages());
             if($validator->fails()){
                 return redirect('settinguser/edit/'.$id)
@@ -180,6 +196,7 @@ class SettingUserController extends Controller
             }else{
 
                 $id = Crypt::decryptString($id);
+                
                 $xml = [
                     'personal_code' => $id,
                     'info'   => [
@@ -188,9 +205,18 @@ class SettingUserController extends Controller
                         'personal_last_name'   => $request->personal_last_name,
                         'personal_citizen_id'  => $request->personal_citizen_id,
                     ],
-                    'is_active' => $request->is_active,
-                    'created_at' => $request->created_at,
-                    'created_by' => $request->created_by,
+                    'address'   => [
+                        'personal_adr'            => $request->personal_adr
+                        ,'personal_moo'           => $request->personal_moo
+                        ,'personal_soi'           => $request->personal_soi
+                        ,'personal_road'          => $request->personal_road
+                    ],
+                    'contact'   => [
+                        'personal_tel_id'       => $request->personal_tel_id
+                    ],
+                    'is_active'  => 1,
+                    'created_at' => date('Y-m-d h:i:s'),
+                    'created_by' => 'SYSTEM',
                 ];
     
                 $xml_result = ArrayToXml::convert($xml, [
@@ -206,7 +232,7 @@ class SettingUserController extends Controller
                     ,'personal_last_name'   => $request->personal_last_name
                     ,'personal_citizen_id'  => $request->personal_citizen_id
                     ,'personal_xml'         => $xml_result
-                    ,'is_active'            => $request->is_active
+                    ,'is_active'            => 1
                     ,'updated_at'           => date('Y-m-d h:i:s')
                     ,'updated_by'           => 'SYSTEM'
                 ];

@@ -62,7 +62,7 @@ class SettingSystemController extends Controller
             $xml = [
                 'pawn_name' => $request->pawn_name,
                 'info'   => [
-                    'address'       => $request->address
+                    'adr'            => $request->adr
                     ,'moo'           => $request->moo
                     ,'soi'           => $request->soi
                     ,'road'          => $request->road

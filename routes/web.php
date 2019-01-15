@@ -12,6 +12,14 @@
 */
 Auth::routes();
 Route::group(['middleware' => ['auth']], function () {
+
+    // uploadfile item
+    Route::get('/uploadfile','UploadController@uploadfile')->name('uploadfile');
+    
+    // uploadfile api
+    Route::post('/uploadfile','UploadController@uploadFilePost')->name('uploadFilePost');
+
+    // หน้าหลัก
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/signout', 'AuthController@getsignout')->name('getsignout.auth');
     Route::get('/', function () {return view('welcome');})->name('welcome');
@@ -22,22 +30,22 @@ Route::group(['middleware' => ['auth']], function () {
     // ปรับปรุงตั้งค่าระบบ
     Route::patch('/settingsystem','SettingSystemController@store')->name('pages.settingsystem.store');
 
-    // ตั้งค่าผู้ใช้งาน
+    // ตั้งค่าผู้จำนำ
     Route::get('/settinguser','SettingUserController@index')->name('pages.settinguser.index');
 
-    // ตั้งค่าผู้ใช้งาน หน้าเพิ่ม
+    // ตั้งค่าผู้จำนำ หน้าเพิ่ม
     Route::get('/settinguser/create','SettingUserController@create')->name('pages.settinguser.create');
 
-    // ตั้งค่าผู้ใช้งาน เพิ่ม
+    // ตั้งค่าผู้จำนำ เพิ่ม
     Route::patch('/settinguser/create','SettingUserController@store')->name('pages.settinguser.store');
 
-    // ตั้งค่าผู้ใช้งาน หน้าปรับปรุง
+    // ตั้งค่าผู้จำนำ หน้าปรับปรุง
     Route::get('/settinguser/edit/{id}','SettingUserController@edit')->name('pages.settinguser.edit');
 
-    // ตั้งค่าผู้ใช้งาน ปรับปรุง
+    // ตั้งค่าผู้จำนำ ปรับปรุง
     Route::patch('/settinguser/edit/{id}','SettingUserController@update')->name('pages.settinguser.update');
 
-    // ตั้งค่าผู้ใช้งาน ลบ
+    // ตั้งค่าผู้จำนำ ลบ
     Route::patch('/settinguser/delete/{id}','SettingUserController@destroy')->name('pages.settinguser.destroy');
 
     // จำนำของ
@@ -60,5 +68,23 @@ Route::group(['middleware' => ['auth']], function () {
 
     // นำของออกจากระบบ 
     Route::patch('/pledge/delete/{id}','PledgeController@destroy')->name('pages.pledge.destroy');
+
+    // ตั้งค่าผู้ใช้งาน
+    Route::get('/users','UsersController@index')->name('pages.users.index');
+
+    // ตั้งค่าผู้ใช้งาน หน้าเพิ่ม
+    Route::get('/users/create','UsersController@create')->name('pages.users.create');
+
+    // ตั้งค่าผู้ใช้งาน เพิ่ม
+    Route::patch('/users/create','UsersController@store')->name('pages.users.store');
+
+    // ตั้งค่าผู้ใช้งาน หน้าปรับปรุง
+    Route::get('/users/edit/{id}','UsersController@edit')->name('pages.users.edit');
+
+    // ตั้งค่าผู้ใช้งาน ปรับปรุง
+    Route::patch('/users/edit/{id}','UsersController@update')->name('pages.users.update');
+
+    // ตั้งค่าผู้ใช้งาน ลบ
+    Route::patch('/users/delete/{id}','UsersController@destroy')->name('pages.users.destroy');
 });
 

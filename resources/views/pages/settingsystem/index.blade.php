@@ -12,100 +12,96 @@
         </button>
     </div>
 @endif
-<div id="wrapper">
-    <div id="page-wrapper">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="page-header"><i class="fas fa-cogs"></i> ตั้งค่าระบบ</h1>
+
+    <div id="wrapper">
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <h1 class="page-header"><i class="fas fa-cogs"></i> ตั้งค่าระบบ</h1>
+                </div>
             </div>
         </div>
-    </div>
-    <form action="{{ route('pages.settingsystem.store') }}" id="my_form" method="POST" enctype="multipart/form-data">
-        {{ csrf_field() }}
-        {{ method_field('PATCH') }}
-        <div class="row">
-            <div class="col-md-9 offset-md-3">
-                <div class="form-group row">
-                    <div class="col-md-4">
-                    <label for="pawn_name" class="col-form-label-lg">ชื่อโรงรับจำนำ</label>
-                        <input class="form-control form-control-lg" type="text" name="pawn_name" id="pawn_name" placeholder="กรุณาระบุข้อมูล" autocomplete="off" value="{{ !empty($result['data']['pawn_name']) ? $result['data']['pawn_name'] : old('pawn_name') }}">
-                    </div>
-                </div>
-                @if ($errors->has('pawn_name'))
+        {{ Form::open(['route' => 'pages.settingsystem.store', 'method' => 'PATCH', 'id' => 'my_form', 'enctype' => 'multipart/form-data']) }}
+            <div class="row">
+                <div class="col-md-10 offset-md-2 col-lg-10 offset-lg-2">
                     <div class="form-group row">
-                        <div class=" col-md-4 validate-danger">
-                            {{ $errors->first('pawn_name') }}
+                        <div class="col-md-4 col-lg-4">
+                            {{ Form::label('pawn_name', 'ชื่อโรงรับจำนำ', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('pawn_name', !empty($result['data']['pawn_name']) ? $result['data']['pawn_name'] : old('pawn_name'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
                         </div>
                     </div>
-                @endif
-                <div class="form-group row">
-                    <div class="col-md-2">
-                    <label for="address" class="col-form-label-lg">บ้านเลขที่</label> 
-                        <input type="text" class="form-control form-control-lg" type="text" name="address" id="address" placeholder="กรุณาระบุข้อมูล" autocomplete="off" value="{{ !empty($result['data']['info']['address']) ? $result['data']['info']['address'] : old('address') }}">
-                    </div>
-            
-                    <div class="col-md-2">
-                    <label for="moo" class="col-form-label-lg">หมู่ที่</label> 
-                        <input class="form-control form-control-lg" type="text" name="moo" id="moo" placeholder="กรุณาระบุข้อมูล" autocomplete="off" value="{{ !empty($result['data']['info']['moo']) ? $result['data']['info']['moo'] : old('moo') }}">
-                    </div>
-                    
-                    <div class="col-md-2">
-                    <label for="soi" class="col-form-label-lg">ตรอก/ซอย</label> 
-                        <input class="form-control form-control-lg" type="text" name="soi" id="soi" placeholder="กรุณาระบุข้อมูล" autocomplete="off" value="{{ !empty($result['data']['info']['soi']) ? $result['data']['info']['soi'] : old('soi') }}">
-                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-3 col-lg-3">
+                            {{ Form::label('adr', 'บ้านเลขที่', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('adr', !empty($result['data']['info']['adr']) ? $result['data']['info']['adr'] : old('adr'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        </div>
+                
+                        <div class="col-md-3 col-lg-3">
+                            {{ Form::label('moo', 'หมู่ที่', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('moo', !empty($result['data']['info']['moo']) ? $result['data']['info']['moo'] : old('moo'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        </div>
+                        
+                        <div class="col-md-3 col-lg-3">
+                            {{ Form::label('soi', 'ตรอก/ซอย', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('soi', !empty($result['data']['info']['soi']) ? $result['data']['info']['soi'] : old('soi'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        </div>
 
-                    <div class="col-md-2">
-                    <label for="road" class="col-form-label-lg">ถนน</label> 
-                        <input class="form-control form-control-lg" type="text" name="road" id="road" placeholder="กรุณาระบุข้อมูล" autocomplete="off" value="{{ !empty($result['data']['info']['road']) ? $result['data']['info']['road'] : old('road') }}">
+                        <div class="col-md-3 col-lg-3">
+                            {{ Form::label('road', 'ถนน', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('road', !empty($result['data']['info']['road']) ? $result['data']['info']['road'] : old('road'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        </div>
+                        
                     </div>
-                    
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-2">
-                    <label for="sub_district" class="col-form-label-lg">แขวง/ตำบล</label>
-                        <input class="form-control form-control-lg text-left" type="text" name="sub_district" id="sub_district" autocomplete="off" placeholder="กรุณาระบุข้อมูล" value="{{ !empty($result['data']['info']['sub_district']) ? $result['data']['info']['sub_district'] : old('sub_district') }}">
-                    </div>
-                    
-                    <div class="col-md-2">
-                    <label for="district" class="col-form-label-lg">แขวง/ตำบล</label>
-                        <input class="form-control form-control-lg text-left" type="text" name="district" id="district" autocomplete="off" placeholder="กรุณาระบุข้อมูล" value="{{ !empty($result['data']['info']['district']) ? $result['data']['info']['district'] : old('district') }}">
-                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-3 col-lg-3">
+                            {{ Form::label('sub_district', 'แขวง/ตำบล', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('sub_district', !empty($result['data']['info']['sub_district']) ? $result['data']['info']['sub_district'] : old('sub_district'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        </div>
 
-                    <div class="col-md-2">
-                    <label for="province" class="col-form-label-lg">จังหวัด</label>
-                        <input class="form-control form-control-lg text-left" type="text" name="province" id="province" autocomplete="off" placeholder="กรุณาระบุข้อมูล" value="{{ !empty($result['data']['info']['province']) ? $result['data']['info']['province'] : old('province') }}">
-                    </div>
+                        <div class="col-md-3 col-lg-3">
+                            {{ Form::label('district', 'อำเภอ/เขต', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('district', !empty($result['data']['info']['district']) ? $result['data']['info']['district'] : old('district'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        </div>
 
-                    <div class="col-md-2">
-                    <label for="postal_code" class="col-form-label-lg">รหัสไปราณีย์</label>
-                    <input class="form-control form-control-lg text-left" type="text" name="postal_code" id="postal_code" autocomplete="off" placeholder="กรุณาระบุข้อมูล" value="{{ !empty($result['data']['info']['postal_code']) ? $result['data']['info']['postal_code'] : old('postal_code') }}">
+                        <div class="col-md-3 col-lg-3">
+                        {{ Form::label('province', 'จังหวัด', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('province', !empty($result['data']['info']['province']) ? $result['data']['info']['province'] : old('province'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        </div>
+
+                        <div class="col-md-3 col-lg-3">
+                            {{ Form::label('postal_code', 'รหัสไปราณีย์', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('postal_code', !empty($result['data']['info']['postal_code']) ? $result['data']['info']['postal_code'] : old('postal_code'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        </div>
+
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-2">
-                    <label for="sub_district" class="col-form-label-lg">เบอร์โทรศัพท์</label>
-                        <input class="form-control form-control-lg text-left" type="text" name="tel" id="tel" placeholder="กรุณาระบุข้อมูล" autocomplete="off" value="{{ !empty($result['data']['contact']['tel']) ? $result['data']['contact']['tel'] : old('tel') }}">
+                    <div class="form-group row">
+                        <div class="col-md-3 col-lg-3">
+                            {{ Form::label('tel', 'เบอร์โทรศัพท์', ['class' => 'col-form-label-lg']) }}
+                            {{ Form::text('tel', !empty($result['data']['contact']['tel']) ? $result['data']['contact']['tel'] : old('tel'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div style="border-bottom: 1px solid #F44336;padding-bottom: 9px;"></div>
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <div style="border-bottom: 1px solid #F44336;padding-bottom: 9px;"></div>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="offset-md-11">
-                <button type="submit" class="btn btn-success" style="margin-top:10px;"><i class="fas fa-save"></i> บันทึกข้อมูล</button>
+            <div class="row">
+                <div class="offset-md-10 offset-lg-10">
+                    {{ Form::button('<i class="fas fa-save"></i> บันทึกข้อมูล', ['class' => 'btn btn-lg btn-success', 'style' => 'margin-top:10px;', 'type' => 'submit']) }}
+                </div>
             </div>
-        </div>
-    </form>
-</div>
+        {{ Form::close() }}
+    </div>
 @endsection
 @section('script')
     <script>
         function submit(){
             document.getElementById('my_form').submit();
         }
+        $(document).ready(function() {
+            $( "div.alert-success" ).slideUp(600);
+        });
     </script>
 @endsection   
