@@ -30,5 +30,6 @@
             @include('layouts.footer')
         </div>
     </body>
+    @yield('script_upload') 
     @yield('script')    
 </html>

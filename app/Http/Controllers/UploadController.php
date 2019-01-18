@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class UploadController extends Controller
 {
@@ -96,23 +98,93 @@ class UploadController extends Controller
         $request->validate([
             'fileToUpload' => 'required|file|max:1024',
         ]);
-
-        $fileName = "fileName".time().'.'.request()->fileToUpload->getClientOriginalExtension();
-
+        
+        $basename = "pawn".time();
+        $fileName = "{$basename}.".$request->file('fileToUpload')->getClientOriginalExtension();
         $path = $request->file('fileToUpload')->storeAs('logos', $fileName);
+        
+        Image::configure(array('driver' => 'gd'));
+        $img    = Image::make(Storage::path($path));
+        $width  = $img->width();
+        $height = $img->height();
+        $img->backup();
+
+        if($width>$height){
+            $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize(1024, 768)->save(Storage::path("logos/{$basename}-mater.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
+            $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize(200, 200)->save(Storage::path("logos/{$basename}-thumbnail.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
+        }else{
+            $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize(768, 1024)->save(Storage::path("logos/{$basename}-mater.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
+            $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize(150, 200)->resizeCanvas(200, null, 'center', false, '000000')->save(Storage::path("logos/{$basename}-thumbnail.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
+        }
+        
         $pathinfo = pathinfo($path);
-       
-        $result = [
-           'path'           => asset('storage/'.$path),
-           'filename'       => $pathinfo['filename'],
-           'basename'       => $pathinfo['basename'],
-           'extension'      => $pathinfo['extension'],
-           'size'           => Storage::size($path),
-           'lastModified'   => Storage::lastModified($path),
-           'dirname'        => $pathinfo['dirname']
+
+        $file_code = $this->uniqidReal();
+
+        $params = [
+            'file_code'     => $file_code,
+            'originalName'  => $request->file('fileToUpload')->getClientOriginalName(),
+            'mimeType'      => Storage::mimeType($path),
+            'size'          => Storage::size($path),
+            'extension'     => $request->file('fileToUpload')->getClientOriginalExtension(),
+            'hashName'      => $basename,
+            'dirname'       => $pathinfo['dirname'],
+            'created_by'    => "SYSTEM",
+            'created_at'    => date('Y-m-d H:i:s'),
+            'updated_by'    => "SYSTEM",
+            'deleted_at'    => date('Y-m-d H:i:s', Storage::lastModified($path)),
         ];
 
-        return back()->withSuccess('uplode สำเร็จ')->withResult($result);
+        DB::beginTransaction();
 
+        try {
+    
+            $result = DB::table('file')->insert($params);
+
+            Storage::delete($path);
+
+        } catch(ValidationException $e) {
+            
+            DB::rollback();
+
+        } catch (\Exception $e) {
+
+            DB::rollback();
+            throw $e;
+        }
+
+        DB::commit();
+        
+        if($result) {
+
+            $result = [];
+            $result = [
+                'result'    => true,
+                'messages'  => "ดาวน์โหลดสำเร็จ",
+                'path'      => asset("storage/logos/{$basename}-thumbnail.".$request->file('fileToUpload')->getClientOriginalExtension()),
+                'file_code' => $file_code
+            ];
+        } else {
+            
+            $result = [
+                'result'    => false,
+                'messages'  => "ดาวน์โหลดไม่สำเร็จ",
+                'path'      => null,
+                'file_code' => null
+            ];
+        }
+        return response()->json($result);
+    }
+
+    public function uniqidReal($lenght = 13) {
+        // uniqid gives 13 chars, but you could adjust it to your needs.
+        if (function_exists("random_bytes")) {
+            $bytes = random_bytes(ceil($lenght / 2));
+        } elseif (function_exists("openssl_random_pseudo_bytes")) {
+            $bytes = openssl_random_pseudo_bytes(ceil($lenght / 2));
+        } else {
+            throw new Exception("no cryptographically secure random function available");
+        }
+        return strtoupper(substr(bin2hex($bytes), 0, $lenght));
     }
 }

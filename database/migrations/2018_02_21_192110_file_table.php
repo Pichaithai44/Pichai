@@ -16,12 +16,15 @@ class FileTable extends Migration
         //
         Schema::create('file', function (Blueprint $table) {
             $table->increments('id')->autoIncrement();
+            $table->string('file_code');
             $table->string('originalName');
             $table->string('mimeType');
             $table->integer('size');
             $table->text('hashName')->nullable();
-            $table->integer('created_by');
-            $table->integer('updated_by')->nullable();
+            $table->string('extension');
+            $table->string('dirname')->nullable();
+            $table->string('created_by');
+            $table->string('updated_by')->nullable();
             $table->timestamp('created_at');
             $table->timestamp('deleted_at')->nullable();
         });
