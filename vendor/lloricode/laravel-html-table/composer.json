@@ -1,0 +1,47 @@
+{
+    "name": "lloricode/laravel-html-table",
+    "description": "Html table generator for laravel",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Lloric Mayuga Garcia",
+            "email": "lloricode@gmail.com"
+        }
+    ],
+    "require": {       
+        "php": ">=7.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.3.0|~3.4.2|^3.5.0",
+        "phpunit/phpunit" : "^5.7|6.2|^7.0",
+        "friendsofphp/php-cs-fixer": "^2.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lloricode\\LaravelHtmlTable\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lloricode\\LaravelHtmlTable\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lloricode\\LaravelHtmlTable\\Providers\\LaravelHtmlTableProvider"
+            ],
+            "aliases": {
+                "Table": "Lloricode\\LaravelHtmlTable\\Facades\\LaravelHtmlTableFacade"
+            }
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "format": [
+            "./vendor/bin/php-cs-fixer fix src/  --show-progress=estimating",
+            "./vendor/bin/php-cs-fixer fix tests/  --show-progress=estimating"
+        ]
+    }
+}

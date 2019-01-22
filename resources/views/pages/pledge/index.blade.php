@@ -29,7 +29,7 @@
                             <th scope="row" width="30%"><button class="btn btn-lg btn-success" onclick="location='{{ route('pages.pledge.create') }}'" id="create"><i class="fas fa-plus-square"></i> เพิ่ม</button></th>
                             <th scope="row" width="25%">ชื่อสินค้า</th>
                             <th scope="row" width="25%">ชื่อ-นามสกุล</th>
-                            <th scope="row" width="10%">เลขที่ใบจำนำ</th>
+                            <th scope="row" width="10%">ราคา</th>
                             <th scope="row" width="15%">วันที่สร้าง</th>
                         </tr>
                     </thead>
@@ -38,13 +38,13 @@
                         <tr class="text-center">
                             <td scope="col">
                                 <div class="text-center" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-lg btn-warning" onclick="location='{{ route('pages.pledge.edit',['id' => $item->product_code]) }}'" data-toggle="tooltip" data-placement="top" title="จ่ายดอกเบี้ย"><i class="fas fa-money-bill-alt"></i> จ่ายดอกเบี้ย</button>
+                                    <button type="button" class="btn btn-lg btn-warning" onclick="location='{{ route('pages.pledge.edit',['id' => $item->product_code]) }}'" data-toggle="tooltip" data-placement="top" title="จ่ายดอกเบี้ย"><i class="fas fa-money-bill-alt"></i> ชำระค่างวด</button>
                                     <button type="button" class="btn btn-lg btn-danger" data-toggle="modal"  route="{{ route('pages.pledge.destroy',['id' => $item->product_code]) }}" onclick="deleteItem(this);"><i class="fas fa-undo-alt"></i> ไถ่ถอนสินค้า</button>
                                 </div>
                             </td>
-                            <td scope="col"><a></a></td>
-                            <td scope="col" class="text-left"><a>{{ $item->pledge }}</a></td>
-                            <td scope="col"><a>{{ $item->slip_no }}</a></td>
+                            <td scope="col"><a>{{ $item->product_name }}</a></td>
+                            <td scope="col" class="text-left"><a>{{ $item->full_name }}</a></td>
+                            <td scope="col"><a>{{ $item->product_capital }}</a></td>
                         </tr>
                         @endforeach
                     </tbody>

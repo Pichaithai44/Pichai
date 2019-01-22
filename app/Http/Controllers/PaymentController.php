@@ -13,7 +13,11 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        $result = [];
+
+        return view('pages.payment.index',[
+            'result' => $result
+        ]);
     }
 
     /**
@@ -23,7 +27,11 @@ class PaymentController extends Controller
      */
     public function create()
     {
-        //
+        $result = [];
+
+        return view('pages.payment.create',[
+            'result' => $result
+        ]);
     }
 
     /**

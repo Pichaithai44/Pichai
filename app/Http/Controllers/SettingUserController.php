@@ -8,6 +8,7 @@ use Spatie\ArrayToXml\ArrayToXml;
 use Vyuldashev\XmlToArray\XmlToArray;
 use Validator;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 
 class SettingUserController extends Controller
 {
@@ -69,6 +70,7 @@ class SettingUserController extends Controller
             $xml = [
                 'personal_code' => $personal_code,
                 'info'   => [
+                    'personal_img_profile' => $request->file_code,
                     'personal_title_name'  => $request->personal_title_name,
                     'personal_first_name'  => $request->personal_first_name,
                     'personal_last_name'   => $request->personal_last_name,
@@ -162,12 +164,30 @@ class SettingUserController extends Controller
                 $personals_result->personal_code = Crypt::encryptString($personals_result->personal_code);
 
                 $result['data'] = $personals_result;
-
                 if(!empty($personals_result->personal_xml)) {
 
                     $xml_info = XmlToArray::convert($personals_result->personal_xml);
-                    $result['data']->address = !empty($xml_info['system_local']['address']) ? $xml_info['system_local']['address'] : [];
-                    $result['data']->contact = !empty($xml_info['system_local']['contact']) ? $xml_info['system_local']['contact'] : [];
+
+                    $result['data']->file_code  = !empty($xml_info['system_local']['info']['personal_img_profile']) ? $xml_info['system_local']['info']['personal_img_profile'] : "";
+                    $result['data']->address    = !empty($xml_info['system_local']['address']) ? $xml_info['system_local']['address'] : "";
+                    $result['data']->contact    = !empty($xml_info['system_local']['contact']) ? $xml_info['system_local']['contact'] : "";
+
+                    if(!empty($xml_info['system_local']['info']['personal_img_profile'])){
+                        $file_id = $xml_info['system_local']['info']['personal_img_profile'];
+
+                        $file_result = DB::table('file')->where('file_code', $file_id)->first();
+                        if($basename = $file_result->hashName) {
+                            if (file_exists(Storage::path("logos/{$basename}-thumbnail.{$file_result->extension}"))) {
+                                $result['data']->path = asset("storage/logos/{$basename}-thumbnail.{$file_result->extension}");
+                            } else {
+                                $result['data']->path = '';
+                            }
+                        } else {
+                            $result['data']->path = '';
+                        }
+                    } else {
+                        $result['data']->path = '';
+                    }
                 }
             }
             unset($personals_result);
@@ -200,6 +220,7 @@ class SettingUserController extends Controller
                 $xml = [
                     'personal_code' => $id,
                     'info'   => [
+                        'personal_img_profile' => $request->file_code,
                         'personal_title_name'  => $request->personal_title_name,
                         'personal_first_name'  => $request->personal_first_name,
                         'personal_last_name'   => $request->personal_last_name,
@@ -247,7 +268,7 @@ class SettingUserController extends Controller
                     
                     DB::rollback();
     
-                    return redirect('settinguser/create')
+                    return redirect('settinguser/edit/'.$id)
                         ->withErrors($e->getErrors())
                         ->withInput();
     

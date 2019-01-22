@@ -17,11 +17,13 @@ class CreateProductsTable extends Migration
             $table->increments('id');
             $table->string('product_code', 64);
             $table->string('personal_code', 64);
-            $table->string('product_num', 64);
-            $table->string('date_payment', 100);
-            $table->string('slip_no', 100);
-            $table->string('capital', 150);
-            $table->string('interest', 13);
+            $table->string('product_name', 255);
+            $table->text('product_detail');
+            $table->float('product_capital');
+            $table->float('product_interest');
+            $table->dateTime('product_start_date');
+            $table->dateTime('product_end_date');
+            $table->longText('product_xml');
             $table->enum('is_active', [0, 1]);
             $table->string('created_by', 64);
             $table->string('updated_by', 64);

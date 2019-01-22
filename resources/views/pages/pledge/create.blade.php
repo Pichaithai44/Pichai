@@ -12,22 +12,23 @@
             </div>
         </div>
     </div>
-    {{ Form::open(['pages.pledge.store', 'method' => 'PATCH', 'id' => 'my_form', 'enctype' => 'multipart/form-data']) }}
-        <div class="row">
-            <div class="col-md-10 offset-md-1">
+    <div class="row">
+        <div class="col-md-3 col-lg-3">
+            @include('uploadfile')
+        </div>
+        <div class="col-md-9 col-lg-9">
+            {{ Form::open(['route' => 'pages.pledge.store', 'method' => 'PATCH', 'id' => 'my_form', 'enctype' => 'multipart/form-data']) }}
+                {{ Form::hidden('personal_code', old('personal_code') , []) }}
+                {{ Form::hidden('path', old('path'), []) }}
+                {{ Form::hidden('file_code', old('file_code'), []) }}
                 <div class="form-group row">
                     <div class="col-md-6">
                         {{ Form::label('personal_citizen_id', 'เลขบัตรประชาชน', ['class' => 'col-form-label-lg']) }}
                         {{ Form::text('personal_citizen_id', old('personal_citizen_id'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
                     </div>
-
-                    <div class="col-md-2">
-                        <label for="" class="col-form-label-lg"></label>
-                        <button type="submit" class="form-control btn btn-lg btn-primary" style="margin-top:30px;"><i class="fas fa-search"></i> ค้นหา</button>
-                    </div>
                 </div>
                 <div class="row form-group">
-                    <small class="col-md-8 label-control">- กรอกหมายเลขบัตรประชาชนและค้นหา</small>
+                    <small class="col-md-8 label-control"><i>- กรอกหมายเลขบัตรประชาชนและค้นหา</i></small>
                 </div>
                 <div class="form-group row">
                     <div class="col-md-3">
@@ -58,7 +59,8 @@
 
                     <div class="col-md-4">
                         {{ Form::label('product_start_date', 'วันที่ทำสัญญา', ['class' => 'col-form-label-lg']) }}
-                        {{ Form::text('product_start_date', old('product_start_date'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off", "readonly" => true]) }}
+                        {{ Form::text(null, old('product_start_date'), ['class' => 'form-control form-control-lg daterangepicker', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off", "readonly" => true, 'def-date' => "product_start_date"]) }}
+                        {{ Form::hidden('product_start_date', old('product_start_date'), []) }}
                     </div>
                 </div>
                 <div class="form-group row">
@@ -73,7 +75,7 @@
                     </div>
 
                     <div class="col-md-3">
-                    {{ Form::label('product_interest', 'ดอกเบี้ย', ['class' => 'col-form-label-lg']) }}
+                        {{ Form::label('product_interest', 'ดอกเบี้ย', ['class' => 'col-form-label-lg']) }}
                         <div class="input-group">
                             {{ Form::text('product_interest', old('product_interest'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off", "readonly" => true]) }}
                             <div class="input-group-prepend">
@@ -84,23 +86,24 @@
 
                     <div class="col-md-4 offset-md-1">
                         {{ Form::label('product_end_date', 'วันที่ครบกำหนด', ['class' => 'col-form-label-lg']) }}
-                        {{ Form::text('product_end_date', old('product_end_date'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off", "readonly" => true]) }}
+                        {{ Form::text(null, old('product_end_date'), ['class' => 'form-control form-control-lg daterangepicker', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off", "readonly" => true, 'def-date' => "product_end_date"]) }}
+                        {{ Form::hidden('product_end_date', old('product_end_date'), []) }}
                     </div>
                 </div>
-            </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div style="border-bottom: 1px solid #F44336;padding-bottom: 9px;"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="offset-md-10">
+                        {{ Form::button('<i class="fas fa-hand-point-left"></i> ย้อนกลับ', ['class' => 'btn btn-lg btn-info', 'style' => 'margin-top:10px;', 'onclick' => "location='".route('pages.pledge.index')."'"]) }}
+                        {{ Form::button('<i class="fas fa-save"></i> บันทึกข้อมูล', ['class' => 'btn btn-lg btn-success', 'style' => 'margin-top:10px;', 'type' => 'submit']) }}
+                    </div>
+                </div>
+            {{ Form::close() }}
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div style="border-bottom: 1px solid #F44336;padding-bottom: 9px;"></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="offset-md-10">
-                {{ Form::button('<i class="fas fa-hand-point-left"></i> ย้อนกลับ', ['class' => 'btn btn-lg btn-info', 'style' => 'margin-top:10px;', 'onclick' => "location='".route('pages.pledge.index')."'"]) }}
-                {{ Form::button('<i class="fas fa-save"></i> บันทึกข้อมูล', ['class' => 'btn btn-lg btn-success', 'style' => 'margin-top:10px;', 'type' => 'submit']) }}
-            </div>
-        </div>
-    {{ Form::close() }}
+    </div>
 </div>
 
 @endsection
@@ -112,14 +115,49 @@
 
         $(function()
         {
-            $( "#pledge" ).autocomplete({
+            $( "#personal_citizen_id" ).autocomplete({
                 source: "{{ route('pages.pledge.autocomplete') }}",
                 minlenght:1,
                 autoFocus:true,
                 select: function(event, ui) {
-                    $('#personal_code').val(ui.item.personal_code);
-                    $('#personal_citizen_id').val(ui.item.personal_citizen_id);
+                    var form = $("#my_form");
+                        form.find("input[name='personal_code']").val(ui.item.personal_code);
+                        form.find("input[name='personal_title_name']").val(ui.item.personal_title_name);
+                        form.find("input[name='personal_first_name']").val(ui.item.personal_first_name);
+                        form.find("input[name='personal_last_name']").val(ui.item.personal_last_name);
+                        form.find("input[name='personal_citizen_id']").val(ui.item.value);
+
+                        form.find("input[name='product_name']").prop("readonly", false);
+                        form.find("input[name='product_detail']").prop("readonly", false);
+                        form.find("input[name='product_start_date']").prop("readonly", false);
+                        form.find("input[name='product_capital']").prop("readonly", false);
+                        form.find("input[name='product_interest']").prop("readonly", false);
+                        form.find("input[name='product_end_date']").prop("readonly", false);
                 }
+            });
+
+            $(".daterangepicker").daterangepicker({
+                "singleDatePicker": true,
+                "showDropdowns": true,
+                "autoApply": true,
+                "locale": {
+                    "format": "YYYY-MM-DD",
+                    "separator": " - ",
+                    "applyLabel": "Apply",
+                    "cancelLabel": "Cancel",
+                    "fromLabel": "From",
+                    "toLabel": "To",
+                    "customRangeLabel": "Custom",
+                    "weekLabel": "W",
+                    "daysOfWeek": ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"],
+                    "monthNames": ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"],
+                    "firstDay": 1
+                },
+                "linkedCalendars": false,
+                "showCustomRangeLabel": false,
+                "startDate": new Date(),
+            }, function(start, end, label) {}).change(function () {
+                $(`input[name='${$(this).attr("def-date")}']`).val($(this).val());
             });
         });
     </script>

@@ -6,6 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Anhskohbo\\NoCaptcha\\Facades\\NoCaptcha' => $vendorDir . '/anhskohbo/no-captcha/src/Facades/NoCaptcha.php',
+    'Anhskohbo\\NoCaptcha\\NoCaptcha' => $vendorDir . '/anhskohbo/no-captcha/src/NoCaptcha.php',
+    'Anhskohbo\\NoCaptcha\\NoCaptchaServiceProvider' => $vendorDir . '/anhskohbo/no-captcha/src/NoCaptchaServiceProvider.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\AuthController' => $baseDir . '/app/Http/Controllers/AuthController.php',
@@ -14,6 +17,7 @@ return array(
     'App\\Http\\Controllers\\Auth\\RegisterController' => $baseDir . '/app/Http/Controllers/Auth/RegisterController.php',
     'App\\Http\\Controllers\\Auth\\ResetPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ResetPasswordController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
+    'App\\Http\\Controllers\\PaymentController' => $baseDir . '/app/Http/Controllers/PaymentController.php',
     'App\\Http\\Controllers\\PledgeController' => $baseDir . '/app/Http/Controllers/PledgeController.php',
     'App\\Http\\Controllers\\ReportController' => $baseDir . '/app/Http/Controllers/ReportController.php',
     'App\\Http\\Controllers\\SettingSystemController' => $baseDir . '/app/Http/Controllers/SettingSystemController.php',
@@ -2166,6 +2170,10 @@ return array(
     'League\\OAuth2\\Server\\ResponseTypes\\BearerTokenResponse' => $vendorDir . '/league/oauth2-server/src/ResponseTypes/BearerTokenResponse.php',
     'League\\OAuth2\\Server\\ResponseTypes\\RedirectResponse' => $vendorDir . '/league/oauth2-server/src/ResponseTypes/RedirectResponse.php',
     'League\\OAuth2\\Server\\ResponseTypes\\ResponseTypeInterface' => $vendorDir . '/league/oauth2-server/src/ResponseTypes/ResponseTypeInterface.php',
+    'Lloricode\\LaravelHtmlTable\\Facades\\LaravelHtmlTableFacade' => $vendorDir . '/lloricode/laravel-html-table/src/Facades/LaravelHtmlTableFacade.php',
+    'Lloricode\\LaravelHtmlTable\\Generator' => $vendorDir . '/lloricode/laravel-html-table/src/Generator.php',
+    'Lloricode\\LaravelHtmlTable\\LaravelHtmlTableGenerator' => $vendorDir . '/lloricode/laravel-html-table/src/LaravelHtmlTableGenerator.php',
+    'Lloricode\\LaravelHtmlTable\\Providers\\LaravelHtmlTableProvider' => $vendorDir . '/lloricode/laravel-html-table/src/Providers/LaravelHtmlTableProvider.php',
     'Milon\\Barcode\\BarcodeServiceProvider' => $vendorDir . '/milon/barcode/src/Milon/Barcode/BarcodeServiceProvider.php',
     'Milon\\Barcode\\DNS1D' => $vendorDir . '/milon/barcode/src/Milon/Barcode/DNS1D.php',
     'Milon\\Barcode\\DNS2D' => $vendorDir . '/milon/barcode/src/Milon/Barcode/DNS2D.php',

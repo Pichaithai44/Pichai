@@ -20,23 +20,14 @@
             </div>
         </div>
     </div>
-    {{ Form::open(['route' => ['pages.settinguser.update', 'id' => $result['data']->personal_code], 'method' => 'PATCH', 'id' => 'my_form', 'enctype' => 'multipart/form-data']) }}
-        <div class="row">
-            <div class="col-md-2 col-lg-2">
-                <div class="col-md-1 offset-md-1 col-lg-1 offset-lg-1">
-                    <div style="width: 125px; height: 130px; background: gray; padding-left: 2px; padding-top: 2px;margin-left:30px;">
-                        <span class="profile-picture">
-                            <img src="" id="img_logo">
-                        </span>
-                    </div>
-                    <div style="padding-left: 10px; padding-top: 5px;">
-                        <div class="upload-file">
-                            {{ Form::button('<i class="fa fa-camera"></i> อัพโหลดรูปสมาชิก', ['class' => 'btn btn-warning btn-xs']) }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-10 col-lg-10">
+    <div class="row">
+        <div class="col-md-3 col-lg-3">
+            @include('uploadfile')
+        </div>
+        <div class="col-md-9 col-lg-9">
+            {{ Form::open(['route' => ['pages.settinguser.update', 'id' => $result['data']->personal_code], 'method' => 'PATCH', 'id' => 'my_form', 'enctype' => 'multipart/form-data']) }}
+                {{ Form::hidden('path', !empty($result['data']->path) ? $result['data']->path : old('path'), []) }}
+                {{ Form::hidden('file_code', !empty($result['data']->file_code) ? $result['data']->file_code : old('file_code'), []) }}
                 <div class="form-group row">
                     <div class="col-md-2 col-lg-2">
                         {{ Form::label('personal_title_name', 'คำนำหน้าชื่อ', ['class' => 'col-form-label-lg']) }}
@@ -103,21 +94,22 @@
                     <div class="col-md-3 col-lg-3">
                         {{ Form::label('personal_road', 'ถนน', ['class' => 'col-form-label-lg']) }}
                         {{ Form::text('personal_road', !empty($result['data']->address['personal_road']) ? $result['data']->address['personal_road'] : old('personal_road'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div style="border-bottom: 1px solid #F44336;padding-bottom: 9px;"></div>
+                <div class="row">
+                    <div class="col-md-12 col-lg-12">
+                        <div style="border-bottom: 1px solid #F44336;padding-bottom: 9px;"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="offset-md-9 offset-lg-8">
-                    {{ Form::button('<i class="fas fa-hand-point-left"></i> ย้อนกลับ', ['class' => 'btn btn-lg btn-info', 'style' => 'margin-top:10px;', 'onclick' => "location='".route('pages.settinguser.index')."'"]) }}
-                    {{ Form::button('<i class="fas fa-save"></i> บันทึกข้อมูล', ['class' => 'btn btn-lg btn-success', 'style' => 'margin-top:10px;', 'type' => 'submit']) }}
+                <div class="row">
+                    <div class="offset-md-7 offset-lg-7 col-md-5 col-lg-5">
+                        {{ Form::button('<i class="fas fa-hand-point-left"></i> ย้อนกลับ', ['class' => 'btn btn-lg btn-info', 'style' => 'margin-top:10px;', 'onclick' => "location='".route('pages.settinguser.index')."'"]) }}
+                        {{ Form::button('<i class="fas fa-save"></i> บันทึกข้อมูล', ['class' => 'btn btn-lg btn-success', 'style' => 'margin-top:10px;', 'type' => 'submit']) }}
+                    </div>
                 </div>
-            </div>
+            {{ Form::close() }}
         </div>
-    {{ Form::close() }}
+    </div>
 </div>
 @endsection
 @section('script')

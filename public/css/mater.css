@@ -173,3 +173,8 @@ table.css-lottag td {
     margin: 40px 0 20 px;
     border-bottom: 1px solid #000;
 }
+
+.daterangepicker {
+    top: inherit;
+    left: inherit;
+}

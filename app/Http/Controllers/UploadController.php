@@ -107,14 +107,34 @@ class UploadController extends Controller
         $img    = Image::make(Storage::path($path));
         $width  = $img->width();
         $height = $img->height();
+
+        // thumbnail
+        $height_bg = 0;
+        $width_bg = 0;
+        $width_thumbnail  = $width;
+        $height_thumbnail = $height;
+        $MAX_WIDTH_thumbnail = 200;
+        $MAX_HEIGHT_thumbnail = 200;
         $img->backup();
 
-        if($width>$height){
+        if($width>$height) {
+
+            if ($width > $MAX_WIDTH_thumbnail) {
+                $height_thumbnail *= $MAX_WIDTH_thumbnail / $width;
+                $width_thumbnail = $MAX_WIDTH_thumbnail;
+            }
+
             $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize(1024, 768)->save(Storage::path("logos/{$basename}-mater.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
-            $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize(200, 200)->save(Storage::path("logos/{$basename}-thumbnail.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
-        }else{
+            $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize($width_thumbnail, $height_thumbnail)->resizeCanvas(null, $MAX_HEIGHT_thumbnail, 'center', false, '000000')->save(Storage::path("logos/{$basename}-thumbnail.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
+        } else {
+
+            if ($height > $MAX_HEIGHT_thumbnail) {
+                $width_thumbnail *= $MAX_HEIGHT_thumbnail / $height;
+                $height_thumbnail = $MAX_HEIGHT_thumbnail;
+            }
+      
             $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize(768, 1024)->save(Storage::path("logos/{$basename}-mater.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
-            $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize(150, 200)->resizeCanvas(200, null, 'center', false, '000000')->save(Storage::path("logos/{$basename}-thumbnail.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
+            $img->encode($request->file('fileToUpload')->getClientOriginalExtension(), 100)->resize($width_thumbnail, $height_thumbnail)->resizeCanvas($MAX_WIDTH_thumbnail, null, 'center', false, '000000')->save(Storage::path("logos/{$basename}-thumbnail.".$request->file('fileToUpload')->getClientOriginalExtension()), 100)->reset();
         }
         
         $pathinfo = pathinfo($path);
