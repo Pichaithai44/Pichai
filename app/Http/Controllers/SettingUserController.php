@@ -85,7 +85,7 @@ class SettingUserController extends Controller
                 'contact'   => [
                     'personal_tel_id'       => $request->personal_tel_id
                 ],
-                'is_active'  => 1,
+                'is_active'  => "1",
                 'created_at' => $request->created_at,
                 'created_by' => $request->created_by,
             ];
@@ -104,7 +104,7 @@ class SettingUserController extends Controller
                 ,'personal_last_name'   => $request->personal_last_name
                 ,'personal_citizen_id'  => $request->personal_citizen_id
                 ,'personal_xml'         => $xml_result
-                ,'is_active'            => 1
+                ,'is_active'            => "1"
                 ,'created_at'           => date('Y-m-d h:i:s')
                 ,'created_by'           => 'SYSTEM'
                 ,'updated_by'           => 'SYSTEM'
@@ -235,7 +235,7 @@ class SettingUserController extends Controller
                     'contact'   => [
                         'personal_tel_id'       => $request->personal_tel_id
                     ],
-                    'is_active'  => 1,
+                    'is_active'  => "1",
                     'created_at' => date('Y-m-d h:i:s'),
                     'created_by' => 'SYSTEM',
                 ];
@@ -253,7 +253,7 @@ class SettingUserController extends Controller
                     ,'personal_last_name'   => $request->personal_last_name
                     ,'personal_citizen_id'  => $request->personal_citizen_id
                     ,'personal_xml'         => $xml_result
-                    ,'is_active'            => 1
+                    ,'is_active'            => "1"
                     ,'updated_at'           => date('Y-m-d h:i:s')
                     ,'updated_by'           => 'SYSTEM'
                 ];

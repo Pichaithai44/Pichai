@@ -33,7 +33,8 @@ class PledgeController extends Controller
             DB::raw('CONCAT(personals.personal_title_name, personals.personal_first_name, " ", personals.personal_last_name) AS full_name'),
             'personals.personal_citizen_id',
             'products.*'
-        )->paginate(10);
+        )
+        ->where("products.is_active", "1")->paginate(10);
       
         if(!empty($products_result->items()) && count($products_result->items()) > 0){
             foreach ($products_result->items() as $key => $item) {
@@ -121,15 +122,14 @@ class PledgeController extends Controller
             $params = [
                 'product_code'      => $pledge_code,
                 'personal_code'     => Crypt::decryptString($request->personal_code),
-                'product_name'      => $request->product_name,
-                'product_detail'    => $request->product_detail,
-                'product_capital'   => $request->product_capital,
-                'product_interest'  => $request->product_interest,
-                'is_active'         => $request->is_active,
+                'product_name'      => !empty($request->product_name) ? $request->product_name : "",
+                'product_detail'    => !empty($request->product_detail) ? $request->product_detail : "",
+                'product_capital'   => !empty($request->product_capital) ? $request->product_capital : 0,
+                'product_interest'  => !empty($request->product_interest) ? $request->product_interest : 0,
                 'product_start_date'=> date('Y-m-d h:i:s', strtotime($request->product_start_date)),
                 'product_end_date'  => date('Y-m-d h:i:s', strtotime($request->product_end_date)),
                 'product_xml'       => $xml_result,
-                'is_active'         => 1,
+                'is_active'         => "1",
                 'created_at'        => date('Y-m-d h:i:s'),
                 'created_by'        => 'SYSTEM',
                 'updated_by'        => 'SYSTEM',
@@ -272,8 +272,8 @@ class PledgeController extends Controller
                     'product_detail'                => $products_result->product_detail,
                     'product_capital'               => $products_result->product_capital,
                     'product_interest'              => $products_result->product_interest,
-                    'interest_payment'              => $interest,
-                    'pay_all_balances'              => $products_result->product_capital + $interest,
+                    'interest_payment'              => number_format($interest, 2, '.', ''),
+                    'pay_all_balances'              => intval($is_period['remaining_balance']) < 1 ?  number_format(0, 2, '.', '') : number_format($products_result->product_capital + $interest, 2, '.', ''),
                     'product_start_date'            => date('Y-m-d', strtotime($products_result->product_start_date)),
                     'product_end_date'              => date('Y-m-d', strtotime($due_date)),
                     'personal_title_name'           => $products_result->personal_title_name,
@@ -286,7 +286,7 @@ class PledgeController extends Controller
                 ];
             }
             unset($products_result);
-
+            // echo "<pre>";print_r($result);"</pre>";exit;
         }
 
         return view('pages.pledge.edit',[
@@ -360,10 +360,9 @@ class PledgeController extends Controller
                                 'due_date'          => $due_date,
                                 'capital'           => $is_period['remaining_balance'],
                                 'payment'           => $request->debt_payment,
-                                'remaining_balance' => ($periods['remaining_balance'] + $interest) - $request->debt_payment,
-                                'interest'          => $interest
+                                'remaining_balance' => number_format($periods['remaining_balance'] + $interest, 2, '.', '') - $request->debt_payment,
+                                'interest'          => number_format($interest, 2, '.', '')
                             ];
-                            
                         }
                     }
                 }
@@ -401,7 +400,7 @@ class PledgeController extends Controller
                     'debt_payment'      => $request->debt_payment,
                     'due_date'          => $request->due_date,
                     'date_payment'      => $request->date_payment,
-                    'is_active'         => 1,
+                    'is_active'         => "1",
                     'created_by'        => 'SYSTEM',
                     'updated_by'        => 'SYSTEM',
                     'created_at'        => date('Y-m-d h:i:s'),
@@ -418,7 +417,7 @@ class PledgeController extends Controller
                     'product_start_date'=> date('Y-m-d h:i:s', strtotime($request->product_start_date)),
                     'product_end_date'  => date('Y-m-d h:i:s', strtotime($request->due_date)),
                     'product_xml'       => $xml_result,
-                    'is_active'         => 1,
+                    'is_active'         => "1",
                     'updated_at'        => date('Y-m-d h:i:s'),
                     'updated_by'        => 'SYSTEM'
                 ];
@@ -477,10 +476,14 @@ class PledgeController extends Controller
 
             $id = Crypt::decryptString($id);
             DB::beginTransaction();
-
+            $params = [
+                "is_active"     => "0",
+                "updated_by"    => "SYSTEM",
+                "updated_at"    => date('Y-m-d h:i:s')
+            ];
             try {
         
-                $result = DB::table('products')->where('product_code', $id)->delete();
+                $result = DB::table('products')->where('product_code', $id)->update($params);
                 
             } catch(ValidationException $e) {
                 

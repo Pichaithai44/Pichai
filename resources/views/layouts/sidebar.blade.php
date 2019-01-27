@@ -13,13 +13,16 @@
           </a>
           <ul class="treeview-menu">
             <li class="{{ Request::is('selfcheckproduction') ? 'active' : null }}">
-              <a href=""><i class="far fa-map"></i> รายงานของในระบบ</a>
+              <a href="{{ route('pages.pdf.member') }}" target="_blank"><i class="far fa-file-pdf"></i> รายงานสมาชิก</a>
             </li>
             <li class="{{ Request::is('selfcheckproduction') ? 'active' : null }}">
-              <a href=""><i class="far fa-map"></i> รายงานชำระค่างวด</a>
+              <a href="{{ route('pages.pdf.product') }}" target="_blank"><i class="far fa-file-pdf"></i> รายงานสินค้า</a>
             </li>
             <li class="{{ Request::is('selfcheckproduction') ? 'active' : null }}">
-              <a href=""><i class="far fa-map"></i> รายงานของออกจากระบบ</a>
+              <a href="{{ route('pages.pdf.payment') }}" target="_blank"><i class="far fa-file-pdf"></i> รายงานจ่ายค่างวด</a>
+            </li>
+            <li class="{{ Request::is('selfcheckproduction') ? 'active' : null }}">
+              <a href="{{ route('pages.pdf.redemption') }}" target="_blank"><i class="far fa-file-pdf"></i> รายงานไถ่สินค้าคืน</a>
             </li>
           </ul>
         </li>

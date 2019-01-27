@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Page Title')
+@section('title', 'PAWN')
 @section('breadcrumbs')
 {{ Breadcrumbs::render('edit_settinguser', $result['data']->personal_code) }}
 @endsection
@@ -60,12 +60,12 @@
                 <div class="form-group row">
                     <div class="col-md-6 col-lg-6">
                         {{ Form::label('personal_citizen_id', 'เลขบัตรประชาชน', ['class' => 'col-form-label-lg']) }}
-                        {{ Form::text('personal_citizen_id', !empty($result['data']->personal_citizen_id) ? $result['data']->personal_citizen_id : old('personal_citizen_id'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off", 'readonly'=> 'true']) }}
+                        {{ Form::text('personal_citizen_id', !empty($result['data']->personal_citizen_id) ? $result['data']->personal_citizen_id : old('personal_citizen_id'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off", 'readonly'=> 'true', 'maxlength' => 13]) }}
                     </div>
 
                     <div class="col-md-4 col-lg-4">
                         {{ Form::label('personal_tel_id', 'เบอร์โทรศัพท์', ['class' => 'col-form-label-lg']) }}
-                        {{ Form::text('personal_tel_id', !empty($result['data']->contact['personal_tel_id']) ? $result['data']->contact['personal_tel_id'] : old('personal_tel_id'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off"]) }}
+                        {{ Form::text('personal_tel_id', !empty($result['data']->contact['personal_tel_id']) ? $result['data']->contact['personal_tel_id'] : old('personal_tel_id'), ['class' => 'form-control form-control-lg', 'placeholder' => 'กรุณาระบุข้อมูล', 'autocomplete' => "off", 'maxlength' => 10]) }}
                     </div>
                 </div>
                 @if ($errors->has('personal_citizen_id'))
@@ -102,7 +102,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="offset-md-7 offset-lg-7 col-md-5 col-lg-5">
+                    <div class="col-md-3 col-lg-5 offset-md-9 offset-lg-7">
                         {{ Form::button('<i class="fas fa-hand-point-left"></i> ย้อนกลับ', ['class' => 'btn btn-lg btn-info', 'style' => 'margin-top:10px;', 'onclick' => "location='".route('pages.settinguser.index')."'"]) }}
                         {{ Form::button('<i class="fas fa-save"></i> บันทึกข้อมูล', ['class' => 'btn btn-lg btn-success', 'style' => 'margin-top:10px;', 'type' => 'submit']) }}
                     </div>
@@ -119,6 +119,47 @@
         }
         $(document).ready(function() {
             $( "div.alert-success" ).slideUp(600);
+        });
+
+        // Restricts input for the given textbox to the given inputFilter.
+        function setInputFilter(textbox, inputFilter) {
+            ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
+                if(textbox) {
+                    textbox.addEventListener(event, function() {
+                        if (inputFilter(this.value)) {
+                            this.oldValue = this.value;
+                            this.oldSelectionStart = this.selectionStart;
+                            this.oldSelectionEnd = this.selectionEnd;
+                        } else if (this.hasOwnProperty("oldValue")) {
+                            this.value = this.oldValue;
+                            this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                        }
+                    });
+                }
+            });
+        }
+
+        // Restrict input to digits and '.' by using a regular expression filter.
+
+        // Integer values (both positive and negative):
+        // /^-?\d*$/.test(value)
+        // Integer values (positive only):
+        // /^\d*$/.test(value)
+        // Integer values (positive and up to a particular limit):
+        // /^\d*$/.test(value) && (value === "" || parseInt(value) <= 500)
+        // Floating point values (allowing both . and , as decimal separator):
+        // /^-?\d*[.,]?\d*$/.test(value)
+        // Currency values (i.e. at most two decimal places):
+        // /^-?\d*[.,]?\d{0,2}$/.test(value)
+        // Hexadecimal values:
+        // /^[0-9a-f]*$/i.test(value)
+        // return /^\d*\.?\d*$/.test(value);
+
+        setInputFilter(document.getElementById("personal_citizen_id"), function(value) {
+            return /^\d*$/.test(value);
+        });
+        setInputFilter(document.getElementById("personal_tel_id"), function(value) {
+            return /^\d*$/.test(value);
         });
     </script>
 @endsection

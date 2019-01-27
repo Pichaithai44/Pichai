@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Set up the system')
+@section('title', 'PAWN')
 @section('breadcrumbs')
 {{ Breadcrumbs::render('settinguser') }}
 @endsection
@@ -23,10 +23,10 @@
         </div>
         <div class="row">
             <div class="col-md-10 offset-md-1 col-lg-10 offset-lg-1">
-                <table class="table table-bordered table-dark">
+                <table class="table table-bordered table-sm table-striped">
                     <thead>
-                        <tr class="text-center">
-                            <th scope="row"><button class="btn btn-lg btn-success" onclick="location='{{ route('pages.settinguser.create') }}'" id="create"><i class="fas fa-plus-square"></i> เพิ่ม</button></th>
+                        <tr class="text-center table-tr-web">
+                            <th scope="row"><button class="btn btn-block btn-success" onclick="location='{{ route('pages.settinguser.create') }}'" id="create"><i class="fas fa-plus-square"></i> เพิ่ม</button></th>
                             <th scope="row">ชื่อ-นามสกุล</th>
                             <th scope="row">เลขบัตรชาชน</th>
                             <th scope="row">วันที่สร้าง</th>
@@ -37,8 +37,8 @@
                     <tbody>
                         @foreach($result['data_arr']->items() as $item)
                         <tr>
-                            <td scope="col">
-                                <div class="text-center" role="group" aria-label="Basic example">
+                            <td scope="col" class="text-center">
+                                <div class="btn-group" role="group" aria-label="btn-group">
                                     <button type="button" class="btn btn-lg btn-warning" onclick="location='{{ route('pages.settinguser.edit',['id' => $item->personal_code]) }}'" data-toggle="tooltip" data-placement="top" title="แก้ไข"><i class="far fa-edit"></i></button>
                                     <button type="button" class="btn btn-lg btn-danger" data-toggle="modal"  route="{{ route('pages.settinguser.destroy',['id' => $item->personal_code]) }}" onclick="deleteItem(this);"><i class="far fa-trash-alt"></i></button>
                                 </div>

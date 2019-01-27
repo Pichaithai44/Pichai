@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Set up the system')
+@section('title', 'PAWN')
 @section('list', 'ตั้งค่าผู้ใช้งาน')
 @section('breadcrumbs')
 {{ Breadcrumbs::render('users') }}

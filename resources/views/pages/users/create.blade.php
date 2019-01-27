@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Page Title')
+@section('title', 'PAWN')
 @section('list', 'รายการเพิ่มข้อมูลลูกค้า')
 @section('breadcrumbs')
 {{ Breadcrumbs::render('create_user') }}

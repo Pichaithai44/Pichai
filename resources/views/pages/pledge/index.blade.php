@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Set up the system')
+@section('title', 'PAWN')
 @section('breadcrumbs')
 {{ Breadcrumbs::render('pledge') }}
 @endsection
@@ -23,9 +23,9 @@
         </div>
         <div class="row">
             <div class="col-md-10 offset-md-1">
-                <table class="table table-bordered table-dark">
+                <table class="table table-bordered table-sm table-striped">
                     <thead>
-                        <tr class="text-center">
+                        <tr class="text-center table-tr-web">
                             <th scope="row" width="30%"><button class="btn btn-lg btn-success" onclick="location='{{ route('pages.pledge.create') }}'" id="create"><i class="fas fa-plus-square"></i> เพิ่ม</button></th>
                             <th scope="row" width="25%">ชื่อสินค้า</th>
                             <th scope="row" width="25%">ชื่อ-นามสกุล</th>
@@ -36,8 +36,8 @@
                     <tbody>
                         @foreach($result['data_arr']->items() as $item)
                         <tr class="text-center">
-                            <td scope="col">
-                                <div class="text-center" role="group" aria-label="Basic example">
+                            <td scope="col text-center">
+                                <div class="btn-group-vertical" role="group" aria-label="Basic example">
                                     <button type="button" class="btn btn-lg btn-warning" onclick="location='{{ route('pages.pledge.edit',['id' => $item->product_code]) }}'" data-toggle="tooltip" data-placement="top" title="จ่ายดอกเบี้ย"><i class="fas fa-money-bill-alt"></i> ชำระค่างวด</button>
                                     <button type="button" class="btn btn-lg btn-danger" data-toggle="modal"  route="{{ route('pages.pledge.destroy',['id' => $item->product_code]) }}" onclick="deleteItem(this);"><i class="fas fa-undo-alt"></i> ไถ่ถอนสินค้า</button>
                                 </div>
@@ -45,6 +45,7 @@
                             <td scope="col"><a>{{ $item->product_name }}</a></td>
                             <td scope="col" class="text-left"><a>{{ $item->full_name }}</a></td>
                             <td scope="col"><a>{{ $item->product_capital }}</a></td>
+                            <td scope="col"><a>{{ $item->created_at }}</a></td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -99,7 +100,10 @@
 
         $(function () {
             $('[data-toggle="tooltip"]').tooltip()
-        })
+        });
+        $(document).ready(function() {
+            $( "div.alert-success" ).slideUp(600);
+        });
 
         $(document).ready(function() { 
             $("table").tablesorter( {sortzoneone: [false]} ); 

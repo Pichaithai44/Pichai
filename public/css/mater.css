@@ -178,3 +178,21 @@ table.css-lottag td {
     top: inherit;
     left: inherit;
 }
+
+.table-tr-web {
+    background-color: #DD4C39;
+    color: #fff;
+}
+
+.page-item.active .page-link {
+    background-color: #DD4C39;
+    border-color: #DD4C39;
+}
+
+ol.breadcrumb>li.breadcrumb-item>a {
+    color: #dd4b39;
+}
+
+ol.breadcrumb>li.breadcrumb-item>a:hover {
+    color: #d73925;
+}

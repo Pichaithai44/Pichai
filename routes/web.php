@@ -86,5 +86,17 @@ Route::group(['middleware' => ['auth']], function () {
 
     // ตั้งค่าผู้ใช้งาน ลบ
     Route::patch('/users/delete/{id}','UsersController@destroy')->name('pages.users.destroy');
+
+    // รายงานสมาชิก
+    Route::get('/pdf/report/pdf/member','ReportController@member_report_pdf')->name('pages.pdf.member');
+
+    // รายงานสินค้า
+    Route::get('/pdf/report/pdf/product','ReportController@product_report_pdf')->name('pages.pdf.product');
+
+    // รายงานชำระค่างวด
+    Route::get('/pdf/report/pdf/payment','ReportController@payment_report_pdf')->name('pages.pdf.payment');
+
+    // รายงานไถ่สินค้าคืน
+    Route::get('/pdf/report/pdf/redemption','ReportController@redemption_report_pdf')->name('pages.pdf.redemption');
 });
 

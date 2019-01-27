@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Page Title')
+@section('title', 'PAWN')
 @section('list', 'ชำระค่างวด')
 @section('breadcrumbs')
 {{ Breadcrumbs::render('edit_user', $result['data']->personal_code) }}

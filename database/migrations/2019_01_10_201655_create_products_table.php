@@ -24,7 +24,7 @@ class CreateProductsTable extends Migration
             $table->dateTime('product_start_date');
             $table->dateTime('product_end_date');
             $table->longText('product_xml');
-            $table->enum('is_active', [0, 1]);
+            $table->enum('is_active', [0, 1])->default(1);
             $table->string('created_by', 64);
             $table->string('updated_by', 64);
             $table->timestamps();

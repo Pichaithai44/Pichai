@@ -23,7 +23,7 @@ class CreateUntitledTable extends Migration
             $table->float('debt_payment', 8, 2);
             $table->date('due_date');
             $table->dateTime('date_payment');
-            $table->enum('is_active', [0, 1]);
+            $table->enum('is_active', [0, 1])->default(1);
             $table->string('created_by', 64);
             $table->string('updated_by', 64)->nullable();
             $table->timestamps();

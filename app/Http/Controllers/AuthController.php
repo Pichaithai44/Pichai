@@ -304,7 +304,7 @@ class AuthController extends Controller
     public function getsignout() {
 
         Auth::logout();
-        return redirect()->route('home');
+        return redirect()->route('login');
         
     }
 

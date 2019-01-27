@@ -1,6 +1,8 @@
 @extends('layouts.app')
-@section('title', 'Page Title')
-@section('list', 'ชำระค่างวด')
+@section('title', 'PAWN')
+@section('breadcrumbs')
+{{ Breadcrumbs::render('edit_pledge', $result['data']->product_code) }}
+@endsection
 @section('content')
 <div id="wrapper">
     <div id="page-wrapper">
@@ -16,8 +18,8 @@
             </div>
         <div class="col-md-9 col-lg-9">
             {{ Form::open(['route' => ['pages.pledge.update', 'id' => $result['data']->product_code], 'method' => 'PATCH', 'id' => 'my_form', 'enctype' => 'multipart/form-data']) }}
-                {{ Form::hidden('path', old('path'), []) }}
-                {{ Form::hidden('file_code', old('file_code'), []) }}
+                {{ Form::hidden('path', !empty($result['data']->path) ? $result['data']->path : old('path'), []) }}
+                {{ Form::hidden('file_code', !empty($result['data']->file_code) ? $result['data']->file_code : old('file_code'), []) }}
                 {{ Form::hidden('product_code', !empty($result['data']->product_code) ? $result['data']->product_code : old('product_code'), []) }}
                 {{ Form::hidden('personal_code', !empty($result['data']->personal_code) ? $result['data']->personal_code : old('personal_code'), []) }}
                 <div class="form-group row">
@@ -123,9 +125,9 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="table table-bordered table-dark">
+                        <table class="table table-bordered table-sm table-striped">
                             <thead>
-                                <tr class="text-center">
+                                <tr class="text-center table-tr-web">
                                     <th scope="row" width="15%">วันที่งวดสินค้า</th>
                                     <th scope="row" width="15%">วันที่จ่าย</th>
                                     <th scope="row" width="15%">ประเภทการจ่าย</th>
@@ -171,9 +173,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="offset-md-9">
+                    <div class="col-md-3 col-lg-5 offset-md-9 offset-lg-7">
                         {{ Form::button('<i class="fas fa-hand-point-left"></i> ย้อนกลับ', ['class' => 'btn btn-lg btn-info', 'style' => 'margin-top:10px;', 'onclick' => "location='".route('pages.pledge.index')."'"]) }}
+                        @if(intval($result['data']->pay_all_balances) > 0)
                         {{ Form::button('<i class="fas fa-save"></i> บันทึกข้อมูล', ['class' => 'btn btn-lg btn-success', 'style' => 'margin-top:10px;', 'type' => 'submit']) }}
+                        @endif
                     </div>
                 </div>
             {{ Form::close() }}

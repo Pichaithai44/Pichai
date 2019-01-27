@@ -18,7 +18,7 @@
             {{ Form::hidden('file_code', !empty($result['data']->file_code) ? $result['data']->file_code : old('file_code'), []) }}
             <div class="btn-group upload-file" role="group">
                 <label for="fileToUpload" class="btn btn-warning"><i class="fa fa-camera"></i> เลือกรูป
-                    <input type="file" class="form-control-file" name="fileToUpload" id="fileToUpload" style="display:none;">
+                    {{ Form::file("fileToUpload", ["class" => "form-control-file", "style" => "display:none;", "accept" => "image/*", "id" => "fileToUpload"]) }}
                 </label>
                 <label for="submitFile" class="btn btn-dark"><i class="fas fa-upload"></i>
                     <input type="submit"  id="submitFile" style="display:none;" >
@@ -27,7 +27,7 @@
         </div>
     </div>
     <div class="row form-group">
-        <small class="col-md-12 label-control"><i>- เลือกรูปและกดปุ่มอัพโหลด</i></small>
+        <small class="col-md-12 label-control"><i><span class="text-danger">- เลือกรูปและกดปุ่มอัพโหลด</span></i></small>
     </div>
 {{ Form::close() }}
 

@@ -21,7 +21,7 @@ class CreatePersonalsTable extends Migration
             $table->string('personal_last_name', 150);
             $table->string('personal_citizen_id', 13);
             $table->longText('personal_xml');
-            $table->enum('is_active', [0, 1]);
+            $table->enum('is_active', [0, 1])->default(1);
             $table->string('created_by', 64);
             $table->string('updated_by', 64);
             $table->timestamps();

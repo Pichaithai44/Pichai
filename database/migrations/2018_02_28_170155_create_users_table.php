@@ -20,10 +20,10 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->integer('role_id')->unsigned();
-            $table->string('is_id',10)->nullable();
+            $table->string('is_id', 10)->nullable();
             $table->integer('department_id')->unsigned()->nullable();
             $table->integer('job_position_id')->unsigned()->nullable();
-            $table->enum('is_enable', ['Y', 'N']);
+            $table->enum('is_enable', ['Y', 'N'])->default("Y");
             $table->integer('updated_by')->unsigned()->nullable();
             $table->rememberToken();
             $table->timestamp('deleted_at')->nullable();

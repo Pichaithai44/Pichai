@@ -215,6 +215,21 @@ class PDF{
         $this->rendered = true;
     }
 
+    /**
+     * set the encryption of the document
+     * can be used to turn it on and/or set the passwords which it will have.
+     * also the functions that the user will have are set here, such as print, modify, add
+     *
+     * @param string $password
+     */
+
+    public function setEncryption($password) {
+       if (!$this->dompdf) {
+           throw new Exception("DOMPDF not created yet");
+       }
+       $this->render();
+       return $this->dompdf->getCanvas()->get_cpdf()->setEncryption("pass", $password, array('print', 'modify', 'copy', 'annot-forms', 'fill-forms', 'extract', 'assemble', 'print-high'));
+    }
 
     protected function convertEntities($subject){
         $entities = array(
